@@ -1,33 +1,40 @@
-import React from 'react';
+import Navbar from "../components/Navbar";
+import backgroundVideo from "../assets/video_1.mp4";
 
-const Home = () => {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="max-w-4xl text-center">
-        <h1 className="text-5xl font-extrabold text-blue-800 mb-6">
-          ¡Bienvenido a Tu Próximo Hogar! 🏠
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          En nuestra Inmobiliaria, hacemos que encontrar la casa de tus sueños sea una experiencia bien bacana. 
-          Explora las mejores propiedades con la confianza y el respaldo que te mereces.
+    <div className="relative h-screen w-full overflow-hidden">
+
+      {/* Video de fondo */}
+      <video
+        autoPlay
+        loop
+        muted
+        className="absolute top-0 left-0 w-full h-full object-cover"
+      >
+        <source src={backgroundVideo} type="video/mp4" />
+      </video>
+
+      {/* Capa oscura */}
+      <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Contenido principal */}
+      <div className="relative z-10 flex flex-col justify-center items-center h-full text-white text-center px-4">
+        <h2 className="text-5xl md:text-7xl font-bold mb-6 uppercase tracking-widest">
+          Encuentra tu hogar ideal
+        </h2>
+
+        <p className="text-lg md:text-2xl mb-8 max-w-3xl">
+          Compra, vende o alquila propiedades con la mejor experiencia inmobiliaria.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-lg font-bold text-blue-600 mb-2">Venta</h3>
-            <p className="text-gray-500">Encuentra casas, apartamentos y más.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-lg font-bold text-blue-600 mb-2">Alquiler</h3>
-            <p className="text-gray-500">Opciones flexibles para cada estilo de vida.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-lg font-bold text-blue-600 mb-2">Asesoría</h3>
-            <p className="text-gray-500">Te acompañamos en todo el proceso.</p>
-          </div>
-        </div>
+
+        <button className="border border-white px-8 py-4 rounded-lg text-lg hover:bg-white hover:text-black transition">
+          Explorar propiedades
+        </button>
       </div>
     </div>
   );
-};
-
-export default Home;
+}

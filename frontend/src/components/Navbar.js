@@ -1,36 +1,37 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-const Navbar = () => {
+export default function Navbar() {
   return (
-    <nav className="bg-blue-600 p-4 shadow-lg">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-2xl font-bold">
-          <Link to="/">Inmobiliaria</Link>
-        </div>
-        <div className="space-x-4">
-          <Link 
-            to="/" 
-            className="text-white hover:text-blue-200 transition-colors"
-          >
-            Inicio
-          </Link>
-          <Link 
-            to="/login" 
-            className="bg-white text-blue-600 px-4 py-2 rounded-md font-semibold hover:bg-blue-50 transition-colors"
-          >
-            Login
-          </Link>
-          <Link 
-            to="/register" 
-            className="bg-blue-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-400 transition-colors border border-blue-400"
-          >
-            Registro
-          </Link>
-        </div>
+    <nav className="absolute top-0 left-0 w-full z-20 bg-black/40 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-white">
+          Inmobiliaria
+        </h1>
+
+        <ul className="flex gap-6 text-white font-medium">
+          <li>
+            <Link to="/" className="hover:text-blue-400 transition">
+              Inicio
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/login"
+              className="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition"
+            >
+              Login
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/registro"
+              className="border border-white px-4 py-2 rounded-lg hover:bg-white hover:text-blue-600 transition"
+            >
+              Registro
+            </Link>
+          </li>
+        </ul>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
