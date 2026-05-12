@@ -39,9 +39,9 @@ export default function Home() {
           onEnded={handleVideoEnd}
           className="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000"
         />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/60 via-black/20 to-black/80"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/60 via-black/20 to-black/80 pointer-events-none z-10"></div>
         
-        <div className="relative z-20">
+        <div className="relative z-30">
           <Navbar />
         </div>
 
