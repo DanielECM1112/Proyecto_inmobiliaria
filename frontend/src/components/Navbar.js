@@ -64,8 +64,8 @@ export default function Navbar() {
                 <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tighter group-hover:translate-x-1 transition-transform">
-              LUX<span className="text-gray-400">HABITAT</span>
+            <h1 className="text-3xl font-serif font-bold text-white tracking-tighter group-hover:translate-x-1 transition-transform">
+              LUX<span className="text-gray-400 font-light">HABITAT</span>
             </h1>
           </Link>
 
@@ -75,8 +75,8 @@ export default function Navbar() {
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className={`text-sm font-bold tracking-widest transition-all duration-300 hover:text-white ${
-                      location.pathname === link.path ? "text-white border-b-2 border-white pb-1" : "text-gray-300"
+                    className={`text-[11px] font-sans font-bold tracking-[0.2em] transition-all duration-300 hover:text-white ${
+                      location.pathname === link.path ? "text-white border-b border-white pb-1" : "text-gray-400"
                     }`}
                   >
                     {link.name}

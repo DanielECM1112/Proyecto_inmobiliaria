@@ -23,16 +23,16 @@ export default function Footer() {
                   <polyline points="9 22 9 12 15 12 15 22" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-black tracking-tighter">LUX<span className="text-gray-400">HABITAT</span></h2>
+              <h2 className="text-3xl font-serif font-bold tracking-tighter text-white">LUX<span className="text-gray-400 font-light">HABITAT</span></h2>
             </div>
-            <p className="text-gray-400 text-lg leading-relaxed">
-              Tu aliado confiable en el mercado inmobiliario premium. Conectamos sueños con hogares desde hace más de una década.
+            <p className="text-gray-400 text-base font-sans font-light leading-relaxed">
+              Tu aliado confiable en el mercado inmobiliario premium. Conectamos sueños con hogares desde hace más de una década en Ibagué y todo el país.
             </p>
           </div>
 
           <div>
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-wider">Servicios</h3>
-            <ul className="space-y-4">
+            <h3 className="text-lg font-serif font-bold mb-6 uppercase tracking-widest text-white/90">Servicios</h3>
+            <ul className="space-y-4 font-sans text-sm font-light">
               {services.map((service, index) => (
                 <li key={index} className="text-gray-400 hover:text-white transition-colors cursor-default">
                   {service}
@@ -42,8 +42,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-wider">Enlaces</h3>
-            <ul className="space-y-4">
+            <h3 className="text-lg font-serif font-bold mb-6 uppercase tracking-widest text-white/90">Enlaces</h3>
+            <ul className="space-y-4 font-sans text-sm font-light">
               <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Inicio</Link></li>
               <li><Link to="/properties" className="text-gray-400 hover:text-white transition-colors">Propiedades</Link></li>
               <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Nosotros</Link></li>
@@ -52,22 +52,22 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-wider">Newsletter</h3>
-            <p className="text-gray-400 mb-6">Suscríbete para recibir las últimas ofertas.</p>
+            <h3 className="text-lg font-serif font-bold mb-6 uppercase tracking-widest text-white/90">Newsletter</h3>
+            <p className="text-gray-400 text-sm font-sans font-light mb-6">Suscríbete para recibir las últimas ofertas exclusivas.</p>
             <div className="flex gap-2">
               <input 
                 type="email" 
                 placeholder="tu@email.com" 
-                className="bg-gray-800 border-none rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-white transition-all"
+                className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 w-full focus:ring-1 focus:ring-white transition-all text-sm font-sans"
               />
-              <button className="bg-white text-gray-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-200 transition-all">
+              <button className="bg-white text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-sm">
                 Ir
               </button>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-10 text-center text-gray-500">
+        <div className="border-t border-gray-800/50 pt-10 text-center text-gray-500 font-sans text-xs tracking-widest uppercase">
           <p>© 2026 LUXHABITAT Inmobiliaria Premium. Todos los derechos reservados.</p>
         </div>
       </div>

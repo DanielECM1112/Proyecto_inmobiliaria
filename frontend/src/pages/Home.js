@@ -46,22 +46,22 @@ export default function Home() {
         </div>
 
         <div className="relative z-20 flex flex-col justify-center items-center h-full text-center text-white px-8">
-          <h1 className="text-6xl md:text-9xl font-black mb-8 uppercase tracking-tighter drop-shadow-2xl">
-            LUX<span className="text-gray-300">HABITAT</span>
+          <h1 className="text-6xl md:text-9xl font-serif font-bold mb-8 uppercase tracking-tighter drop-shadow-2xl">
+            LUX<span className="text-gray-300 font-light">HABITAT</span>
           </h1>
-          <p className="text-xl md:text-3xl mb-12 max-w-3xl font-medium leading-relaxed drop-shadow-lg text-gray-200">
-            Tu Hogar de Ensueño <br /> <span className="text-white/80">Comienza con un click.</span>
+          <p className="text-xl md:text-3xl mb-12 max-w-3xl font-sans font-light leading-relaxed drop-shadow-lg text-gray-200">
+            Tu Hogar de Ensueño <br /> <span className="text-white/80 italic font-serif">Comienza con un click.</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-8">
             <button 
               onClick={() => navigate('/properties')}
-              className="bg-white text-gray-900 px-12 py-6 rounded-2xl text-xl font-black hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl uppercase tracking-widest"
+              className="bg-white text-gray-900 px-12 py-6 rounded-2xl text-xl font-sans font-bold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl uppercase tracking-widest"
             >
               Ver Propiedades
             </button>
             <button 
               onClick={() => navigate('/about')}
-              className="backdrop-blur-md bg-white/10 border-2 border-white/30 text-white px-12 py-6 rounded-2xl text-xl font-black hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 uppercase tracking-widest"
+              className="backdrop-blur-md bg-white/10 border-2 border-white/30 text-white px-12 py-6 rounded-2xl text-xl font-sans font-bold hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 uppercase tracking-widest"
             >
               Conócenos
             </button>
