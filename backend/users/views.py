@@ -1,37 +1,48 @@
-from rest_framework.views import APIView
+from django.shortcuts import render
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import authenticate, login
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 from .models import User
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 
-class UserList(APIView):
-    def get(self, request):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+# === 👥 VISTAS ORIGINALES DE JHONATAN ===
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
-            user = authenticate(username=username, password=password)
-            if user:
-                login(request, user)
-                user_serializer = UserSerializer(user)
-                return Response({
-                    'message': 'Login successful',
-                    'user': user_serializer.data
-                })
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# ===  TU NUEVO ENDPOINT DE AUTENTICACIÓN PARA EL PANEL TORNASOLADO ===
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_admin_api(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        token, _ = Token.objects.get_or_create(user=user)
+        rol = "Administrador" if user.is_superuser else "Usuario"
+        return Response({
+            'token': token.key,
+            'rol': rol,
+            'username': user.username
+        }, status=status.HTTP_200_OK)
+        
+    return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_400_BAD_REQUEST)
