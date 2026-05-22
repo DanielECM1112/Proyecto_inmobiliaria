@@ -4,4 +4,4 @@ from .models import Plan
 class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
-        fields = '__all__'
+        fields = '__all__' # Lee automáticamente todas las columnas nuevas

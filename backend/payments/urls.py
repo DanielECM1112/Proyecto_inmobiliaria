@@ -1,10 +1,6 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import PaymentViewSet
-
-router = DefaultRouter()
-router.register(r'admin-payments', PaymentViewSet, basename='admin-payments')
+from django.urls import path
+from .views import payment_mock_api
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('admin-payments/', payment_mock_api, name='admin-payments-api'),
 ]
