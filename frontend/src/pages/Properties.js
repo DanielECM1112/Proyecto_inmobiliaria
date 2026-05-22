@@ -4,6 +4,7 @@ import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { BiBed, BiBath, BiArea } from 'react-icons/bi';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useTheme } from '../context/ThemeContext';
 
 const properties = [
   {
@@ -53,12 +54,14 @@ const properties = [
 ];
 
 export default function Properties() {
+  const { isDarkMode } = useTheme();
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: 0.1
       }
     }
   };
@@ -69,111 +72,153 @@ export default function Properties() {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.8,
         ease: "easeOut"
       }
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#fdfdfd] flex flex-col font-sans">
+    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${
+      isDarkMode ? "bg-primary-dark" : "bg-light-100"
+    }`}>
       <Navbar />
       
       {/* Hero Section for Properties */}
-      <div className="pt-40 pb-20 bg-primary text-white text-center px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10"></div>
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-serif font-bold mb-6 tracking-tight"
-          >
-            Propiedades <span className="text-gray-400 italic font-light">Exclusivas</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-xl text-gray-300 font-light max-w-2xl mx-auto"
-          >
-            Descubre nuestra selección curada de residencias de lujo diseñadas para elevar tu estilo de vida.
-          </motion.p>
+      <section className="relative pt-48 pb-32 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80" 
+            alt="Properties Background" 
+            className="w-full h-full object-cover"
+            style={{
+              opacity: isDarkMode ? 0.15 : 0.25,
+              transition: "opacity 500ms"
+            }}
+          />
+          <div className={`absolute inset-0 ${
+            isDarkMode 
+              ? "bg-gradient-to-b from-primary-dark/80 via-primary-dark/95 to-primary-dark" 
+              : "bg-gradient-to-b from-blue-900/15 via-white/70 to-light-100"
+          }`}></div>
         </div>
-      </div>
 
-      <main className="flex-grow py-24 px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <h1 className={`text-6xl md:text-8xl font-serif font-bold mb-6 tracking-tight ${
+              isDarkMode ? "text-white" : "text-dark-950"
+            }`}>
+              Propiedades <span className="text-blue-600 italic font-light">Exclusivas</span>
+            </h1>
+            <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+            <p className={`text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed ${
+              isDarkMode ? "text-gray-300" : "text-dark-700"
+            }`}>
+              Descubre nuestra selección curada de residencias de lujo diseñadas para elevar tu estilo de vida en los sectores más prestigiosos.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <main className="flex-grow py-24 px-6 md:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-14"
           >
             {properties.map((prop) => (
               <motion.div 
                 key={prop.id} 
                 variants={itemVariants}
-                whileHover={{ y: -10 }}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 border border-gray-100 group"
+                whileHover={{ y: -15 }}
+                className={`rounded-[2.5rem] overflow-hidden transition-all duration-500 border group ${
+                  isDarkMode 
+                    ? "bg-midnight-DEFAULT border-white/5 shadow-2xl shadow-black/40 hover:border-blue-500/30" 
+                    : "bg-white border-light-200 shadow-xl shadow-blue-900/5 hover:border-blue-600/30"
+                }`}
               >
                 <div className="relative h-80 overflow-hidden">
                   <img 
                     src={prop.image} 
                     alt={prop.title} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-in-out" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
                   
-                  <div className="absolute top-6 left-6 flex gap-2">
-                    <span className="bg-white/90 backdrop-blur-md text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
+                  <div className="absolute top-8 left-8 flex gap-3">
+                    <span className="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">
                       {prop.type}
                     </span>
-                    <span className="bg-primary/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
+                    <span className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">
                       Premium
                     </span>
                   </div>
                 </div>
 
                 <div className="p-10">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-2xl font-serif font-bold text-primary leading-tight group-hover:text-primary-light transition-colors">
-                      {prop.title}
-                    </h3>
-                  </div>
+                  <h3 className={`text-2xl font-serif font-bold mb-3 leading-tight transition-colors ${
+                    isDarkMode ? "text-white group-hover:text-blue-400" : "text-dark-950 group-hover:text-blue-600"
+                  }`}>
+                    {prop.title}
+                  </h3>
                   
-                  <p className="text-gray-500 flex items-center gap-2 mb-8 font-light italic">
-                    <HiOutlineLocationMarker className="text-primary text-xl" />
+                  <p className={`flex items-center gap-2 mb-8 font-light italic text-sm ${
+                    isDarkMode ? "text-gray-400" : "text-dark-600"
+                  }`}>
+                    <HiOutlineLocationMarker className="text-blue-600 text-xl" />
                     {prop.location}
                   </p>
 
-                  <div className="flex justify-between items-center mb-8 bg-gray-50/80 p-6 rounded-2xl border border-gray-100">
+                  <div className={`p-6 rounded-2xl border mb-8 transition-colors ${
+                    isDarkMode ? "bg-white/5 border-white/5" : "bg-light-50 border-light-200"
+                  }`}>
                     <div className="flex flex-col">
-                      <span className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Precio</span>
-                      <span className="text-2xl font-bold text-primary">{prop.price}</span>
+                      <span className={`text-[10px] uppercase tracking-widest font-bold mb-1 ${
+                        isDarkMode ? "text-gray-500" : "text-dark-400"
+                      }`}>Inversión</span>
+                      <span className={`text-2xl font-bold ${
+                        isDarkMode ? "text-blue-400" : "text-blue-600"
+                      }`}>{prop.price}</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 py-6 border-y border-gray-100 mb-8">
-                    <div className="flex flex-col items-center gap-1">
-                      <BiBed className="text-2xl text-primary/60" />
-                      <span className="text-lg font-bold text-primary">{prop.beds}</span>
-                      <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Habitaciones</span>
+                  <div className={`grid grid-cols-3 gap-4 py-6 border-y mb-8 ${
+                    isDarkMode ? "border-white/5" : "border-light-200"
+                  }`}>
+                    <div className="flex flex-col items-center gap-2">
+                      <BiBed className={`text-2xl ${isDarkMode ? "text-gray-400" : "text-dark-400"}`} />
+                      <span className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-dark-900"}`}>{prop.beds}</span>
+                      <span className={`text-[9px] uppercase font-bold tracking-tighter ${isDarkMode ? "text-gray-500" : "text-dark-500"}`}>Habitaciones</span>
                     </div>
-                    <div className="flex flex-col items-center gap-1 border-x border-gray-100">
-                      <BiBath className="text-2xl text-primary/60" />
-                      <span className="text-lg font-bold text-primary">{prop.baths}</span>
-                      <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Baños</span>
+                    <div className={`flex flex-col items-center gap-2 border-x ${isDarkMode ? "border-white/5" : "border-light-200"}`}>
+                      <BiBath className={`text-2xl ${isDarkMode ? "text-gray-400" : "text-dark-400"}`} />
+                      <span className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-dark-900"}`}>{prop.baths}</span>
+                      <span className={`text-[9px] uppercase font-bold tracking-tighter ${isDarkMode ? "text-gray-500" : "text-dark-500"}`}>Baños</span>
                     </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <BiArea className="text-2xl text-primary/60" />
-                      <span className="text-sm font-bold text-primary whitespace-nowrap">{prop.area}</span>
-                      <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Área</span>
+                    <div className="flex flex-col items-center gap-2">
+                      <BiArea className={`text-2xl ${isDarkMode ? "text-gray-400" : "text-dark-400"}`} />
+                      <span className={`text-sm font-bold ${isDarkMode ? "text-white" : "text-dark-900"} whitespace-nowrap`}>{prop.area}</span>
+                      <span className={`text-[9px] uppercase font-bold tracking-tighter ${isDarkMode ? "text-gray-500" : "text-dark-500"}`}>Área Total</span>
                     </div>
                   </div>
 
-                  <button className="w-full bg-primary text-white py-5 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/10 hover:shadow-primary/20 transform active:scale-95">
-                    Explorar Propiedad
-                  </button>
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full py-5 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-xl ${
+                      isDarkMode
+                        ? "bg-white text-dark-900 hover:bg-gray-100"
+                        : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20"
+                    }`}
+                  >
+                    Explorar Detalles
+                  </motion.button>
                 </div>
               </motion.div>
             ))}

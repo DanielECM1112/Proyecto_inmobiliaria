@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ export default function Register() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
 
   const handleChange = (e) => {
     setFormData({
@@ -33,7 +36,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:8000/api/register/", formData);
+      await axios.post("http://localhost:8000/api/users/register/", formData);
       setSuccess("¡Registro exitoso! Redirigiendo...");
       setTimeout(() => {
         navigate("/login");
@@ -46,18 +49,33 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${
+      isDarkMode ? "bg-primary-dark" : "bg-light-100"
+    }`}>
       <Navbar />
       <main className="flex-grow flex items-center justify-center py-20 px-8 pt-32">
-        <div className="max-w-3xl w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden">
+        <div className={`max-w-3xl w-full rounded-[3rem] shadow-2xl overflow-hidden transition-all duration-500 border ${
+          isDarkMode 
+            ? "bg-midnight-DEFAULT border-white/5" 
+            : "bg-white border-light-200"
+        }`}>
           <div className="p-12 md:p-16">
             <div className="text-center mb-12">
-              <h2 className="text-5xl font-black text-gray-900 mb-4 tracking-tighter">Crear Cuenta</h2>
-              <p className="text-xl text-gray-500 font-medium">Únete a nuestra comunidad exclusiva</p>
+              <h2 className={`text-5xl font-serif font-bold mb-4 tracking-tight transition-colors duration-500 ${
+                isDarkMode ? "text-white" : "text-dark-950"
+              }`}>Crear Cuenta</h2>
+              <p className={`text-xl font-light transition-colors duration-500 ${
+                isDarkMode ? "text-gray-400" : "text-dark-700"
+              }`}>Únete a nuestra comunidad exclusiva de inversión</p>
+              <div className="w-16 h-1 bg-blue-600 mx-auto mt-6 rounded-full"></div>
             </div>
 
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-6 rounded-2xl mb-8 flex items-center gap-4">
+              <div className={`border-l-4 p-6 rounded-2xl mb-8 flex items-center gap-4 transition-all duration-300 ${
+                isDarkMode 
+                  ? "bg-red-500/10 border-red-500/50 text-red-400" 
+                  : "bg-red-50 border-red-500 text-red-700"
+              }`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -66,7 +84,11 @@ export default function Register() {
             )}
 
             {success && (
-              <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-6 rounded-2xl mb-8 flex items-center gap-4">
+              <div className={`border-l-4 p-6 rounded-2xl mb-8 flex items-center gap-4 transition-all duration-300 ${
+                isDarkMode 
+                  ? "bg-green-500/10 border-green-500/50 text-green-400" 
+                  : "bg-green-50 border-green-500 text-green-700"
+              }`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
@@ -77,25 +99,37 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Nombre</label>
+                  <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
+                    isDarkMode ? "text-slate-400" : "text-slate-600"
+                  }`}>Nombre</label>
                   <input
                     type="text"
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleChange}
-                    className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
+                    className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
+                      isDarkMode
+                        ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:bg-white/12"
+                        : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
+                    }`}
                     placeholder="Tu nombre"
                     required
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Apellido</label>
+                  <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
+                    isDarkMode ? "text-slate-400" : "text-slate-600"
+                  }`}>Apellido</label>
                   <input
                     type="text"
                     name="last_name"
                     value={formData.last_name}
                     onChange={handleChange}
-                    className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
+                    className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
+                      isDarkMode
+                        ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:bg-white/12"
+                        : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
+                    }`}
                     placeholder="Tu apellido"
                     required
                   />
@@ -103,61 +137,91 @@ export default function Register() {
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Usuario</label>
+                <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
+                  isDarkMode ? "text-gray-500" : "text-dark-400"
+                }`}>Usuario</label>
                 <input
                   type="text"
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
+                  className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
+                    isDarkMode
+                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-blue-500/50"
+                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-blue-600"
+                  }`}
                   placeholder="Elige un usuario"
                   required
                 />
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
+                <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
+                  isDarkMode ? "text-gray-500" : "text-dark-400"
+                }`}>Email</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
+                  className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
+                    isDarkMode
+                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-blue-500/50"
+                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-blue-600"
+                  }`}
                   placeholder="tu@email.com"
                   required
                 />
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Contraseña</label>
+                <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
+                  isDarkMode ? "text-gray-500" : "text-dark-400"
+                }`}>Contraseña</label>
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
+                  className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
+                    isDarkMode
+                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-blue-500/50"
+                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-blue-600"
+                  }`}
                   placeholder="••••••••"
                   required
                 />
               </div>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gray-900 text-white px-8 py-6 rounded-2xl text-xl font-black hover:bg-gray-800 transition-all duration-300 transform hover:scale-[1.01] shadow-xl disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest"
+                className={`w-full px-8 py-6 rounded-2xl text-lg font-bold shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest ${
+                  isDarkMode
+                    ? "bg-white text-dark-950 hover:bg-gray-100"
+                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20"
+                }`}
               >
                 {loading ? "Creando cuenta..." : "Registrarme"}
-              </button>
+              </motion.button>
             </form>
 
-            <div className="mt-12 text-center space-y-4">
-              <p className="text-lg text-gray-500 font-medium">
+            <div className="mt-12 text-center space-y-6">
+              <p className={`text-lg font-light transition-colors duration-500 ${
+                isDarkMode ? "text-gray-400" : "text-dark-700"
+              }`}>
                 ¿Ya tienes una cuenta?{" "}
-                <Link to="/login" className="text-gray-900 font-black hover:underline decoration-4">
+                <Link to="/login" className={`font-bold transition-colors duration-500 ${
+                  isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
+                }`}>
                   Inicia sesión aquí
                 </Link>
               </p>
-              <Link to="/" className="inline-block text-gray-400 font-bold hover:text-gray-900 transition-colors">
+              <Link to="/" className={`inline-block font-medium transition-colors duration-500 ${
+                isDarkMode ? "text-gray-500 hover:text-gray-400" : "text-dark-400 hover:text-dark-950"
+              }`}>
                 ← Volver al inicio
               </Link>
             </div>

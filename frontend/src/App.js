@@ -7,14 +7,14 @@ import Properties from './pages/Properties';
 import About from './pages/About';
 import Location from './pages/Location';
 import ScrollToTop from './components/ScrollToTop';
+import PublishProperty from './pages/PublishProperty';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Cookies from './pages/Cookies';
 
 // SERVICIOS
 import Buying from './pages/services/Buying';
 import Selling from './pages/services/Selling';
-import Rentals from './pages/services/Rentals';
-import Consulting from './pages/services/Consulting';
-import Appraisals from './pages/services/Appraisals';
-import Legal from './pages/services/Legal';
 
 // IMPORTACIÓN DE PANEL ADMINISTRATIVO
 import AdminLayout from './admin/AdminLayout';
@@ -32,14 +32,16 @@ function App() {
           <Route path="/properties" element={<Properties />} />
           <Route path="/about" element={<About />} />
           <Route path="/location" element={<Location />} />
+          <Route path="/publish" element={<PublishProperty />} />
+          
+          {/* Rutas Legales */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/cookies" element={<Cookies />} />
 
           {/* Rutas de Servicios */}
           <Route path="/services/buying" element={<Buying />} />
           <Route path="/services/selling" element={<Selling />} />
-          <Route path="/services/rentals" element={<Rentals />} />
-          <Route path="/services/consulting" element={<Consulting />} />
-          <Route path="/services/appraisals" element={<Appraisals />} />
-          <Route path="/services/legal" element={<Legal />} />
 
           {/* NUEVA RUTA EXCLUSIVA DE ADMINISTRACIÓN */}
           <Route path="/admin" element={<AdminLayout />} />

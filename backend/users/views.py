@@ -6,6 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes, action
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .models import User
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, UserAdminSerializer
 
@@ -32,11 +34,13 @@ class UserAdminViewSet(viewsets.ModelViewSet):
         return Response({'success': True}, status=status.HTTP_200_OK)
 
 # === 👥 VISTAS ORIGINALES DE JHONATAN (PÁGINA PÚBLICA CORREGIDA) ===
+@method_decorator(csrf_exempt, name='dispatch')
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -47,6 +51,7 @@ class RegisterView(APIView):
             return Response({"success": True, "message": "Usuario registrado real"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):

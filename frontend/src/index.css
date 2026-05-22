@@ -2,14 +2,150 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@layer base {
+  body {
+    @apply transition-colors duration-500 font-sans antialiased bg-light-primary dark:bg-primary-dark;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Smart contrast - Light Mode */
+  body.light {
+    @apply text-slate-900;
+  }
+  
+  /* Smart contrast - Dark Mode */
+  body.dark {
+    @apply text-slate-50;
+  }
+  
+  /* Mejora de accesibilidad global */
+  * {
+    @apply transition-colors duration-300;
+  }
+  
+  /* Títulos premium */
+  h1, h2, h3, h4, h5, h6 {
+    @apply transition-colors duration-300 font-serif;
+  }
+  
+  /* Links con mejor contraste */
+  a {
+    @apply transition-colors duration-300;
+  }
+  
+  .light a {
+    @apply text-blue-600 hover:text-blue-700;
+  }
+  
+  .dark a {
+    @apply text-blue-400 hover:text-blue-300;
+  }
+}
 
 body {
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8fafc;
+  letter-spacing: 0.3px;
+}
+
+/* Custom Scrollbar for Premium Look */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-light-100 transition-colors duration-500;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: #0f1419;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-blue-600/40 rounded-full border-4 border-transparent bg-clip-content hover:bg-blue-600/60 transition-all duration-300;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-blue-500/30 hover:bg-blue-500/50;
+}
+
+/* Estilos para modo claro/oscuro con transiciones suaves */
+.light {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* INPUT FIELDS PREMIUM */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  @apply transition-all duration-300;
+}
+
+.light input,
+.light textarea,
+.light select {
+  @apply bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  @apply bg-white/5 border-white/10 text-white placeholder:text-slate-400;
+}
+
+/* BUTTONS PREMIUM */
+button {
+  @apply transition-all duration-300;
+}
+
+.light button:not(.no-style) {
+  @apply text-slate-900;
+}
+
+.dark button:not(.no-style) {
+  @apply text-white;
+}
+
+/* CARDS PREMIUM */
+.card {
+  @apply transition-all duration-500;
+}
+
+.light .card {
+  @apply bg-white border-slate-200 shadow-slate-200/20;
+}
+
+.dark .card {
+  @apply bg-slate-900/50 border-white/10 shadow-black/30;
+}
+
+/* Mejora de contraste para accesibilidad */
+@media (prefers-contrast: more) {
+  body {
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Animaciones suaves para modo tema */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 code {

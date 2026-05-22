@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useTheme } from "../context/ThemeContext";
 import video1 from "../assets/video1.mp4";
 import video2 from "../assets/video2.mp4";
 import video3 from "../assets/video3.mp4";
@@ -12,70 +14,125 @@ const videos = [video1, video2, video3, video4, video5];
 
 export default function Home() {
   const [currentVideo, setCurrentVideo] = useState(0);
-  const videoRef = useRef(null);
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
 
-  const handleVideoEnd = () => {
-    const nextVideo = (currentVideo + 1) % videos.length;
-    setCurrentVideo(nextVideo);
-    setTimeout(() => {
-      if (videoRef.current) {
-        videoRef.current.play().catch(() => {});
-      }
-    }, 100);
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentVideo((prev) => (prev + 1) % videos.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="bg-gray-50 flex flex-col min-h-screen">
-      {/* Sección Hero con Videos */}
-      <div className="relative h-screen w-full overflow-hidden bg-black">
-        <video
-          ref={videoRef}
-          src={videos[currentVideo]}
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          onEnded={handleVideoEnd}
-          className="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000"
-        />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/60 via-black/20 to-black/80 pointer-events-none z-10"></div>
-        
-        <div className="relative z-30">
-          <Navbar />
-        </div>
-
-        <div className="relative z-20 flex flex-col justify-center items-center h-full text-center text-white px-8">
-          <h1 className="text-6xl md:text-9xl font-serif font-bold mb-8 uppercase tracking-tighter drop-shadow-2xl">
-            LUX<span className="text-gray-300 font-light">HABITAT</span>
-          </h1>
-          <p className="text-xl md:text-3xl mb-12 max-w-3xl font-sans font-light leading-relaxed drop-shadow-lg text-gray-200">
-            Tu Hogar de Ensueño <br /> <span className="text-white/80 italic font-serif">Comienza con un click.</span>
-          </p>
-          <div className="flex flex-col sm:flex-row gap-8">
-            <button 
-              onClick={() => navigate('/properties')}
-              className="bg-white text-gray-900 px-12 py-6 rounded-2xl text-xl font-sans font-bold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl uppercase tracking-widest"
+    <div className="flex flex-col min-h-screen bg-white dark:bg-primary-dark transition-colors duration-500 font-sans">
+      <Navbar />
+      
+      {/* Hero Section with Video */}
+      <section className="relative w-full h-screen overflow-hidden bg-black">
+        {/* Background Video Slider - Perfectly contained */}
+        <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.video
+              key={currentVideo}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 2, ease: "easeOut" }}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover object-center"
+              style={{ zIndex: 1 }}
             >
-              Ver Propiedades
-            </button>
-            <button 
-              onClick={() => navigate('/about')}
-              className="backdrop-blur-md bg-white/10 border-2 border-white/30 text-white px-12 py-6 rounded-2xl text-xl font-sans font-bold hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 uppercase tracking-widest"
+              <source src={videos[currentVideo]} type="video/mp4" />
+            </motion.video>
+          </AnimatePresence>
+          
+          {/* Overlay - Smart cinematographic gradient ALWAYS visible */}
+          <div 
+            className="absolute inset-0 transition-all duration-500"
+            style={{
+              zIndex: 2,
+              background: isDarkMode 
+                ? "linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2), rgba(0,0,0,0.6))" 
+                : "linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.15), rgba(0,0,0,0.5))"
+            }}
+          ></div>
+          
+          {/* Blue accent overlay - always visible */}
+          <div 
+            className="absolute inset-0 transition-all duration-500 mix-blend-overlay"
+            style={{
+              zIndex: 2,
+              background: isDarkMode ? "rgba(59, 130, 246, 0.08)" : "rgba(59, 130, 246, 0.05)"
+            }}
+          ></div>
+        </div>
+
+        {/* Hero Content - Centered with high contrast */}
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-8 w-full h-full">
+          <div className="max-w-6xl w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
-              Conócenos
-            </button>
-          </div>
-        </div>
+              <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-serif font-bold mb-6 uppercase tracking-tighter text-white leading-none">
+                LUX<span className="text-gray-300 font-light italic">HABITAT</span>
+              </h1>
+              <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+              <p className="text-xl md:text-3xl mb-12 max-w-4xl mx-auto font-sans font-light leading-relaxed text-gray-100 tracking-wide">
+                Redefiniendo el Lujo Inmobiliario en Ibagué <br /> 
+                <span className="text-blue-400 font-medium tracking-[0.2em] uppercase text-sm md:text-base mt-4 block">Exclusividad • Distinción • Inversión</span>
+              </p>
+            </motion.div>
 
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="flex flex-col items-center gap-4 text-white/50">
-            <span className="text-xs font-bold tracking-[0.5em] uppercase">Scroll</span>
-            <div className="w-[2px] h-12 bg-gradient-to-b from-white/50 to-transparent"></div>
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 1 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            >
+              <motion.button 
+                onClick={() => navigate('/properties')}
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4)" }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-blue-600 text-white px-12 py-6 rounded-2xl text-lg font-bold hover:bg-blue-700 transition-all duration-300 shadow-2xl uppercase tracking-widest min-w-[240px]"
+              >
+                Explorar Propiedades
+              </motion.button>
+              <motion.button 
+                onClick={() => navigate('/publish')}
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,1)", color: "#000" }}
+                whileTap={{ scale: 0.98 }}
+                className="backdrop-blur-xl bg-white/10 border-2 border-white/40 text-white px-12 py-6 rounded-2xl text-lg font-bold transition-all duration-300 uppercase tracking-widest min-w-[240px]"
+              >
+                Publicar Ahora
+              </motion.button>
+            </motion.div>
           </div>
+          
+          {/* Scroll indicator */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          >
+            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-1">
+              <motion.div 
+                animate={{ y: [0, 15, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="w-1 h-2 bg-white rounded-full"
+              />
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
+      {/* Footer - Outside Hero, scrollable */}
       <Footer />
     </div>
   );

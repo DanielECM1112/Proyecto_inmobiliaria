@@ -1,68 +1,135 @@
-// adminService.js - Capa de comunicación independiente para simular el Backend
+import axios from 'axios';
 
-let inmueblesDB = [
-  { id: 1, titulo: "Apartamento Amoblado para enanos", precio: "$1.800.000", estado: "Pendiente" },
-  { id: 2, titulo: "Casa Campestre Santa Helena", precio: "$450.000.000", estado: "Activo" },
-  { id: 3, titulo: "Penthouse El Poblado", precio: "$1.200.000.000", estado: "Pendiente" }
-];
-
-let usuariosDB = [
-  { id: 1, nombre: "Carlos Mendoza", correo: "carlos@luxhabitat.com", rol: "Usuario" },
-  { id: 2, nombre: "Alban Admin", correo: "alban@luxhabitat.com", rol: "Administrador" },
-  { id: 3, nombre: "Diana Gómez", correo: "diana@luxhabitat.com", rol: "Usuario" }
-];
-
-let planesDB = [
-  { id: 1, nombre: "Plan Básico", precio: "$50.00", duracion: "30 Días", inmuebles: "1 Inmueble", imagenes: "5 Fotos" },
-  { id: 2, nombre: "Plan Premium", precio: "$150.00", duracion: "90 Días", inmuebles: "Ilimitados", imagenes: "20 Fotos" }
-];
-
-let pagosDB = [
-  { id: "TX-9821", usuario: "Carlos Mendoza", plan: "Plan Premium", monto: 150.00, fecha: "12/05/2026", estado: "Aprobado" },
-  { id: "TX-9822", usuario: "Diana Gómez", plan: "Plan Básico", monto: 50.00, fecha: "14/05/2026", estado: "Pendiente" }
-];
+const API_URL = 'http://localhost:8000/api';
 
 export const adminService = {
   // === MÓDULO DE INMUEBLES ===
-  getInmuebles: async () => [...inmueblesDB],
-  aprobarInmueble: async (id) => { inmueblesDB = inmueblesDB.map(i => i.id === id ? { ...i, estado: 'Activo' } : i); },
-  desaprobarInmueble: async (id) => { inmueblesDB = inmueblesDB.map(i => i.id === id ? { ...i, estado: 'Pendiente' } : i); },
-  eliminarInmueble: async (id) => { inmueblesDB = inmueblesDB.filter(i => i.id !== id); },
+  getInmuebles: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/properties/admin-properties/`);
+      return response.data.map(i => ({
+        id: i.id,
+        titulo: i.title,
+        precio: `$${parseFloat(i.price).toLocaleString()}`,
+        estado: i.status.charAt(0).toUpperCase() + i.status.slice(1)
+      }));
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+      return [];
+    }
+  },
+  
+  aprobarInmueble: async (id) => {
+    await axios.patch(`${API_URL}/properties/admin-properties/${id}/`, { status: 'activo' });
+  },
+  
+  desaprobarInmueble: async (id) => {
+    await axios.patch(`${API_URL}/properties/admin-properties/${id}/`, { status: 'pendiente' });
+  },
+  
+  eliminarInmueble: async (id) => {
+    await axios.delete(`${API_URL}/properties/admin-properties/${id}/`);
+  },
 
   // === MÓDULO DE USUARIOS ===
-  getUsuarios: async () => [...usuariosDB],
-  editarRolUsuario: async (id, nuevoRol) => { usuariosDB = usuariosDB.map(u => u.id === id ? { ...u, rol: nuevoRol } : u); },
-  eliminarUsuario: async (id) => { usuariosDB = usuariosDB.filter(u => u.id !== id); },
+  getUsuarios: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/users/users/`);
+      return response.data.map(u => ({
+        id: u.id,
+        nombre: `${u.first_name} ${u.last_name}`.trim() || u.username,
+        correo: u.email,
+        rol: u.is_staff ? "Administrador" : "Usuario"
+      }));
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return [];
+    }
+  },
+  
+  editarRolUsuario: async (id, nuevoRol) => {
+    const isStaff = nuevoRol === "Administrador";
+    await axios.patch(`${API_URL}/users/users/${id}/`, { is_staff: isStaff });
+  },
+  
+  eliminarUsuario: async (id) => {
+    await axios.delete(`${API_URL}/users/users/${id}/`);
+  },
 
   // === MÓDULO DE PLANES ===
-  getPlanes: async () => [...planesDB],
-  eliminarPlan: async (id) => { planesDB = planesDB.filter(p => p.id !== id); },
-  actualizarPlan: async (id, planActualizado) => { planesDB = planesDB.map(p => p.id === id ? { ...p, ...planActualizado } : p); },
+  getPlanes: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/plans/admin-plans/`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+      return [];
+    }
+  },
+  
+  eliminarPlan: async (id) => {
+    await axios.delete(`${API_URL}/plans/admin-plans/${id}/`);
+  },
+  
+  actualizarPlan: async (id, planActualizado) => {
+    await axios.put(`${API_URL}/plans/admin-plans/${id}/`, planActualizado);
+  },
+  
   crearPlan: async (nuevoPlan) => {
-    const id = planesDB.length ? planesDB[planesDB.length - 1].id + 1 : 1;
-    planesDB.push({ id, ...nuevoPlan });
+    await axios.post(`${API_URL}/plans/admin-plans/`, nuevoPlan);
   },
 
   // === MÓDULO DE PAGOS ===
-  getPagos: async () => [...pagosDB],
+  getPagos: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/payments/admin-payments/`);
+      return response.data.map(p => ({
+        id: `TX-${p.id}`,
+        usuario: p.user_name || "Usuario Desconocido",
+        plan: p.plan_name || "Plan Estándar",
+        monto: parseFloat(p.amount),
+        fecha: new Date(p.created_at).toLocaleDateString(),
+        estado: p.status.charAt(0).toUpperCase() + p.status.slice(1)
+      }));
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+      return [];
+    }
+  },
+  
   cambiarEstadoPago: async (id, nuevoEstado) => {
-    pagosDB = pagosDB.map(p => p.id === id ? { ...p, estado: nuevoEstado } : p);
+    const numericId = id.replace('TX-', '');
+    await axios.patch(`${API_URL}/payments/admin-payments/${numericId}/`, { status: nuevoEstado.toLowerCase() });
   },
 
   // === ESTADÍSTICAS EN TIEMPO REAL PARA EL DASHBOARD ===
   getMetrics: async () => {
-    const inmueblesActivos = inmueblesDB.filter(i => i.estado === 'Activo').length;
-    const usuariosRegistrados = usuariosDB.length;
-    
-    // Suma dinámicamente solo los pagos con estado 'Aprobado'
-    const ingresos = pagosDB
-      .filter(p => p.estado === 'Aprobado')
-      .reduce((sum, p) => sum + p.monto, 0);
+    try {
+      const [props, users, payments] = await Promise.all([
+        axios.get(`${API_URL}/properties/admin-properties/`),
+        axios.get(`${API_URL}/users/users/`),
+        axios.get(`${API_URL}/payments/admin-payments/`)
+      ]);
 
-    return {
-      inmueblesActivos,
-      usuariosRegistrados,
-      ingresos: `$${ingresos.toFixed(2)}`
-    };
+      const inmueblesActivos = props.data.filter(i => i.status === 'activo').length;
+      const usuariosRegistrados = users.data.length;
+      
+      const ingresos = payments.data
+        .filter(p => p.status === 'aprobado')
+        .reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+
+      return {
+        inmueblesActivos,
+        usuariosRegistrados,
+        ingresos: `$${ingresos.toLocaleString()}`
+      };
+    } catch (error) {
+      console.error("Error fetching metrics:", error);
+      return {
+        inmueblesActivos: 0,
+        usuariosRegistrados: 0,
+        ingresos: '$0'
+      };
+    }
   }
 };
