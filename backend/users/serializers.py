@@ -5,17 +5,9 @@ User = get_user_model()
 
 # 1. TRADUCTOR PARA TU TABLA TORNASOLADA (REQUERIDO)
 class UserAdminSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
-    nombre = serializers.CharField(source='username')
-    correo = serializers.CharField(source='email')
-    rol = serializers.SerializerMethodField()
-
     class Meta:
         model = User
-        fields = ['id', 'nombre', 'correo', 'rol']
-
-    def get_rol(self, obj):
-        return "Administrador" if obj.is_superuser else "Usuario"
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_superuser']
 
 # 2. Traductor estándar de lectura de usuarios públicos
 class UserSerializer(serializers.ModelSerializer):
@@ -30,15 +22,18 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'phone']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'phone', 'address']
 
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
+            phone=validated_data.get('phone', ''),
+            address=validated_data.get('address', '')
         )
-        # Si tus compañeros guardan el teléfono en otra tabla o atributo, se asocia aquí
         return user
 
 # 4. Traductor para la verificación del Login público anterior

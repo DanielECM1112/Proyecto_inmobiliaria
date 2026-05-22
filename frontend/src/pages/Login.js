@@ -30,7 +30,7 @@ export default function Login() {
 
     try {
       const response = await axios.post("http://localhost:8000/api/users/login/", formData);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("user", JSON.stringify(response.data));
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.error || "Error al iniciar sesión");

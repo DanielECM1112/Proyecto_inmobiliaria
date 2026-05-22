@@ -5,6 +5,6 @@ from .models import Plan
 class PlanAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'duration_days', 'max_properties', 'max_images', 'active')
     list_filter = ('active', 'duration_days')
-    search_fields = ('name', 'description')
+    search_fields = ('nombre', 'name')
     ordering = ('price',)
     list_editable = ('active', 'price')

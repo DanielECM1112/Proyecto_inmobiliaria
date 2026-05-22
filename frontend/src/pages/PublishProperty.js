@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaRocket, FaGem, FaBriefcase, FaStar, FaCheck, FaLock } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectCoverflow } from 'swiper/modules';
+import axios from 'axios';
 
 // Swiper styles
 import 'swiper/css';
@@ -19,11 +20,12 @@ export default function PublishProperty() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-
   useEffect(() => {
-    // TEMPORALMENTE DESACTIVADO: Validación de autenticación
-    setIsAuthenticated(true); // Permitir acceso directo temporalmente
-  }, [navigate]);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const plans = [
     {
@@ -87,6 +89,41 @@ export default function PublishProperty() {
       shadow: isDarkMode ? "shadow-yellow-500/10" : "shadow-yellow-600/5"
     }
   ];
+
+  const handleSelectPlan = async (plan) => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      
+      // Intentar buscar el ID real del plan en el backend por su nombre
+      const plansRes = await axios.get('http://localhost:8000/api/plans/admin-plans/');
+      const realPlan = plansRes.data.find(p => p.nombre === plan.name || p.name === plan.name);
+      
+      const paymentData = {
+        user: user.id,
+        plan: realPlan ? realPlan.id : null,
+        amount: parseFloat(plan.price.replace(/[^0-9]/g, '')),
+        payment_method: 'tarjeta',
+        transaction_id: `LUX-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        payment_status: 'pendiente'
+      };
+
+      const config = {
+        headers: { Authorization: `Token ${user.token}` }
+      };
+
+      await axios.post('http://localhost:8000/api/payments/admin-payments/', paymentData, config);
+      alert(`¡Solicitud de ${plan.name} enviada! Un asesor revisará tu pago pronto.`);
+      navigate('/');
+    } catch (error) {
+      console.error("Error al procesar el plan:", error);
+      alert("Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.");
+    }
+  };
 
   if (showAuthModal && !isAuthenticated) {
     return (
@@ -274,6 +311,7 @@ export default function PublishProperty() {
                       </ul>
 
                       <motion.button 
+                        onClick={() => handleSelectPlan(plan)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className={`w-full mt-auto py-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all duration-500 shadow-xl ${

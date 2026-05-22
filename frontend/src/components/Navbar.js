@@ -210,17 +210,19 @@ export default function Navbar() {
                             {user.email}
                           </p>
                         </div>
-                        <motion.button 
-                          onClick={() => { navigate('/admin'); setShowProfileMenu(false); }}
-                          whileHover={{ x: 4, backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.05)' }}
-                          className={`w-full text-left px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
-                            isDarkMode
-                              ? "text-gray-300"
-                              : "text-slate-800"
-                          }`}
-                        >
-                          🔧 Panel Admin
-                        </motion.button>
+                        {user.rol === "Administrador" && (
+                          <motion.button 
+                            onClick={() => { navigate('/admin'); setShowProfileMenu(false); }}
+                            whileHover={{ x: 4, backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.05)' }}
+                            className={`w-full text-left px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
+                              isDarkMode
+                                ? "text-gray-300"
+                                : "text-slate-800"
+                            }`}
+                          >
+                            🔧 Panel Admin
+                          </motion.button>
+                        )}
                         <motion.button 
                           onClick={handleLogout}
                           whileHover={{ x: 4, backgroundColor: 'rgba(239,68,68,0.1)' }}

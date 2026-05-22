@@ -4,6 +4,7 @@ import { adminService } from './adminService';
 export default function Dashboard() {
   const [metrics, setMetrics] = useState({
     inmueblesActivos: 0,
+    inmueblesPendientes: 0,
     usuariosRegistrados: 0,
     ingresos: '$0.00'
   });
@@ -19,14 +20,14 @@ export default function Dashboard() {
 
   // Cálculos dinámicos para los porcentajes visuales de los gráficos
   const maxInmuebles = 10;
-  const pctInmuebles = Math.min((metrics.inmueblesActivos / maxInmuebles) * 100, 100);
+  const pctInmuebles = Math.min(((metrics.inmueblesActivos + metrics.inmueblesPendientes) / maxInmuebles) * 100, 100);
 
   const maxUsuarios = 20;
   const pctUsuarios = Math.min((metrics.usuariosRegistrados / maxUsuarios) * 100, 100);
 
   // Extrae el número flotante del string para calcular el progreso de ingresos
-  const valorIngresos = parseFloat(metrics.ingresos.replace('$', '')) || 0;
-  const maxIngresos = 500;
+  const valorIngresos = parseFloat(metrics.ingresos.replace('$', '').replace(/,/g, '')) || 0;
+  const maxIngresos = 5000000; // Ajustado a COP
   const pctIngresos = Math.min((valorIngresos / maxIngresos) * 100, 100);
 
   return (
@@ -42,11 +43,12 @@ export default function Dashboard() {
         {/* WIDGET 1: INMUEBLES */}
         <div className="p-6 bg-slate-900/60 border border-slate-800/80 rounded-2xl shadow-xl backdrop-blur-md hover:border-cyan-500/30 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Inmuebles Activos</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Inmuebles Totales</p>
             <p className="text-4xl font-black text-white mt-2 drop-shadow-[0_2px_8px_rgba(255,255,255,0.1)]">
-              {metrics.inmueblesActivos}
+              {metrics.inmueblesActivos + metrics.inmueblesPendientes}
             </p>
-            <p className="text-[10px] text-slate-500 mt-2 font-medium">Meta operativa: {maxInmuebles} aprobados</p>
+            <p className="text-[10px] text-emerald-400 mt-1 font-medium">{metrics.inmueblesActivos} Activos</p>
+            <p className="text-[10px] text-amber-400 mt-0 font-medium">{metrics.inmueblesPendientes} Pendientes</p>
           </div>
           {/* Gráfico Circular de Progreso */}
           <div className="relative w-20 h-20 flex items-center justify-center">

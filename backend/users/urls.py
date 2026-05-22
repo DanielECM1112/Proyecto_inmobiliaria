@@ -16,5 +16,5 @@ urlpatterns = [
     # 3. Rutas del catálogo público del cliente común
     path('list/', UserList.as_view(), name='user-list'),
     path('register/', RegisterView.as_view(), name='user-register'),
-    path('login-old/', LoginView.as_view(), name='user-login'),
+    path('login/', login_admin_api, name='user-login'),
 ]
