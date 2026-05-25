@@ -18,6 +18,7 @@ export default function PublishProperty() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal] = useState(false);
 
   useEffect(() => {
     // TEMPORALMENTE DESACTIVADO: Validación de autenticación
