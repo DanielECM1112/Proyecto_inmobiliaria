@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
-import { BiBed, BiBath, BiArea } from 'react-icons/bi';
+import { BiBed, BiBath, BiArea, BiX } from 'react-icons/bi';
+import { FaWhatsapp } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -58,6 +59,7 @@ export default function Properties() {
   const { isDarkMode } = useTheme();
   const [properties, setProperties] = useState(originalProperties);
   const [loading, setLoading] = useState(true);
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -250,13 +252,14 @@ export default function Properties() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => setSelectedProperty(prop)}
                       className={`w-full py-5 rounded-2xl font-bold uppercase tracking-widest transition-all ${
                         isDarkMode 
                           ? "bg-white text-dark-950 hover:bg-gray-100 shadow-xl shadow-white/5" 
                           : "bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-600/20"
                       }`}
                     >
-                      Ver Detalles
+                      Explorar Detalles
                     </motion.button>
                   </div>
                 </motion.div>
@@ -265,6 +268,145 @@ export default function Properties() {
           </motion.div>
         </div>
       </main>
+
+      {/* Property Details Modal */}
+      <AnimatePresence>
+        {selectedProperty && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center px-6 py-10">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProperty(null)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className={`relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-[3rem] shadow-2xl border transition-all duration-500 ${
+                isDarkMode 
+                  ? "bg-midnight-DEFAULT border-white/10" 
+                  : "bg-white border-light-200"
+              }`}
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => setSelectedProperty(null)}
+                className={`absolute top-8 right-8 z-10 p-3 rounded-full backdrop-blur-md transition-all ${
+                  isDarkMode ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/5 text-dark-950 hover:bg-black/10"
+                }`}
+              >
+                <BiX className="text-3xl" />
+              </button>
+
+              <div className="flex flex-col lg:flex-row">
+                {/* Modal Image Area */}
+                <div className="lg:w-1/2 h-[400px] lg:h-auto relative">
+                  <img 
+                    src={selectedProperty.image} 
+                    alt={selectedProperty.title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-10 left-10">
+                    <span className="bg-blue-600 text-white px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-2xl">
+                      {selectedProperty.type}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Modal Content Area */}
+                <div className="lg:w-1/2 p-10 lg:p-16 space-y-10">
+                  <div className="space-y-4">
+                    <h2 className={`text-4xl lg:text-5xl font-serif font-bold leading-tight ${
+                      isDarkMode ? "text-white" : "text-dark-950"
+                    }`}>
+                      {selectedProperty.title}
+                    </h2>
+                    <p className={`flex items-center gap-3 text-lg italic font-light ${
+                      isDarkMode ? "text-gray-400" : "text-dark-700"
+                    }`}>
+                      <HiOutlineLocationMarker className="text-blue-600 text-2xl" />
+                      {selectedProperty.location}
+                    </p>
+                  </div>
+
+                  <div className={`p-8 rounded-3xl border transition-colors ${
+                    isDarkMode ? "bg-white/5 border-white/5" : "bg-light-100 border-light-200"
+                  }`}>
+                    <div className="flex flex-col">
+                      <span className={`text-xs uppercase tracking-[0.3em] font-bold mb-2 ${
+                        isDarkMode ? "text-gray-500" : "text-dark-400"
+                      }`}>Inversión Exclusiva</span>
+                      <span className={`text-4xl font-bold ${
+                        isDarkMode ? "text-blue-400" : "text-blue-600"
+                      }`}>{selectedProperty.price}</span>
+                    </div>
+                  </div>
+
+                  <div className={`grid grid-cols-3 gap-6 py-10 border-y ${
+                    isDarkMode ? "border-white/5" : "border-light-200"
+                  }`}>
+                    <div className="flex flex-col items-center gap-3">
+                      <BiBed className={`text-3xl ${isDarkMode ? "text-gray-400" : "text-dark-500"}`} />
+                      <div className="text-center">
+                        <p className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-dark-950"}`}>{selectedProperty.beds}</p>
+                        <p className={`text-[10px] uppercase font-bold tracking-widest ${isDarkMode ? "text-gray-500" : "text-dark-400"}`}>Cuartos</p>
+                      </div>
+                    </div>
+                    <div className={`flex flex-col items-center gap-3 border-x ${isDarkMode ? "border-white/5" : "border-light-200"}`}>
+                      <BiBath className={`text-3xl ${isDarkMode ? "text-gray-400" : "text-dark-500"}`} />
+                      <div className="text-center">
+                        <p className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-dark-950"}`}>{selectedProperty.baths}</p>
+                        <p className={`text-[10px] uppercase font-bold tracking-widest ${isDarkMode ? "text-gray-500" : "text-dark-400"}`}>Baños</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center gap-3">
+                      <BiArea className={`text-3xl ${isDarkMode ? "text-gray-400" : "text-dark-500"}`} />
+                      <div className="text-center">
+                        <p className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-dark-950"}`}>{selectedProperty.area}</p>
+                        <p className={`text-[10px] uppercase font-bold tracking-widest ${isDarkMode ? "text-gray-500" : "text-dark-400"}`}>Área</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className={`text-lg leading-relaxed font-light ${
+                    isDarkMode ? "text-gray-400" : "text-dark-700"
+                  }`}>
+                    Esta propiedad representa la cúspide del diseño y la comodidad. Ubicada en una de las zonas más privilegiadas, ofrece acabados de lujo y espacios amplios pensados para la vida moderna y sofisticada.
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row gap-5 pt-6">
+                    <motion.a 
+                      href={`https://wa.me/573223147352?text=Hola,%20estoy%20interesado%20en%20la%20propiedad:%20${selectedProperty.title}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05, backgroundColor: "#16a34a" }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex-grow bg-green-600 text-white py-5 rounded-2xl font-bold uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-green-600/20"
+                    >
+                      <FaWhatsapp className="text-2xl" /> Contactar Asesor
+                    </motion.a>
+                    <motion.button 
+                      onClick={() => setSelectedProperty(null)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-10 py-5 rounded-2xl font-bold uppercase tracking-widest border transition-all ${
+                        isDarkMode ? "border-white/10 text-white hover:bg-white/5" : "border-light-300 text-dark-950 hover:bg-light-50"
+                      }`}
+                    >
+                      Cerrar
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <Footer />
     </div>
   );

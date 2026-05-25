@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FaRocket, FaGem, FaBriefcase, FaStar, FaCheck, FaLock } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectCoverflow } from 'swiper/modules';
-import axios from 'axios';
 
 // Swiper styles
 import 'swiper/css';
@@ -19,13 +18,12 @@ export default function PublishProperty() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAuthModal] = useState(false);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setIsAuthenticated(true);
-    }
-  }, []);
+    // TEMPORALMENTE DESACTIVADO: Validación de autenticación
+    setIsAuthenticated(true); // Permitir acceso directo temporalmente
+  }, [navigate]);
 
   const plans = [
     {
@@ -90,41 +88,6 @@ export default function PublishProperty() {
     }
   ];
 
-  const handleSelectPlan = async (plan) => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
-    try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      
-      // Intentar buscar el ID real del plan en el backend por su nombre
-      const plansRes = await axios.get('http://localhost:8000/api/plans/admin-plans/');
-      const realPlan = plansRes.data.find(p => p.nombre === plan.name || p.name === plan.name);
-      
-      const paymentData = {
-        user: user.id,
-        plan: realPlan ? realPlan.id : null,
-        amount: parseFloat(plan.price.replace(/[^0-9]/g, '')),
-        payment_method: 'tarjeta',
-        transaction_id: `LUX-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-        payment_status: 'pendiente'
-      };
-
-      const config = {
-        headers: { Authorization: `Token ${user.token}` }
-      };
-
-      await axios.post('http://localhost:8000/api/payments/admin-payments/', paymentData, config);
-      alert(`¡Solicitud de ${plan.name} enviada! Un asesor revisará tu pago pronto.`);
-      navigate('/');
-    } catch (error) {
-      console.error("Error al procesar el plan:", error);
-      alert("Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.");
-    }
-  };
-
   if (showAuthModal && !isAuthenticated) {
     return (
       <div className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${
@@ -186,14 +149,14 @@ export default function PublishProperty() {
             alt="Publish Background" 
             className="w-full h-full object-cover"
             style={{
-              opacity: isDarkMode ? 0.15 : 0.25,
+              opacity: isDarkMode ? 0.15 : 0.20,
               transition: "opacity 500ms"
             }}
           />
-          <div className={`absolute inset-0 ${
+          <div className={`absolute inset-0 transition-colors duration-500 ${
             isDarkMode 
-              ? "bg-gradient-to-b from-primary-dark/80 via-primary-dark/95 to-primary-dark" 
-              : "bg-gradient-to-b from-blue-900/15 via-white/70 to-light-100"
+              ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85" 
+              : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
           }`}></div>
         </div>
         
@@ -220,7 +183,7 @@ export default function PublishProperty() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             className={`text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed ${
-              isDarkMode ? "text-gray-300" : "text-dark-700"
+              isDarkMode ? "text-gray-300" : "text-slate-700"
             }`}
           >
             Nuestra plataforma premium garantiza que tu propiedad destaque ante los compradores más selectos del mercado.
@@ -311,14 +274,13 @@ export default function PublishProperty() {
                       </ul>
 
                       <motion.button 
-                        onClick={() => handleSelectPlan(plan)}
-                        whileHover={{ scale: 1.05 }}
+                        whileHover={{ 
+                          scale: 1.05,
+                          boxShadow: "0 10px 30px -5px rgba(59, 130, 246, 0.6)",
+                          background: "linear-gradient(to right, #2563EB, #3B82F6)"
+                        }}
                         whileTap={{ scale: 0.95 }}
-                        className={`w-full mt-auto py-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all duration-500 shadow-xl ${
-                          isDarkMode
-                            ? "bg-white text-dark-950 hover:bg-gray-100"
-                            : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20"
-                        }`}
+                        className="w-full mt-auto py-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl bg-blue-600 text-white shadow-blue-500/20"
                       >
                         Seleccionar Plan
                       </motion.button>

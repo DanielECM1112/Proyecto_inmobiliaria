@@ -188,30 +188,36 @@ export default function Footer() {
           {/* Newsletter Section */}
           <div className="space-y-10">
             <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-blue-600 dark:text-blue-400">Newsletter</h3>
-            <p className="text-dark-800 dark:text-gray-300 text-[15px] font-sans font-light leading-relaxed">
+            <p className={`text-[15px] font-sans font-light leading-relaxed transition-colors duration-500 ${isDarkMode ? 'text-gray-300' : 'text-dark-800'}`}>
               Recibe las últimas ofertas exclusivas y novedades del mercado inmobiliario en tu bandeja de entrada.
             </p>
             
             <form onSubmit={handleSubscribe} className="space-y-5">
               <div className="relative group">
-                <HiOutlineMail className={`absolute left-5 top-1/2 -translate-y-1/2 text-2xl group-focus-within:text-blue-500 transition-all duration-500 ${isDarkMode ? 'text-gray-500' : 'text-dark-400'}`} />
+                <HiOutlineMail className={`absolute left-5 top-1/2 -translate-y-1/2 text-2xl transition-all duration-500 group-focus-within:scale-110 ${isDarkMode ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-dark-400 group-focus-within:text-blue-600'}`} />
                 <input 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Tu correo electrónico" 
-                  className={`${isDarkMode ? 'bg-white/5 border-white/10 placeholder:text-gray-600 text-white' : 'bg-white border-dark-200 placeholder:text-dark-400 text-dark-950 shadow-sm'} border rounded-[1.2rem] pl-14 pr-5 py-5 w-full focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all duration-500 text-sm font-sans font-medium`}
+                  className={`border rounded-2xl pl-14 pr-5 py-5 w-full focus:outline-none focus:ring-4 transition-all duration-500 text-sm font-sans font-medium backdrop-blur-md ${
+                    isDarkMode 
+                      ? 'bg-white/5 border-white/10 placeholder:text-gray-500 text-white focus:bg-white/10 focus:border-blue-500/50 focus:ring-blue-500/20 shadow-inner shadow-black/40' 
+                      : 'bg-white border-dark-200 placeholder:text-dark-400 text-dark-950 focus:bg-white focus:border-blue-600/50 focus:ring-blue-600/10 shadow-sm'
+                  }`}
                   required
                 />
               </div>
               <motion.button 
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: isDarkMode 
+                    ? '0 0 30px rgba(59, 130, 246, 0.6)'
+                    : '0 15px 30px rgba(59, 130, 246, 0.3)',
+                  background: "linear-gradient(to right, #2563EB, #3B82F6)"
+                }}
                 whileTap={{ scale: 0.98 }}
-                className={`w-full py-5 rounded-[1.2rem] font-sans font-bold text-sm uppercase tracking-widest transition-all duration-500 shadow-xl flex items-center justify-center gap-3 ${
-                  isDarkMode
-                    ? "bg-white text-dark-900 hover:bg-gray-100"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                }`}
+                className="w-full py-5 rounded-2xl font-sans font-bold text-sm uppercase tracking-widest transition-all duration-500 shadow-xl flex items-center justify-center gap-3 bg-blue-600 text-white shadow-blue-500/20"
               >
                 Suscribirme <FaArrowRight />
               </motion.button>

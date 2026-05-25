@@ -6,44 +6,11 @@
 
 @layer base {
   body {
-    @apply transition-colors duration-500 font-sans antialiased bg-light-primary dark:bg-primary-dark;
+    @apply transition-colors duration-500 font-sans antialiased bg-light-100 dark:bg-primary-dark text-dark-950 dark:text-white;
   }
   
   html {
     scroll-behavior: smooth;
-  }
-  
-  /* Smart contrast - Light Mode */
-  body.light {
-    @apply text-slate-900;
-  }
-  
-  /* Smart contrast - Dark Mode */
-  body.dark {
-    @apply text-slate-50;
-  }
-  
-  /* Mejora de accesibilidad global */
-  * {
-    @apply transition-colors duration-300;
-  }
-  
-  /* Títulos premium */
-  h1, h2, h3, h4, h5, h6 {
-    @apply transition-colors duration-300 font-serif;
-  }
-  
-  /* Links con mejor contraste */
-  a {
-    @apply transition-colors duration-300;
-  }
-  
-  .light a {
-    @apply text-blue-600 hover:text-blue-700;
-  }
-  
-  .dark a {
-    @apply text-blue-400 hover:text-blue-300;
   }
 }
 
@@ -57,24 +24,33 @@ body {
 
 /* Custom Scrollbar for Premium Look */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-light-100 transition-colors duration-500;
+  @apply transition-colors duration-500;
+  background-color: #f5f7fb;
 }
 
 .dark ::-webkit-scrollbar-track {
-  background-color: #0f1419;
+  background-color: #071126;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-blue-600/40 rounded-full border-4 border-transparent bg-clip-content hover:bg-blue-600/60 transition-all duration-300;
+  @apply rounded-full border-[3px] border-transparent bg-clip-content transition-all duration-300;
+  background-color: rgba(37, 99, 235, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(37, 99, 235, 0.6);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-blue-500/30 hover:bg-blue-500/50;
+  background-color: rgba(59, 130, 246, 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(59, 130, 246, 0.7);
 }
 
 /* Estilos para modo claro/oscuro con transiciones suaves */
