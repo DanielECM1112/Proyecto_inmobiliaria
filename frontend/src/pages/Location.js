@@ -27,14 +27,14 @@ export default function Location() {
             alt="Location Background" 
             className="w-full h-full object-cover"
             style={{
-              opacity: isDarkMode ? 0.15 : 0.25,
+              opacity: isDarkMode ? 0.15 : 0.20,
               transition: "opacity 500ms"
             }}
           />
-          <div className={`absolute inset-0 ${
+          <div className={`absolute inset-0 transition-colors duration-500 ${
             isDarkMode 
-              ? "bg-gradient-to-b from-primary-dark/80 via-primary-dark/95 to-primary-dark" 
-              : "bg-gradient-to-b from-blue-900/15 via-white/70 to-light-100"
+              ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85" 
+              : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
           }`}></div>
         </div>
 
@@ -51,7 +51,7 @@ export default function Location() {
             </h1>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
             <p className={`text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed ${
-              isDarkMode ? "text-gray-300" : "text-dark-700"
+              isDarkMode ? "text-gray-300" : "text-slate-700"
             }`}>
               Nuestras oficinas se encuentran en el corazón del desarrollo de Ibagué, listos para atender tus necesidades inmobiliarias con exclusividad.
             </p>

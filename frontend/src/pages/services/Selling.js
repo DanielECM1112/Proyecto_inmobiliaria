@@ -3,8 +3,11 @@ import { motion } from 'framer-motion';
 import { FaBullhorn, FaCamera, FaSearchDollar, FaChartPie } from 'react-icons/fa';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function Selling() {
+  const { isDarkMode } = useTheme();
+  
   const steps = [
     {
       title: "Marketing Digital",
@@ -29,39 +32,50 @@ export default function Selling() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fdfdfd] flex flex-col font-sans">
+    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${isDarkMode ? "bg-[#05080a]" : "bg-white"}`}>
       <Navbar />
       
       {/* Hero Section */}
-      <div className="pt-40 pb-20 bg-primary text-white text-center px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10"></div>
+      <div className={`pt-40 pb-20 text-center px-8 relative overflow-hidden transition-colors duration-500 ${isDarkMode ? "bg-slate-900/80" : "bg-slate-50"}`}>
+        <div 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center"
+          style={{
+            opacity: isDarkMode ? 0.12 : 0.15,
+            transition: "opacity 500ms"
+          }}
+        ></div>
+        <div className={`absolute inset-0 transition-colors duration-500 ${
+          isDarkMode 
+            ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85"
+            : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
+        }`}></div>
         <div className="relative z-10 max-w-4xl mx-auto">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-serif font-bold mb-6 tracking-tight"
+            className={`text-5xl md:text-7xl font-serif font-bold mb-6 tracking-tight ${isDarkMode ? "text-white" : "text-slate-950"}`}
           >
-            Venta de <span className="text-gray-400 italic font-light">Inmuebles</span>
+            Venta de <span className={`italic font-light ${isDarkMode ? "text-gray-400" : "text-slate-600"}`}>Inmuebles</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-xl text-gray-300 font-light max-w-2xl mx-auto"
+            className={`text-xl font-light max-w-2xl mx-auto ${isDarkMode ? "text-gray-300" : "text-slate-700"}`}
           >
             Vende tu propiedad de forma rápida, segura y al mejor precio del mercado.
           </motion.p>
         </div>
       </div>
 
-      <main className="flex-grow py-24 px-8">
+      <main className={`flex-grow py-24 px-8 transition-colors duration-500 ${isDarkMode ? "bg-[#05080a]" : "bg-white"}`}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="rounded-[2rem] overflow-hidden shadow-2xl order-2 md:order-1"
+              className={`rounded-[2rem] overflow-hidden shadow-2xl border transition-colors order-2 md:order-1 ${isDarkMode ? "border-white/10" : "border-slate-200"}`}
             >
               <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80" alt="Venta Casa" className="w-full h-full object-cover" />
             </motion.div>
@@ -71,13 +85,13 @@ export default function Selling() {
               viewport={{ once: true }}
               className="space-y-6 order-1 md:order-2"
             >
-              <h2 className="text-4xl font-serif font-bold text-primary">Estrategia de Venta Premium</h2>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <h2 className={`text-4xl font-serif font-bold ${isDarkMode ? "text-white" : "text-slate-950"}`}>Estrategia de Venta Premium</h2>
+              <p className={`leading-relaxed text-lg font-light ${isDarkMode ? "text-gray-300" : "text-slate-700"}`}>
                 Vender una propiedad de lujo requiere más que un simple anuncio. En LUXHABITAT diseñamos una 
                 estrategia de marketing personalizada para cada inmueble, asegurando que llegue a los 
                 compradores correctos.
               </p>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className={`leading-relaxed text-lg font-light ${isDarkMode ? "text-gray-300" : "text-slate-700"}`}>
                 Utilizamos herramientas de vanguardia y nuestra amplia red de contactos para garantizar 
                 una transacción exitosa y en tiempo récord.
               </p>
@@ -92,11 +106,15 @@ export default function Selling() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="p-10 bg-white rounded-[2rem] border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-2xl transition-all group"
+                className={`p-10 rounded-[2rem] border shadow-xl transition-all group ${
+                  isDarkMode
+                    ? "bg-slate-800/50 border-white/10 shadow-black/20 hover:shadow-blue-500/10 hover:border-blue-500/30"
+                    : "bg-white border-slate-200 shadow-slate-200/50 hover:shadow-blue-600/10 hover:border-blue-600/30"
+                }`}
               >
-                <div className="text-primary mb-6 group-hover:scale-110 transition-transform">{s.icon}</div>
-                <h3 className="text-xl font-bold text-primary mb-4">{s.title}</h3>
-                <p className="text-gray-500 font-light">{s.desc}</p>
+                <div className={`mb-6 group-hover:scale-110 transition-transform ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>{s.icon}</div>
+                <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? "text-white" : "text-slate-950"}`}>{s.title}</h3>
+                <p className={`font-light ${isDarkMode ? "text-gray-400" : "text-slate-600"}`}>{s.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -106,25 +124,31 @@ export default function Selling() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-primary text-white p-16 rounded-[3rem] relative overflow-hidden"
+            className={`p-16 rounded-[3rem] relative overflow-hidden transition-colors duration-500 border ${
+              isDarkMode
+                ? "bg-gradient-to-br from-blue-900/40 to-slate-900/60 border-blue-500/20"
+                : "bg-gradient-to-br from-blue-600 to-blue-700 border-blue-600"
+            }`}
           >
-            <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2"></div>
-            <h2 className="text-4xl font-serif font-bold mb-12 text-center relative z-10">Estrategia de Comercialización</h2>
+            <div className={`absolute top-0 left-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 ${
+              isDarkMode ? "bg-blue-500/10" : "bg-white/10"
+            }`}></div>
+            <h2 className={`text-4xl font-serif font-bold mb-12 text-center relative z-10 ${isDarkMode ? "text-white" : "text-white"}`}>Estrategia de Comercialización</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
               <div className="text-center space-y-4">
-                <div className="text-5xl font-serif italic text-white/20">01</div>
-                <h4 className="text-xl font-bold">Preparación (Staging)</h4>
-                <p className="text-gray-400 font-light">Asesoramos en la adecuación de tu inmueble para hacerlo irresistible.</p>
+                <div className={`text-5xl font-serif italic ${isDarkMode ? "text-white/20" : "text-white/30"}`}>01</div>
+                <h4 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-white"}`}>Preparación (Staging)</h4>
+                <p className={`font-light ${isDarkMode ? "text-gray-300" : "text-gray-100"}`}>Asesoramos en la adecuación de tu inmueble para hacerlo irresistible.</p>
               </div>
               <div className="text-center space-y-4">
-                <div className="text-5xl font-serif italic text-white/20">02</div>
-                <h4 className="text-xl font-bold">Exposición Máxima</h4>
-                <p className="text-gray-400 font-light">Lanzamiento en canales premium y base de datos de compradores VIP.</p>
+                <div className={`text-5xl font-serif italic ${isDarkMode ? "text-white/20" : "text-white/30"}`}>02</div>
+                <h4 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-white"}`}>Exposición Máxima</h4>
+                <p className={`font-light ${isDarkMode ? "text-gray-300" : "text-gray-100"}`}>Lanzamiento en canales premium y base de datos de compradores VIP.</p>
               </div>
               <div className="text-center space-y-4">
-                <div className="text-5xl font-serif italic text-white/20">03</div>
-                <h4 className="text-xl font-bold">Venta Exitosa</h4>
-                <p className="text-gray-400 font-light">Negociación experta para cerrar la venta en las mejores condiciones.</p>
+                <div className={`text-5xl font-serif italic ${isDarkMode ? "text-white/20" : "text-white/30"}`}>03</div>
+                <h4 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-white"}`}>Venta Exitosa</h4>
+                <p className={`font-light ${isDarkMode ? "text-gray-300" : "text-gray-100"}`}>Negociación experta para cerrar la venta en las mejores condiciones.</p>
               </div>
             </div>
           </motion.div>

@@ -13,7 +13,7 @@ module.exports = {
         primary: {
           light: '#F8FAFC',
           DEFAULT: '#0F172A',
-          dark: '#0F172A',
+          dark: '#071126',
         },
         dark: {
           50: '#F8FAFC',
@@ -26,13 +26,13 @@ module.exports = {
           700: '#334155',
           800: '#1E293B',
           900: '#111827',
-          950: '#0F172A',
+          950: '#071126',
         },
         light: {
           50: '#FFFFFF',
-          100: '#F8FAFC',
-          200: '#E2E8F0',
-          300: '#CBD5E1',
+          100: '#F5F7FB',
+          200: '#EDF2F7',
+          300: '#DBEAFE',
           400: '#94A3B8',
           500: '#64748B',
         },
