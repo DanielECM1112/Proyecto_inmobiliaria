@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiOutlineLocationMarker, HiOutlineX } from 'react-icons/hi';
+import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { BiBed, BiBath, BiArea, BiX } from 'react-icons/bi';
 import { FaWhatsapp } from 'react-icons/fa';
 import axios from 'axios';
