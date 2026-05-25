@@ -21,10 +21,10 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='admin/', permanent=True)),
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),
-    path('api/properties/', include('properties.urls')),
-    path('api/plans/', include('plans.urls')),
-    path('api/payments/', include('payments.urls')),
+    # App-based APIs
+    path('api/', include('users.urls')),
+    path('api/', include('properties.urls')),
+    path('api/', include('plans.urls')),
+    path('api/', include('payments.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
