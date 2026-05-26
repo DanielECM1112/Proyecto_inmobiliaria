@@ -293,23 +293,17 @@ Documentación de los endpoints públicos y administrativos del backend.
 **Requiere token:** Sí  
 **Body:**
 {
-  "plan": "uuid",
-  "inmueble": "uuid (opcional)",
-  "metodo": "tarjeta|pse|nequi (opcional, default: tarjeta)"
+  "inmueble_id": "uuid",
+  "plan_id": "uuid",
+  "metodo": "tarjeta|pse|nequi"
 }
-**Respuesta 201:** Pago creado (ejemplo):
+**Respuesta 201:**
 {
-  "id": "uuid",
-  "usuario": "uuid",
-  "plan": "uuid",
-  "inmueble": "uuid|null",
-  "monto": "decimal",
-  "metodo": "string",
-  "estado": "pendiente",
-  "referencia_externa": "string",
-  "created_at": "datetime"
+  "referencia": "uuid",
+  "monto": "50000.00",
+  "estado": "pendiente"
 }
-**Errores:** 404 plan no encontrado, 400 validación
+**Errores:** 404 plan no encontrado, 400 validación, 403 si el inmueble no pertenece al usuario
 
 ---
 ## POST /api/pagos/confirmar/
