@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Successful</title>
+</head>
+<body>
+    <script>
+        window.onload = function() {
+            const user = {{ user_json|safe }};
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+                window.opener.location.reload();
+                setTimeout(function() {
+                    window.close();
+                }, 500);
+            } else {
+                window.close();
+            }
+        };
+    </script>
+    <h1>Login successful! Closing...</h1>
+</body>
+</html>

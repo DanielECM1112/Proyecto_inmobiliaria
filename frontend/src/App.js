@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Auth from './pages/Auth';
 import Properties from './pages/Properties';
 import About from './pages/About';
 import Location from './pages/Location';
@@ -27,8 +26,7 @@ function App() {
         <Routes>
           {/* Rutas del cliente (creadas por Manuel) */}
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/properties" element={<Properties />} />
           <Route path="/about" element={<About />} />
           <Route path="/location" element={<Location />} />

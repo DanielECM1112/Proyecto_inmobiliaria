@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+/* Estilos 3D para el icono de ubicación */
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotateX(-10deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotateX(-10deg) rotateY(10deg);
+  }
+}
+
+.location-icon-float {
+  animation: float 4s ease-in-out infinite;
+}
