@@ -19,7 +19,14 @@ export default function Navbar() {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser) {
+          setUser(parsedUser);
+        }
+      } catch {
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 

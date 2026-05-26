@@ -22,4 +22,9 @@ urlpatterns = [
     path('', RedirectView.as_view(url='admin/', permanent=True)),
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
+    # REST auth (login/registration)
+    path('auth/', include('dj_rest_auth.urls')),
+    path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    # allauth (social login flows)
+    path('accounts/', include('allauth.urls')),
 ]
