@@ -3,13 +3,18 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import Usuario
 
+# Configuración del logger
 logger = logging.getLogger('apps')
 
 class UsuarioService:
+    """
+    Clase de servicio para manejar la lógica de negocio de los usuarios.
+    """
+
     @staticmethod
     def registrar_usuario(email, nombre, password):
         """
-        Registra un nuevo usuario con rol 'usuario' por defecto.
+        Crea un nuevo usuario con rol 'usuario' por defecto.
         """
         try:
             user = Usuario.objects.create_user(
@@ -18,7 +23,7 @@ class UsuarioService:
                 password=password,
                 rol='usuario'
             )
-            logger.info(f"Usuario registrado: {email}")
+            logger.info(f"Usuario registrado exitosamente: {email}")
             return user
         except Exception as e:
             logger.error(f"Error al registrar usuario {email}: {str(e)}")
@@ -27,12 +32,18 @@ class UsuarioService:
     @staticmethod
     def login_usuario(email, password):
         """
-        Autentica un usuario y retorna los tokens JWT.
+        Autentica un usuario y genera los tokens JWT correspondientes.
         """
         user = authenticate(email=email, password=password)
-        if user and user.is_active:
+        
+        if user:
+            if not user.is_active:
+                logger.warning(f"Intento de login en cuenta desactivada: {email}")
+                return {"error": "Esta cuenta está desactivada."}
+            
             refresh = RefreshToken.for_user(user)
-            logger.info(f"Login exitoso: {email}")
+            logger.info(f"Login exitoso para el usuario: {email}")
+            
             return {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
@@ -43,24 +54,50 @@ class UsuarioService:
                     'rol': user.rol
                 }
             }
-        logger.warning(f"Intento de login fallido: {email}")
+        
+        logger.warning(f"Credenciales inválidas para el usuario: {email}")
         return None
 
     @staticmethod
     def desactivar_usuario(usuario_id):
         """
-        Desactiva un usuario y marca sus inmuebles como finalizados.
+        Realiza la desactivación lógica de un usuario y marca sus inmuebles como finalizados.
         """
         try:
             usuario = Usuario.objects.get(id=usuario_id)
             usuario.is_active = False
             usuario.save()
             
-            # Lógica de negocio: Inmuebles pasan a 'finalizado'
-            usuario.inmuebles.all().update(estado='finalizado')
+            # Lógica de negocio adicional: Inmuebles asociados pasan a estado 'finalizado'
+            # Se asume que la relación existe en el modelo Inmueble
+            if hasattr(usuario, 'inmuebles'):
+                usuario.inmuebles.all().update(estado='finalizado')
             
-            logger.info(f"Usuario desactivado: {usuario.email}")
+            logger.info(f"Usuario {usuario.email} desactivado correctamente.")
             return usuario
         except Usuario.DoesNotExist:
-            logger.error(f"Usuario no encontrado para desactivación: {usuario_id}")
+            logger.error(f"No se encontró el usuario con ID {usuario_id} para desactivar.")
+            return None
+
+    @staticmethod
+    def obtener_todos_los_usuarios():
+        """
+        Retorna todos los usuarios registrados en el sistema.
+        """
+        return Usuario.objects.all()
+
+    @staticmethod
+    def actualizar_usuario_admin(usuario_id, datos):
+        """
+        Actualiza los datos de un usuario desde el panel de administración.
+        """
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+            for attr, value in datos.items():
+                setattr(usuario, attr, value)
+            usuario.save()
+            logger.info(f"Usuario {usuario.email} actualizado por administrador.")
+            return usuario
+        except Usuario.DoesNotExist:
+            logger.error(f"No se encontró el usuario con ID {usuario_id} para actualizar.")
             return None

@@ -52,5 +52,5 @@ class AdminStatsView(APIView):
     permission_classes = [IsAdminRole]
 
     def get(self, request):
-        stats = PagoService.obtener_estadisticas_admin()
+        stats = PagoService.obtener_estadisticas_completas()
         return Response(stats)

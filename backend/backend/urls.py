@@ -19,9 +19,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
+from .views import health_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', health_check),
     # App-based APIs
     path('api/', include('users.urls')),
     path('api/', include('properties.urls')),

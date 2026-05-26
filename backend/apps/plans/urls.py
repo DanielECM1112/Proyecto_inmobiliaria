@@ -1,8 +1,11 @@
 from django.urls import path
-from plans.views import PlanListView, AdminPlanCreateView, AdminPlanDetailView
+from .views import PlanListView, PlanAdminView, PlanAdminDetailView
 
 urlpatterns = [
-    path('planes/', PlanListView.as_view(), name='plan-list'),
-    path('admin/planes/', AdminPlanCreateView.as_view(), name='admin-plan-create'),
-    path('admin/planes/<uuid:pk>/', AdminPlanDetailView.as_view(), name='admin-plan-detail'),
+    # Rutas públicas
+    path('planes/', PlanListView.as_view(), name='plan-list-public'),
+    
+    # Rutas administrativas
+    path('admin/planes/', PlanAdminView.as_view(), name='admin-plan-list-create'),
+    path('admin/planes/<uuid:pk>/', PlanAdminDetailView.as_view(), name='admin-plan-detail-update'),
 ]

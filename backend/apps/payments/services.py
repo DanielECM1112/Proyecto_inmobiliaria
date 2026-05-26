@@ -55,27 +55,69 @@ class PagoService:
             return None
 
     @staticmethod
-    def obtener_estadisticas_admin():
+    def obtener_estadisticas_completas():
         """
-        Calcula estadísticas para el panel admin.
+        Calcula estadísticas completas para el dashboard administrativo usando agregaciones.
         """
         from users.models import Usuario
+        from properties.models import Inmueble
+        from plans.models import Plan
         from django.utils import timezone
-        from django.db.models import Sum
+        from django.db.models import Sum, Count, Q
         
         ahora = timezone.now()
         inicio_mes = ahora.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         
-        stats = {
-            'total_usuarios': Usuario.objects.count(),
-            'inmuebles_por_estado': {
-                'activos': Inmueble.objects.filter(estado='activo').count(),
-                'pendientes': Inmueble.objects.filter(estado='pendiente').count(),
-                'finalizados': Inmueble.objects.filter(estado='finalizado').count(),
+        # Agregaciones de Usuarios
+        usuarios_stats = Usuario.objects.aggregate(
+            total=Count('id'),
+            activos=Count('id', filter=Q(is_active=True)),
+            nuevos_mes=Count('id', filter=Q(created_at__gte=inicio_mes))
+        )
+        
+        # Agregaciones de Inmuebles
+        inmuebles_stats = Inmueble.objects.aggregate(
+            total=Count('id'),
+            activos=Count('id', filter=Q(estado='activo')),
+            pendientes=Count('id', filter=Q(estado='pendiente')),
+            finalizados=Count('id', filter=Q(estado='finalizado'))
+        )
+        
+        # Agregaciones de Pagos
+        pagos_stats = Pago.objects.aggregate(
+            total=Count('id'),
+            aprobados=Count('id', filter=Q(estado='aprobado')),
+            pendientes=Count('id', filter=Q(estado='pendiente')),
+            rechazados=Count('id', filter=Q(estado='rechazado')),
+            ingresos_mes=Sum('monto', filter=Q(estado='aprobado', created_at__gte=inicio_mes))
+        )
+        
+        # Planes populares (ventas aprobadas)
+        planes_populares = Plan.objects.annotate(
+            total_ventas=Count('pagos', filter=Q(pagos__estado='aprobado'))
+        ).order_by('-total_ventas')[:5]
+
+        return {
+            "usuarios": {
+                "total": usuarios_stats['total'],
+                "activos": usuarios_stats['activos'],
+                "nuevos_este_mes": usuarios_stats['nuevos_mes']
             },
-            'ingresos_mes': Pago.objects.filter(
-                estado='aprobado', 
-                created_at__gte=inicio_mes
-            ).aggregate(Sum('monto'))['monto__sum'] or 0
+            "inmuebles": {
+                "total": inmuebles_stats['total'],
+                "activos": inmuebles_stats['activos'],
+                "pendientes": inmuebles_stats['pendientes'],
+                "finalizados": inmuebles_stats['finalizados']
+            },
+            "pagos": {
+                "total": pagos_stats['total'],
+                "aprobados": pagos_stats['aprobados'],
+                "pendientes": pagos_stats['pendientes'],
+                "rechazados": pagos_stats['rechazados'],
+                "ingresos_este_mes": str(pagos_stats['ingresos_mes'] or "0.00")
+            },
+            "planes_populares": [
+                {"nombre": p.nombre, "total_ventas": p.total_ventas} 
+                for p in planes_populares
+            ]
         }
-        return stats
