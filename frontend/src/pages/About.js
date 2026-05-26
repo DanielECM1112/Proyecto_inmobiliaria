@@ -41,7 +41,7 @@ export default function About() {
           <div className={`absolute inset-0 transition-colors duration-500 ${
             isDarkMode 
               ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85" 
-              : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
+              : "bg-gradient-to-br from-white/80 via-gold-50/60 to-white/80"
           }`}></div>
         </div>
 
@@ -54,9 +54,9 @@ export default function About() {
             <h1 className={`text-6xl md:text-8xl font-serif font-bold mb-6 tracking-tight ${
               isDarkMode ? "text-white" : "text-dark-950"
             }`}>
-              Nuestra <span className="text-blue-600 italic font-light">Historia</span>
+              Nuestra <span className="text-gold-600 italic font-light">Historia</span>
             </h1>
-            <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+            <div className="w-24 h-1 bg-gold-600 mx-auto mb-8 rounded-full"></div>
             <p className={`text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed ${
               isDarkMode ? "text-gray-300" : "text-slate-700"
             }`}>
@@ -79,7 +79,7 @@ export default function About() {
               className="relative"
             >
               <div className={`absolute -top-10 -left-10 w-64 h-64 rounded-full blur-3xl -z-10 transition-colors duration-500 ${
-                isDarkMode ? "bg-blue-500/5" : "bg-blue-600/10"
+                isDarkMode ? "bg-gold-500/5" : "bg-gold-600/10"
               }`}></div>
               <img 
                 src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80" 
@@ -93,7 +93,7 @@ export default function About() {
                   ? "bg-midnight-DEFAULT/90 border-white/10" 
                   : "bg-white/90 border-light-200"
               }`}>
-                <p className={`font-serif italic text-2xl transition-colors duration-500 ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>"Excelencia en cada detalle."</p>
+                <p className={`font-serif italic text-2xl transition-colors duration-500 ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>"Excelencia en cada detalle."</p>
               </div>
             </motion.div>
 
@@ -108,7 +108,7 @@ export default function About() {
                 isDarkMode ? "text-white" : "text-dark-950"
               }`}>Misión & Visión</h2>
               <p className={`text-2xl font-light leading-relaxed italic transition-colors duration-500 ${
-                isDarkMode ? "text-blue-400/80" : "text-blue-600/80"
+                isDarkMode ? "text-gold-400/80" : "text-gold-600/80"
               }`}>
                 "No solo vendemos propiedades; creamos el escenario perfecto para los momentos más importantes de tu vida."
               </p>
@@ -124,7 +124,7 @@ export default function About() {
                 {stats.map((stat, index) => (
                   <div key={index} className="space-y-2 group">
                     <div className={`text-4xl mb-4 transition-all duration-500 transform group-hover:scale-110 ${
-                      isDarkMode ? "text-blue-400" : "text-blue-600"
+                      isDarkMode ? "text-gold-400" : "text-gold-600"
                     }`}>{stat.icon}</div>
                     <h3 className={`text-5xl font-bold transition-colors duration-500 ${
                       isDarkMode ? "text-white" : "text-dark-950"
@@ -147,11 +147,11 @@ export default function About() {
             className={`rounded-[4rem] p-16 md:p-24 text-center relative overflow-hidden shadow-2xl transition-all duration-500 ${
               isDarkMode 
                 ? "bg-midnight-DEFAULT border border-white/5 shadow-black/40" 
-                : "bg-blue-600 text-white shadow-blue-600/30"
+                : "bg-gold-600 text-white shadow-gold-600/30"
             }`}
           >
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold-500/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
             
             <h2 className={`text-4xl md:text-5xl font-serif font-bold mb-20 relative z-10 ${isDarkMode ? "text-white" : "text-white"}`}>¿Por qué elegir LUXHABITAT?</h2>
             
@@ -159,8 +159,8 @@ export default function About() {
               <div className="space-y-6 group">
                 <div className={`w-24 h-24 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border transition-all duration-500 transform group-hover:-translate-y-2 ${
                   isDarkMode 
-                    ? "bg-white/5 border-white/10 group-hover:bg-blue-600 group-hover:text-white" 
-                    : "bg-white/20 border-white/30 group-hover:bg-white group-hover:text-blue-600"
+                    ? "bg-white/5 border-white/10 group-hover:bg-gold-600 group-hover:text-white" 
+                    : "bg-white/20 border-white/30 group-hover:bg-white group-hover:text-gold-600"
                 }`}>
                   <HiOutlineShieldCheck className="text-4xl" />
                 </div>
@@ -173,8 +173,8 @@ export default function About() {
               <div className="space-y-6 group">
                 <div className={`w-24 h-24 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border transition-all duration-500 transform group-hover:-translate-y-2 ${
                   isDarkMode 
-                    ? "bg-white/5 border-white/10 group-hover:bg-blue-600 group-hover:text-white" 
-                    : "bg-white/20 border-white/30 group-hover:bg-white group-hover:text-blue-600"
+                    ? "bg-white/5 border-white/10 group-hover:bg-gold-600 group-hover:text-white" 
+                    : "bg-white/20 border-white/30 group-hover:bg-white group-hover:text-gold-600"
                 }`}>
                   <HiOutlineLightningBolt className="text-4xl" />
                 </div>
@@ -187,8 +187,8 @@ export default function About() {
               <div className="space-y-6 group">
                 <div className={`w-24 h-24 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border transition-all duration-500 transform group-hover:-translate-y-2 ${
                   isDarkMode 
-                    ? "bg-white/5 border-white/10 group-hover:bg-blue-600 group-hover:text-white" 
-                    : "bg-white/20 border-white/30 group-hover:bg-white group-hover:text-blue-600"
+                    ? "bg-white/5 border-white/10 group-hover:bg-gold-600 group-hover:text-white" 
+                    : "bg-white/20 border-white/30 group-hover:bg-white group-hover:text-gold-600"
                 }`}>
                   <HiOutlineCash className="text-4xl" />
                 </div>

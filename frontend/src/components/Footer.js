@@ -62,7 +62,7 @@ export default function Footer() {
       {/* Decorative gradient background */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[300px] blur-[120px] rounded-full transition-colors duration-500 ${
-          isDarkMode ? "bg-blue-500/10" : "bg-blue-400/10"
+          isDarkMode ? "bg-gold-500/8" : "bg-gold-400/6"
         }`}></div>
       </div>
       
@@ -74,10 +74,10 @@ export default function Footer() {
             <Link to="/" className="flex items-center gap-4 group w-fit">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-all duration-500 ${
                 isDarkMode
-                  ? "bg-white/10 border border-white/20"
-                  : "bg-blue-600 border border-blue-700"
+                  ? "bg-gold-500/15 border border-gold-500/30 text-gold-400"
+                  : "bg-gold-500 border border-gold-600 text-white"
               }`}>
-                <svg className={`w-8 h-8 transition-colors duration-500 ${isDarkMode ? "text-white" : "text-white"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg className={`w-8 h-8 transition-colors duration-500 ${isDarkMode ? "text-gold-400" : "text-white"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                   <polyline points="9 22 9 12 15 12 15 22" />
                 </svg>
@@ -85,7 +85,7 @@ export default function Footer() {
               <h2 className={`text-3xl md:text-4xl font-serif font-bold tracking-tight ${
                 isDarkMode ? "text-white" : "text-dark-950"
               }`}>
-                LUX<span className={`font-light transition-colors duration-500 ${isDarkMode ? "text-gray-400" : "text-gray-400"}`}>HABITAT</span>
+                LUX<span className={`font-light transition-colors duration-500 ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>HABITAT</span>
               </h2>
             </Link>
             
@@ -104,13 +104,13 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   whileHover={{ 
                     y: -8, 
-                    backgroundColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(59,130,246,0.1)',
-                    boxShadow: '0 15px 30px rgba(59, 130, 246, 0.3)'
+                    backgroundColor: isDarkMode ? 'rgba(212, 175, 55, 0.1)' : 'rgba(212, 175, 55, 0.1)',
+                    boxShadow: '0 15px 30px rgba(212, 175, 55, 0.25)'
                   }}
                   className={`w-11 h-11 rounded-2xl border flex items-center justify-center transition-all duration-500 ${
                     isDarkMode
-                      ? "border-white/10 text-gray-400 hover:border-blue-500/50"
-                      : "border-dark-300 text-dark-700 hover:border-blue-600/50"
+                      ? "border-gold-500/30 text-gold-400 hover:border-gold-500/60 hover:bg-gold-500/10"
+                      : "border-gold-300 text-gold-600 hover:border-gold-600/50 hover:bg-gold-100"
                   }`}
                 >
                   {social.icon}
@@ -121,15 +121,15 @@ export default function Footer() {
 
           {/* Services Section */}
           <div>
-            <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-blue-600 dark:text-blue-400">Servicios</h3>
+            <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-gold-600 dark:text-gold-400">Servicios</h3>
             <ul className="space-y-6">
               {services.map((service, index) => (
                 <li key={index}>
                   <Link 
                     to={service.path}
-                    className="text-dark-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white hover:translate-x-3 flex items-center gap-4 transition-all duration-500 font-sans font-medium text-[15px] group"
+                    className="text-dark-800 dark:text-gray-300 hover:text-gold-600 dark:hover:text-gold-400 hover:translate-x-3 flex items-center gap-4 transition-all duration-500 font-sans font-medium text-[15px] group"
                   >
-                    <span className="w-1.5 h-[1px] bg-blue-400/50 dark:bg-blue-500/30 group-hover:w-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-all duration-500"></span>
+                    <span className="w-1.5 h-[1px] bg-gold-400/50 dark:bg-gold-500/30 group-hover:w-6 group-hover:bg-gold-600 dark:group-hover:bg-gold-400 transition-all duration-500"></span>
                     {service.name}
                   </Link>
                 </li>
@@ -139,15 +139,15 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-blue-600 dark:text-blue-400">Navegación</h3>
+            <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-gold-600 dark:text-gold-400">Navegación</h3>
             <ul className="space-y-6">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link 
                     to={link.path} 
-                    className="text-dark-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white hover:translate-x-3 flex items-center gap-4 transition-all duration-500 font-sans font-medium text-[15px] group"
+                    className="text-dark-800 dark:text-gray-300 hover:text-gold-600 dark:hover:text-gold-400 hover:translate-x-3 flex items-center gap-4 transition-all duration-500 font-sans font-medium text-[15px] group"
                   >
-                    <span className="w-1.5 h-[1px] bg-blue-400/50 dark:bg-blue-500/30 group-hover:w-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-all duration-500"></span>
+                    <span className="w-1.5 h-[1px] bg-gold-400/50 dark:bg-gold-500/30 group-hover:w-6 group-hover:bg-gold-600 dark:group-hover:bg-gold-400 transition-all duration-500"></span>
                     {link.name}
                   </Link>
                 </li>
@@ -159,10 +159,10 @@ export default function Footer() {
                 href="https://www.google.com/maps/place/Ibagu%C3%A9,+Tolima,+Colombia/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 text-dark-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-sans font-semibold text-sm group transition-all duration-300"
+                className="flex items-center gap-4 text-dark-800 dark:text-gray-300 hover:text-gold-600 dark:hover:text-gold-400 font-sans font-semibold text-sm group transition-all duration-300"
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 ${
-                  isDarkMode ? "bg-blue-500/10 text-blue-500" : "bg-blue-600/10 text-blue-600 group-hover:bg-blue-600 group-hover:text-white"
+                  isDarkMode ? "bg-gold-500/10 text-gold-500" : "bg-gold-600/10 text-gold-600 group-hover:bg-gold-600 group-hover:text-white"
                 }`}>
                   <HiOutlineLocationMarker className="text-xl" />
                 </div>
@@ -187,14 +187,14 @@ export default function Footer() {
 
           {/* Newsletter Section */}
           <div className="space-y-10">
-            <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-blue-600 dark:text-blue-400">Newsletter</h3>
+            <h3 className="text-[12px] font-sans font-bold mb-12 uppercase tracking-[0.5em] text-gold-600 dark:text-gold-400">Newsletter</h3>
             <p className={`text-[15px] font-sans font-light leading-relaxed transition-colors duration-500 ${isDarkMode ? 'text-gray-300' : 'text-dark-800'}`}>
               Recibe las últimas ofertas exclusivas y novedades del mercado inmobiliario en tu bandeja de entrada.
             </p>
             
             <form onSubmit={handleSubscribe} className="space-y-5">
               <div className="relative group">
-                <HiOutlineMail className={`absolute left-5 top-1/2 -translate-y-1/2 text-2xl transition-all duration-500 group-focus-within:scale-110 ${isDarkMode ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-dark-400 group-focus-within:text-blue-600'}`} />
+                <HiOutlineMail className={`absolute left-5 top-1/2 -translate-y-1/2 text-2xl transition-all duration-500 group-focus-within:scale-110 ${isDarkMode ? 'text-gray-400 group-focus-within:text-gold-400' : 'text-dark-400 group-focus-within:text-gold-600'}`} />
                 <input 
                   type="email" 
                   value={email}
@@ -202,8 +202,8 @@ export default function Footer() {
                   placeholder="Tu correo electrónico" 
                   className={`border rounded-2xl pl-14 pr-5 py-5 w-full focus:outline-none focus:ring-4 transition-all duration-500 text-sm font-sans font-medium backdrop-blur-md ${
                     isDarkMode 
-                      ? 'bg-white/5 border-white/10 placeholder:text-gray-500 text-white focus:bg-white/10 focus:border-blue-500/50 focus:ring-blue-500/20 shadow-inner shadow-black/40' 
-                      : 'bg-white border-dark-200 placeholder:text-dark-400 text-dark-950 focus:bg-white focus:border-blue-600/50 focus:ring-blue-600/10 shadow-sm'
+                      ? 'bg-white/5 border-white/10 placeholder:text-gray-500 text-white focus:bg-white/10 focus:border-gold-500/50 focus:ring-gold-500/20 shadow-inner shadow-black/40' 
+                      : 'bg-white border-dark-200 placeholder:text-dark-400 text-dark-950 focus:bg-white focus:border-gold-600/50 focus:ring-gold-600/10 shadow-sm'
                   }`}
                   required
                 />
@@ -212,12 +212,12 @@ export default function Footer() {
                 whileHover={{ 
                   scale: 1.02,
                   boxShadow: isDarkMode 
-                    ? '0 0 30px rgba(59, 130, 246, 0.6)'
-                    : '0 15px 30px rgba(59, 130, 246, 0.3)',
-                  background: "linear-gradient(to right, #2563EB, #3B82F6)"
+                    ? '0 0 30px rgba(212, 175, 55, 0.6)'
+                    : '0 15px 30px rgba(212, 175, 55, 0.25)',
+                  background: "linear-gradient(to right, #D4AF37, #E5C158)"
                 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-5 rounded-2xl font-sans font-bold text-sm uppercase tracking-widest transition-all duration-500 shadow-xl flex items-center justify-center gap-3 bg-blue-600 text-white shadow-blue-500/20"
+                className="w-full py-5 rounded-2xl font-sans font-bold text-sm uppercase tracking-widest transition-all duration-500 shadow-xl flex items-center justify-center gap-3 bg-gradient-to-r from-gold-600 to-gold-500 text-white shadow-gold-500/20"
               >
                 Suscribirme <FaArrowRight />
               </motion.button>
@@ -228,13 +228,13 @@ export default function Footer() {
                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                    className="flex flex-col items-center gap-3 text-blue-400 text-sm font-sans font-medium bg-blue-500/10 p-8 rounded-[2.5rem] border border-blue-500/20 text-center shadow-2xl shadow-blue-500/10"
+                    className="flex flex-col items-center gap-3 text-gold-400 text-sm font-sans font-medium bg-gold-500/10 p-8 rounded-[2.5rem] border border-gold-500/20 text-center shadow-2xl shadow-gold-500/10"
                   >
-                    <div className="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mb-1">
+                    <div className="w-12 h-12 bg-gold-500 text-white rounded-full flex items-center justify-center mb-1">
                       <FaCheckCircle className="text-2xl" />
                     </div>
                     <span className="text-white font-bold">¡Bienvenido a la élite!</span>
-                    <span className="text-xs text-blue-300/80">Tu suscripción a LuxHabitat ha sido confirmada.</span>
+                    <span className="text-xs text-gold-300/80">Tu suscripción a LuxHabitat ha sido confirmada.</span>
                   </motion.div>
                 )}
                 {status === 'error' && (
@@ -263,14 +263,14 @@ export default function Footer() {
             © 2026 LUXHABITAT Inmobiliaria Premium. Ibagué, Colombia.
           </p>
           <div className="flex flex-wrap justify-center gap-10">
-            <Link to="/terms" className={`text-xs tracking-wider uppercase transition-colors duration-300 font-semibold hover:text-blue-500 ${
-              isDarkMode ? "text-gray-500 hover:text-white" : "text-dark-600 hover:text-dark-900"
+            <Link to="/terms" className={`text-xs tracking-wider uppercase transition-colors duration-300 font-semibold hover:text-gold-500 ${
+              isDarkMode ? "text-gray-500 hover:text-gold-400" : "text-dark-600 hover:text-gold-600"
             }`}>Términos</Link>
-            <Link to="/privacy" className={`text-xs tracking-wider uppercase transition-colors duration-300 font-semibold hover:text-blue-500 ${
-              isDarkMode ? "text-gray-500 hover:text-white" : "text-dark-600 hover:text-dark-900"
+            <Link to="/privacy" className={`text-xs tracking-wider uppercase transition-colors duration-300 font-semibold hover:text-gold-500 ${
+              isDarkMode ? "text-gray-500 hover:text-gold-400" : "text-dark-600 hover:text-gold-600"
             }`}>Privacidad</Link>
-            <Link to="/cookies" className={`text-xs tracking-wider uppercase transition-colors duration-300 font-semibold hover:text-blue-500 ${
-              isDarkMode ? "text-gray-500 hover:text-white" : "text-dark-600 hover:text-dark-900"
+            <Link to="/cookies" className={`text-xs tracking-wider uppercase transition-colors duration-300 font-semibold hover:text-gold-500 ${
+              isDarkMode ? "text-gray-500 hover:text-gold-400" : "text-dark-600 hover:text-gold-600"
             }`}>Cookies</Link>
           </div>
         </div>

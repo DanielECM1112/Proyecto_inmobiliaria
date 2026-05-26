@@ -30,7 +30,7 @@ export default function PublishProperty() {
       name: "Plan Básico",
       price: "$79.900",
       duration: "1 mes",
-      icon: <FaRocket className={`text-4xl ${isDarkMode ? "text-blue-400" : "text-blue-600"}`} />,
+      icon: <FaRocket className={`text-4xl ${isDarkMode ? "text-gold-400" : "text-gold-600"}`} />,
       features: [
         "Publicación por 30 días",
         "Hasta 10 fotos HD",
@@ -44,7 +44,7 @@ export default function PublishProperty() {
       name: "Plan Profesional",
       price: "$199.900",
       duration: "3 meses",
-      icon: <FaBriefcase className={`text-4xl ${isDarkMode ? "text-blue-500" : "text-blue-700"}`} />,
+      icon: <FaBriefcase className={`text-4xl ${isDarkMode ? "text-gold-500" : "text-gold-700"}`} />,
       features: [
         "Publicación por 90 días",
         "Fotos ilimitadas",
@@ -52,15 +52,15 @@ export default function PublishProperty() {
         "Soporte prioritario",
         "Etiqueta 'Recomendado'"
       ],
-      color: isDarkMode ? "from-blue-900/40 to-black" : "from-blue-100 to-blue-200",
-      shadow: isDarkMode ? "shadow-blue-500/20" : "shadow-blue-600/10",
+      color: isDarkMode ? "from-gold-900/40 to-black" : "from-gold-100 to-gold-200",
+      shadow: isDarkMode ? "shadow-gold-500/20" : "shadow-gold-600/10",
       recommended: true
     },
     {
       name: "Plan Premium",
       price: "$349.900",
       duration: "6 meses",
-      icon: <FaGem className={`text-4xl ${isDarkMode ? "text-blue-300" : "text-blue-500"}`} />,
+      icon: <FaGem className={`text-4xl ${isDarkMode ? "text-gold-300" : "text-gold-500"}`} />,
       features: [
         "Publicación por 180 días",
         "Fotografía profesional",
@@ -68,8 +68,8 @@ export default function PublishProperty() {
         "Destacado en Home",
         "Marketing en redes sociales"
       ],
-      color: isDarkMode ? "from-blue-900/60 to-black" : "from-blue-200 to-blue-300",
-      shadow: isDarkMode ? "shadow-blue-400/20" : "shadow-blue-500/15"
+      color: isDarkMode ? "from-gold-900/60 to-black" : "from-gold-200 to-gold-300",
+      shadow: isDarkMode ? "shadow-gold-400/20" : "shadow-gold-500/15"
     },
     {
       name: "Plan Empresarial",
@@ -95,7 +95,7 @@ export default function PublishProperty() {
       }`}>
         <Navbar />
         <main className="flex-grow flex items-center justify-center px-8 relative overflow-hidden">
-          <div className={`absolute inset-0 ${isDarkMode ? "bg-blue-900/10" : "bg-blue-600/5"}`}></div>
+          <div className={`absolute inset-0 ${isDarkMode ? "bg-gold-900/10" : "bg-gold-600/5"}`}></div>
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -103,8 +103,8 @@ export default function PublishProperty() {
               isDarkMode ? "bg-midnight-DEFAULT border-white/10" : "bg-white border-light-200"
             }`}
           >
-            <div className="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
-              <FaLock className="text-3xl text-blue-500" />
+            <div className="w-20 h-20 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
+              <FaLock className="text-3xl text-gold-500" />
             </div>
             <h2 className={`text-3xl font-serif font-bold mb-4 ${isDarkMode ? "text-white" : "text-dark-950"}`}>Acceso Restringido</h2>
             <p className={`font-light mb-10 leading-relaxed ${isDarkMode ? "text-gray-400" : "text-dark-700"}`}>
@@ -114,7 +114,7 @@ export default function PublishProperty() {
               <button 
                 onClick={() => navigate("/login")}
                 className={`w-full py-5 rounded-2xl font-bold uppercase tracking-widest transition-all shadow-lg ${
-                  isDarkMode ? "bg-white text-dark-950 hover:bg-gray-100" : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20"
+                  isDarkMode ? "bg-gold-600 text-white hover:bg-gold-500" : "bg-gold-600 text-white hover:bg-gold-700 shadow-gold-600/20"
                 }`}
               >
                 Iniciar Sesión
@@ -156,7 +156,7 @@ export default function PublishProperty() {
           <div className={`absolute inset-0 transition-colors duration-500 ${
             isDarkMode 
               ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85" 
-              : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
+              : "bg-gradient-to-br from-white/80 via-gold-50/60 to-white/80"
           }`}></div>
         </div>
         
@@ -164,7 +164,7 @@ export default function PublishProperty() {
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-6 block ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}
+            className={`font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-6 block ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}
           >
             Eleva tu inmueble al siguiente nivel
           </motion.span>
@@ -175,9 +175,9 @@ export default function PublishProperty() {
               isDarkMode ? "text-white" : "text-dark-950"
             }`}
           >
-            Vende con <span className="text-blue-600 italic font-light">Distinción</span>
+            Vende con <span className="text-gold-600 italic font-light">Distinción</span>
           </motion.h1>
-          <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+          <div className="w-24 h-1 bg-gold-600 mx-auto mb-8 rounded-full"></div>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -238,16 +238,16 @@ export default function PublishProperty() {
                     <div className={`h-full rounded-[2.95rem] p-12 flex flex-col items-center text-center border transition-all duration-500 group ${
                       isDarkMode 
                         ? "bg-midnight-DEFAULT/90 backdrop-blur-xl border-white/5 shadow-2xl" 
-                        : "bg-white border-light-200 shadow-xl shadow-blue-900/5"
+                        : "bg-white border-light-200 shadow-xl shadow-gold-900/5"
                     } ${plan.shadow}`}>
                       {plan.recommended && (
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-8 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] z-20 shadow-lg shadow-blue-600/30">
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gold-600 text-white px-8 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] z-20 shadow-lg shadow-gold-600/30">
                           Recomendado
                         </div>
                       )}
                       
                       <div className={`mb-10 p-10 rounded-[2.5rem] transition-all duration-500 transform group-hover:scale-110 ${
-                        isDarkMode ? "bg-white/5 group-hover:bg-blue-600/10" : "bg-blue-600/5 group-hover:bg-blue-600/10"
+                        isDarkMode ? "bg-white/5 group-hover:bg-gold-600/10" : "bg-gold-600/5 group-hover:bg-gold-600/10"
                       }`}>
                         {plan.icon}
                       </div>
@@ -255,15 +255,15 @@ export default function PublishProperty() {
                       <h3 className={`text-2xl font-bold mb-3 tracking-tight ${isDarkMode ? "text-white" : "text-dark-950"}`}>{plan.name}</h3>
                       
                       <div className="flex items-baseline gap-2 mb-2">
-                        <span className={`text-5xl font-bold ${isDarkMode ? "text-white" : "text-blue-600"}`}>{plan.price}</span>
-                        <span className={`text-xs font-bold tracking-widest italic ${isDarkMode ? "text-blue-400/60" : "text-blue-600/40"}`}>COP</span>
+                        <span className={`text-5xl font-bold ${isDarkMode ? "text-white" : "text-gold-600"}`}>{plan.price}</span>
+                        <span className={`text-xs font-bold tracking-widest italic ${isDarkMode ? "text-gold-400/60" : "text-gold-600/40"}`}>COP</span>
                       </div>
                       <p className={`text-[10px] font-bold uppercase tracking-[0.3em] mb-12 ${isDarkMode ? "text-gray-500" : "text-dark-400"}`}>{plan.duration}</p>
                       
                       <ul className="w-full space-y-6 mb-16 text-left">
                         {plan.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-4 group/item">
-                            <div className={`mt-1 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125 ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>
+                            <div className={`mt-1 flex-shrink-0 transition-transform duration-300 group-hover/item:scale-125 ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>
                               <FaCheck />
                             </div>
                             <span className={`text-sm font-light transition-colors duration-300 ${
@@ -276,11 +276,11 @@ export default function PublishProperty() {
                       <motion.button 
                         whileHover={{ 
                           scale: 1.05,
-                          boxShadow: "0 10px 30px -5px rgba(59, 130, 246, 0.6)",
-                          background: "linear-gradient(to right, #2563EB, #3B82F6)"
+                          boxShadow: "0 10px 30px -5px rgba(212, 175, 55, 0.6)",
+                          background: "linear-gradient(to right, #D4AF37, #E5C158)"
                         }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-full mt-auto py-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl bg-blue-600 text-white shadow-blue-500/20"
+                        className="w-full mt-auto py-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl bg-gold-600 text-white shadow-gold-500/20"
                       >
                         Seleccionar Plan
                       </motion.button>
@@ -300,12 +300,12 @@ export default function PublishProperty() {
               className="space-y-12"
             >
               <h2 className={`text-5xl md:text-6xl font-serif font-bold leading-tight ${isDarkMode ? "text-white" : "text-dark-950"}`}>
-                La Diferencia de <span className="text-blue-600 italic font-light">LuxHabitat</span>
+                La Diferencia de <span className="text-gold-600 italic font-light">LuxHabitat</span>
               </h2>
               <div className="space-y-12">
                 <motion.div whileHover={{ x: 10 }} className="flex gap-8 group">
                   <div className={`w-20 h-20 rounded-3xl flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
-                    isDarkMode ? "bg-white/5 text-blue-400 group-hover:bg-blue-600 group-hover:text-white" : "bg-blue-600/5 text-blue-600 group-hover:bg-blue-600 group-hover:text-white"
+                    isDarkMode ? "bg-white/5 text-gold-400 group-hover:bg-gold-600 group-hover:text-white" : "bg-gold-600/5 text-gold-600 group-hover:bg-gold-600 group-hover:text-white"
                   }`}>
                     <FaStar className="text-3xl" />
                   </div>
@@ -318,7 +318,7 @@ export default function PublishProperty() {
                 </motion.div>
                 <motion.div whileHover={{ x: 10 }} className="flex gap-8 group">
                   <div className={`w-20 h-20 rounded-3xl flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
-                    isDarkMode ? "bg-white/5 text-blue-400 group-hover:bg-blue-600 group-hover:text-white" : "bg-blue-600/5 text-blue-600 group-hover:bg-blue-600 group-hover:text-white"
+                    isDarkMode ? "bg-white/5 text-gold-400 group-hover:bg-gold-600 group-hover:text-white" : "bg-gold-600/5 text-gold-600 group-hover:bg-gold-600 group-hover:text-white"
                   }`}>
                     <FaRocket className="text-3xl" />
                   </div>
@@ -338,12 +338,12 @@ export default function PublishProperty() {
               viewport={{ once: true }}
               className="relative group"
             >
-              <div className="absolute -inset-10 bg-blue-600/10 rounded-[5rem] blur-[100px] group-hover:bg-blue-600/20 transition-all duration-700"></div>
+              <div className="absolute -inset-10 bg-gold-600/10 rounded-[5rem] blur-[100px] group-hover:bg-gold-600/20 transition-all duration-700"></div>
               <img 
                 src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80" 
                 alt="Propiedad de Lujo" 
                 className={`relative rounded-[4rem] shadow-2xl border transition-all duration-700 group-hover:scale-[1.02] ${
-                  isDarkMode ? "border-white/5" : "border-white shadow-blue-900/10"
+                  isDarkMode ? "border-white/5" : "border-white shadow-gold-900/10"
                 }`}
               />
             </motion.div>

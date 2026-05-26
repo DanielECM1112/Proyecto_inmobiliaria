@@ -34,7 +34,7 @@ export default function Location() {
           <div className={`absolute inset-0 transition-colors duration-500 ${
             isDarkMode 
               ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85" 
-              : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
+              : "bg-gradient-to-br from-white/80 via-gold-50/60 to-white/80"
           }`}></div>
         </div>
 
@@ -47,9 +47,9 @@ export default function Location() {
             <h1 className={`text-6xl md:text-8xl font-serif font-bold mb-6 tracking-tight ${
               isDarkMode ? "text-white" : "text-dark-950"
             }`}>
-              Ubicación <span className="text-blue-600 italic font-light">Estratégica</span>
+              Ubicación <span className="text-gold-600 italic font-light">Estratégica</span>
             </h1>
-            <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+            <div className="w-24 h-1 bg-gold-600 mx-auto mb-8 rounded-full"></div>
             <p className={`text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed ${
               isDarkMode ? "text-gray-300" : "text-slate-700"
             }`}>
@@ -75,7 +75,7 @@ export default function Location() {
                 }`}>Información de Contacto</h2>
                 <div className="space-y-10">
                   <div className="flex items-start gap-6 group">
-                    <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-16 h-16 bg-gold-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-gold-600/20 group-hover:scale-110 transition-transform duration-300">
                       <HiOutlineLocationMarker className="text-3xl" />
                     </div>
                     <div>
@@ -88,18 +88,18 @@ export default function Location() {
                   </div>
 
                   <div className="flex items-start gap-6 group">
-                    <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-16 h-16 bg-gold-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-gold-600/20 group-hover:scale-110 transition-transform duration-300">
                       <HiOutlinePhone className="text-3xl" />
                     </div>
                     <div>
                       <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? "text-white" : "text-dark-950"}`}>Atención Telefónica</h3>
                       <p className={`font-light text-lg ${isDarkMode ? "text-gray-400" : "text-dark-700"}`}>+57 (608) 277 0000</p>
-                      <p className={`font-bold text-lg ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>+57 322 314 7352</p>
+                      <p className={`font-bold text-lg ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>+57 322 314 7352</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-6 group">
-                    <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-16 h-16 bg-gold-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-gold-600/20 group-hover:scale-110 transition-transform duration-300">
                       <HiOutlineMail className="text-3xl" />
                     </div>
                     <div>
@@ -112,20 +112,20 @@ export default function Location() {
               </div>
               
               <div className={`p-10 rounded-[2.5rem] border transition-colors duration-500 ${
-                isDarkMode ? "bg-midnight-DEFAULT border-white/5" : "bg-white border-light-200 shadow-xl shadow-blue-900/5"
+                isDarkMode ? "bg-midnight-DEFAULT border-white/5" : "bg-white border-light-200 shadow-xl shadow-gold-900/5"
               }`}>
                 <div className="flex items-center gap-4 mb-8">
-                  <HiOutlineClock className="text-3xl text-blue-600" />
+                  <HiOutlineClock className="text-3xl text-gold-600" />
                   <h3 className={`text-2xl font-serif font-bold ${isDarkMode ? "text-white" : "text-dark-950"}`}>Horario de Atención</h3>
                 </div>
                 <ul className="space-y-4">
                   <li className={`flex justify-between items-center border-b pb-4 ${isDarkMode ? "border-white/5" : "border-light-200"}`}>
                     <span className={`${isDarkMode ? "text-gray-400" : "text-dark-700"} font-medium`}>Lunes - Viernes</span>
-                    <span className={`font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>8:00 AM - 6:30 PM</span>
+                    <span className={`font-bold ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>8:00 AM - 6:30 PM</span>
                   </li>
                   <li className={`flex justify-between items-center border-b pb-4 ${isDarkMode ? "border-white/5" : "border-light-200"}`}>
                     <span className={`${isDarkMode ? "text-gray-400" : "text-dark-700"} font-medium`}>Sábados</span>
-                    <span className={`font-bold ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>9:00 AM - 2:00 PM</span>
+                    <span className={`font-bold ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>9:00 AM - 2:00 PM</span>
                   </li>
                   <li className="flex justify-between items-center pt-2">
                     <span className={`${isDarkMode ? "text-gray-400" : "text-dark-700"} font-medium`}>Domingos y Festivos</span>

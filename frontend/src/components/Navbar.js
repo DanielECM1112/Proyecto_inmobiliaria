@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,8 +60,8 @@ export default function Navbar() {
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 backdrop-blur-2xl ${
       scrolled || !isHome 
         ? isDarkMode
-          ? "bg-gradient-to-r from-primary-dark via-blue-950/30 to-primary-dark border-b border-white/5 shadow-2xl shadow-black/20 py-4"
-          : "bg-gradient-to-r from-slate-50 via-white to-slate-50 border-b border-slate-200/50 shadow-xl shadow-slate-400/5 py-4"
+          ? "bg-gradient-to-r from-midnight-DEFAULT via-midnight-light/50 to-midnight-DEFAULT border-b border-gold-500/20 shadow-2xl shadow-black/40 py-4"
+          : "bg-gradient-to-r from-light-100 via-white to-light-100 border-b border-gold-200/50 shadow-xl shadow-slate-400/5 py-4"
         : "bg-gradient-to-b from-black/50 via-black/20 to-transparent py-6"
     }`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -68,7 +69,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center group gap-3 flex-shrink-0">
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 ${
               scrolled || !isHome 
-                ? "bg-blue-600 shadow-lg shadow-blue-500/20" 
+                ? isDarkMode ? "bg-gold-600 shadow-lg shadow-gold-500/30" : "bg-gold-500 shadow-lg shadow-gold-400/20" 
                 : "bg-white/20 backdrop-blur-md border border-white/30"
             }`}>
               <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -83,7 +84,7 @@ export default function Navbar() {
             }`}>
               LUX<span className={`${
                 scrolled || !isHome 
-                  ? isDarkMode ? "text-blue-500" : "text-blue-600" 
+                  ? isDarkMode ? "text-gold-500" : "text-gold-600" 
                   : "text-gray-300"
               } font-light transition-colors duration-500`}>HABITAT</span>
             </h1>
@@ -100,11 +101,11 @@ export default function Navbar() {
                       scrolled || !isHome
                         ? isDarkMode
                           ? location.pathname === link.path 
-                            ? "text-blue-500 border-blue-500" 
-                            : "text-gray-400 border-transparent hover:text-blue-400 hover:border-blue-400/50"
+                            ? "text-gold-500 border-gold-500" 
+                            : "text-gray-400 border-transparent hover:text-gold-400 hover:border-gold-400/50"
                           : location.pathname === link.path
-                            ? "text-blue-600 border-blue-600"
-                            : "text-slate-600 border-transparent hover:text-blue-600 hover:border-blue-600/50"
+                            ? "text-gold-600 border-gold-600"
+                            : "text-slate-600 border-transparent hover:text-gold-600 hover:border-gold-600/50"
                         : location.pathname === link.path
                           ? "text-white border-white"
                           : "text-gray-200 border-transparent hover:text-white hover:border-gray-300"
@@ -124,8 +125,8 @@ export default function Navbar() {
               className={`relative p-3 rounded-full transition-all duration-300 group overflow-hidden ${
                 scrolled || !isHome
                   ? isDarkMode
-                    ? "bg-gradient-to-br from-blue-500/20 to-indigo-500/10 text-blue-400 hover:shadow-lg hover:shadow-blue-500/20 border border-blue-500/30 shadow-md"
-                    : "bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 hover:shadow-lg hover:shadow-blue-200/50 border border-blue-200 shadow-md hover:border-blue-300"
+                    ? "bg-gradient-to-br from-gold-500/20 to-gold-600/10 text-gold-400 hover:shadow-lg hover:shadow-gold-500/30 border border-gold-500/30 shadow-md"
+                    : "bg-gradient-to-br from-gold-100 to-gold-50 text-gold-600 hover:shadow-lg hover:shadow-gold-200/50 border border-gold-200 shadow-md hover:border-gold-300"
                   : "bg-white/20 backdrop-blur-md text-white hover:bg-white/30 hover:shadow-xl border border-white/30 shadow-lg"
               }`}
               title={isDarkMode ? "Cambiar a modo claro (SOL)" : "Cambiar a modo oscuro (LUNA)"}
@@ -135,8 +136,8 @@ export default function Navbar() {
               <motion.div
                 className={`absolute inset-0 rounded-full transition-all duration-300 ${
                   isDarkMode 
-                    ? "bg-blue-500/0 group-hover:bg-blue-500/10" 
-                    : "bg-blue-500/0 group-hover:bg-blue-400/5"
+                    ? "bg-gold-500/0 group-hover:bg-gold-500/10" 
+                    : "bg-gold-500/0 group-hover:bg-gold-400/5"
                 }`}
                 animate={{ scale: isDarkMode ? 1 : 1 }}
               />
@@ -150,9 +151,9 @@ export default function Navbar() {
                 className="relative z-10"
               >
                 {isDarkMode ? 
-                  <MdWbSunny className="text-2xl" /> 
+                  <MdNightlightRound className="text-2xl" /> 
                   : 
-                  <MdNightlightRound className="text-2xl" />
+                  <MdWbSunny className="text-2xl" />
                 }
               </motion.div>
             </motion.button>
@@ -172,7 +173,7 @@ export default function Navbar() {
                 }`}
               >
                 {user ? (
-                  <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg uppercase">
+                  <div className="w-full h-full bg-gold-600 flex items-center justify-center text-white font-bold text-lg uppercase">
                     {user.username?.[0] || 'U'}
                   </div>
                 ) : (
@@ -192,7 +193,7 @@ export default function Navbar() {
                         : "bg-white/98 border-slate-200 shadow-slate-300/20"
                     }`}
                   >
-                    <div className="absolute top-0 left-0 w-full h-1 bg-blue-600"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gold-600"></div>
                     {user ? (
                       <div className="space-y-2">
                         <div className={`px-4 py-4 border-b ${
@@ -236,7 +237,7 @@ export default function Navbar() {
                         <motion.button 
                           onClick={() => { navigate('/login'); setShowProfileMenu(false); }}
                           whileHover={{ scale: 1.02 }}
-                          className="w-full py-4 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/20"
+                          className="w-full py-4 rounded-xl bg-gold-600 text-white font-bold text-sm shadow-lg shadow-gold-500/20"
                         >
                           Iniciar Sesión
                         </motion.button>

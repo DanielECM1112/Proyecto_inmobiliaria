@@ -47,7 +47,7 @@ export default function Selling() {
         <div className={`absolute inset-0 transition-colors duration-500 ${
           isDarkMode 
             ? "bg-gradient-to-br from-slate-900/85 via-slate-800/70 to-slate-900/85"
-            : "bg-gradient-to-br from-white/80 via-blue-50/60 to-white/80"
+            : "bg-gradient-to-br from-white/80 via-gold-50/60 to-white/80"
         }`}></div>
         <div className="relative z-10 max-w-4xl mx-auto">
           <motion.h1 
@@ -108,11 +108,11 @@ export default function Selling() {
                 viewport={{ once: true }}
                 className={`p-10 rounded-[2rem] border shadow-xl transition-all group ${
                   isDarkMode
-                    ? "bg-slate-800/50 border-white/10 shadow-black/20 hover:shadow-blue-500/10 hover:border-blue-500/30"
-                    : "bg-white border-slate-200 shadow-slate-200/50 hover:shadow-blue-600/10 hover:border-blue-600/30"
+                    ? "bg-slate-800/50 border-white/10 shadow-black/20 hover:shadow-gold-500/10 hover:border-gold-500/30"
+                    : "bg-white border-slate-200 shadow-slate-200/50 hover:shadow-gold-600/10 hover:border-gold-600/30"
                 }`}
               >
-                <div className={`mb-6 group-hover:scale-110 transition-transform ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>{s.icon}</div>
+                <div className={`mb-6 group-hover:scale-110 transition-transform ${isDarkMode ? "text-gold-400" : "text-gold-600"}`}>{s.icon}</div>
                 <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? "text-white" : "text-slate-950"}`}>{s.title}</h3>
                 <p className={`font-light ${isDarkMode ? "text-gray-400" : "text-slate-600"}`}>{s.desc}</p>
               </motion.div>
@@ -126,12 +126,12 @@ export default function Selling() {
             viewport={{ once: true }}
             className={`p-16 rounded-[3rem] relative overflow-hidden transition-colors duration-500 border ${
               isDarkMode
-                ? "bg-gradient-to-br from-blue-900/40 to-slate-900/60 border-blue-500/20"
-                : "bg-gradient-to-br from-blue-600 to-blue-700 border-blue-600"
+                ? "bg-gradient-to-br from-gold-900/40 to-slate-900/60 border-gold-500/20"
+                : "bg-gradient-to-br from-gold-600 to-gold-700 border-gold-600"
             }`}
           >
             <div className={`absolute top-0 left-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 ${
-              isDarkMode ? "bg-blue-500/10" : "bg-white/10"
+              isDarkMode ? "bg-gold-500/10" : "bg-white/10"
             }`}></div>
             <h2 className={`text-4xl font-serif font-bold mb-12 text-center relative z-10 ${isDarkMode ? "text-white" : "text-white"}`}>Estrategia de Comercialización</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">

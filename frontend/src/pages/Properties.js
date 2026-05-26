@@ -133,7 +133,7 @@ export default function Properties() {
           <div className={`absolute inset-0 ${
             isDarkMode 
               ? "bg-gradient-to-b from-primary-dark/80 via-primary-dark/95 to-primary-dark" 
-              : "bg-gradient-to-b from-blue-900/15 via-white/70 to-light-100"
+              : "bg-gradient-to-b from-gold-900/10 via-white/70 to-light-100"
           }`}></div>
         </div>
 
@@ -146,9 +146,9 @@ export default function Properties() {
             <h1 className={`text-6xl md:text-8xl font-serif font-bold mb-6 tracking-tight ${
               isDarkMode ? "text-white" : "text-dark-950"
             }`}>
-              Propiedades <span className="text-blue-600 italic font-light">Exclusivas</span>
+              Propiedades <span className="text-gold-600 italic font-light">Exclusivas</span>
             </h1>
-            <div className="w-24 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+            <div className="w-24 h-1 bg-gold-600 mx-auto mb-8 rounded-full"></div>
             <p className={`text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed ${
               isDarkMode ? "text-gray-300" : "text-dark-700"
             }`}>
@@ -180,8 +180,8 @@ export default function Properties() {
                   whileHover={{ y: -15 }}
                   className={`rounded-[2.5rem] overflow-hidden transition-all duration-500 border group ${
                     isDarkMode 
-                      ? "bg-midnight-DEFAULT border-white/5 shadow-2xl shadow-black/40 hover:border-blue-500/30" 
-                      : "bg-white border-light-200 shadow-xl shadow-blue-900/5 hover:border-blue-600/30"
+                      ? "bg-midnight-DEFAULT border-white/5 shadow-2xl shadow-black/40 hover:border-gold-500/30" 
+                      : "bg-white border-light-200 shadow-xl shadow-gold-900/5 hover:border-gold-600/30"
                   }`}
                 >
                   <div className="relative h-80 overflow-hidden">
@@ -193,7 +193,7 @@ export default function Properties() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
                     
                     <div className="absolute top-8 left-8 flex gap-3">
-                      <span className="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">
+                      <span className="bg-gold-600 text-white px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">
                         {prop.property_type || "Inmueble"}
                       </span>
                       <span className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl">
@@ -204,7 +204,7 @@ export default function Properties() {
 
                   <div className="p-10">
                     <h3 className={`text-2xl font-serif font-bold mb-3 leading-tight transition-colors ${
-                      isDarkMode ? "text-white group-hover:text-blue-400" : "text-dark-950 group-hover:text-blue-600"
+                      isDarkMode ? "text-white group-hover:text-gold-400" : "text-dark-950 group-hover:text-gold-600"
                     }`}>
                       {prop.title}
                     </h3>
@@ -212,7 +212,7 @@ export default function Properties() {
                     <p className={`flex items-center gap-2 mb-8 font-light italic text-sm ${
                       isDarkMode ? "text-gray-400" : "text-dark-600"
                     }`}>
-                      <HiOutlineLocationMarker className="text-blue-600 text-xl" />
+                      <HiOutlineLocationMarker className="text-gold-600 text-xl" />
                       {prop.city}, {prop.address}
                     </p>
 
@@ -224,7 +224,7 @@ export default function Properties() {
                           isDarkMode ? "text-gray-500" : "text-dark-400"
                         }`}>Inversión</span>
                         <span className={`text-2xl font-bold ${
-                          isDarkMode ? "text-blue-400" : "text-blue-600"
+                          isDarkMode ? "text-gold-400" : "text-gold-600"
                         }`}>${parseFloat(prop.price).toLocaleString()}</span>
                       </div>
                     </div>
@@ -255,8 +255,8 @@ export default function Properties() {
                       onClick={() => setSelectedProperty(prop)}
                       className={`w-full py-5 rounded-2xl font-bold uppercase tracking-widest transition-all ${
                         isDarkMode 
-                          ? "bg-white text-dark-950 hover:bg-gray-100 shadow-xl shadow-white/5" 
-                          : "bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-600/20"
+                          ? "bg-gold-600 text-white hover:bg-gold-500 shadow-xl shadow-gold-600/20" 
+                          : "bg-gold-600 text-white hover:bg-gold-700 shadow-xl shadow-gold-600/20"
                       }`}
                     >
                       Explorar Detalles
@@ -311,7 +311,7 @@ export default function Properties() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                   <div className="absolute bottom-10 left-10">
-                    <span className="bg-blue-600 text-white px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-2xl">
+                    <span className="bg-gold-600 text-white px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-2xl">
                       {selectedProperty.type}
                     </span>
                   </div>
@@ -328,7 +328,7 @@ export default function Properties() {
                     <p className={`flex items-center gap-3 text-lg italic font-light ${
                       isDarkMode ? "text-gray-400" : "text-dark-700"
                     }`}>
-                      <HiOutlineLocationMarker className="text-blue-600 text-2xl" />
+                      <HiOutlineLocationMarker className="text-gold-600 text-2xl" />
                       {selectedProperty.location}
                     </p>
                   </div>
@@ -341,7 +341,7 @@ export default function Properties() {
                         isDarkMode ? "text-gray-500" : "text-dark-400"
                       }`}>Inversión Exclusiva</span>
                       <span className={`text-4xl font-bold ${
-                        isDarkMode ? "text-blue-400" : "text-blue-600"
+                        isDarkMode ? "text-gold-400" : "text-gold-600"
                       }`}>{selectedProperty.price}</span>
                     </div>
                   </div>

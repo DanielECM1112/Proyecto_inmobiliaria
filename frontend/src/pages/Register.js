@@ -67,7 +67,7 @@ export default function Register() {
               <p className={`text-xl font-light transition-colors duration-500 ${
                 isDarkMode ? "text-gray-400" : "text-dark-700"
               }`}>Únete a nuestra comunidad exclusiva de inversión</p>
-              <div className="w-16 h-1 bg-blue-600 mx-auto mt-6 rounded-full"></div>
+              <div className="w-16 h-1 bg-gold-600 mx-auto mt-6 rounded-full"></div>
             </div>
 
             {error && (
@@ -109,8 +109,8 @@ export default function Register() {
                     onChange={handleChange}
                     className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
                       isDarkMode
-                        ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:bg-white/12"
-                        : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
+                        ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-gold-500/50 focus:bg-white/12"
+                        : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-600/10"
                     }`}
                     placeholder="Tu nombre"
                     required
@@ -127,8 +127,8 @@ export default function Register() {
                     onChange={handleChange}
                     className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
                       isDarkMode
-                        ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:bg-white/12"
-                        : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
+                        ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-gold-500/50 focus:bg-white/12"
+                        : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-600/10"
                     }`}
                     placeholder="Tu apellido"
                     required
@@ -147,8 +147,8 @@ export default function Register() {
                   onChange={handleChange}
                   className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
                     isDarkMode
-                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-blue-500/50"
-                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-blue-600"
+                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-gold-500/50"
+                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-gold-600"
                   }`}
                   placeholder="Elige un usuario"
                   required
@@ -166,8 +166,8 @@ export default function Register() {
                   onChange={handleChange}
                   className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
                     isDarkMode
-                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-blue-500/50"
-                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-blue-600"
+                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-gold-500/50"
+                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-gold-600"
                   }`}
                   placeholder="tu@email.com"
                   required
@@ -185,8 +185,8 @@ export default function Register() {
                   onChange={handleChange}
                   className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
                     isDarkMode
-                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-blue-500/50"
-                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-blue-600"
+                      ? "bg-white/5 border-white/5 text-white placeholder:text-gray-600 focus:border-gold-500/50"
+                      : "bg-light-50 border-light-200 text-dark-950 placeholder:text-dark-400 focus:bg-white focus:border-gold-600"
                   }`}
                   placeholder="••••••••"
                   required
@@ -201,7 +201,7 @@ export default function Register() {
                 className={`w-full px-8 py-6 rounded-2xl text-lg font-bold shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest ${
                   isDarkMode
                     ? "bg-white text-dark-950 hover:bg-gray-100"
-                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20"
+                    : "bg-gold-600 text-white hover:bg-gold-700 shadow-gold-600/20"
                 }`}
               >
                 {loading ? "Creando cuenta..." : "Registrarme"}
@@ -214,7 +214,7 @@ export default function Register() {
               }`}>
                 ¿Ya tienes una cuenta?{" "}
                 <Link to="/login" className={`font-bold transition-colors duration-500 ${
-                  isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
+                  isDarkMode ? "text-gold-400 hover:text-gold-300" : "text-gold-600 hover:text-gold-700"
                 }`}>
                   Inicia sesión aquí
                 </Link>
