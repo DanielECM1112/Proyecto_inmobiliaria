@@ -158,10 +158,16 @@ export default function Navbar() {
               </motion.div>
             </motion.button>
 
-            {/* Profile / Login / Register */}
+            {/* Profile / Login */}
             <div className="relative" ref={menuRef}>
               <motion.button 
-                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                onClick={() => {
+                  if (user) {
+                    setShowProfileMenu(!showProfileMenu);
+                  } else {
+                    navigate('/login');
+                  }
+                }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-500 border-2 overflow-hidden font-semibold ${
@@ -182,7 +188,7 @@ export default function Navbar() {
               </motion.button>
 
               <AnimatePresence>
-                {showProfileMenu && (
+                {showProfileMenu && user && (
                   <motion.div 
                     initial={{ opacity: 0, y: 15, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -194,66 +200,43 @@ export default function Navbar() {
                     }`}
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gold-600"></div>
-                    {user ? (
-                      <div className="space-y-2">
-                        <div className={`px-4 py-4 border-b ${
-                          isDarkMode ? "border-white/5" : "border-slate-200/50"
+                    <div className="space-y-2">
+                      <div className={`px-4 py-4 border-b ${
+                        isDarkMode ? "border-white/5" : "border-slate-200/50"
+                      }`}>
+                        <p className={`text-[10px] uppercase tracking-widest font-bold mb-1 ${
+                          isDarkMode ? "text-gray-500" : "text-slate-500"
                         }`}>
-                          <p className={`text-[10px] uppercase tracking-widest font-bold mb-1 ${
-                            isDarkMode ? "text-gray-500" : "text-slate-500"
-                          }`}>
-                            Bienvenido
-                          </p>
-                          <p className={`text-lg font-bold truncate ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                            {user.first_name} {user.last_name}
-                          </p>
-                          <p className={`text-xs truncate mt-1 ${isDarkMode ? "text-gray-400" : "text-slate-600"}`}>
-                            {user.email}
-                          </p>
-                        </div>
-                        {user.rol === "Administrador" && (
-                          <motion.button 
-                            onClick={() => { navigate('/admin'); setShowProfileMenu(false); }}
-                            whileHover={{ x: 4, backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.05)' }}
-                            className={`w-full text-left px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
-                              isDarkMode
-                                ? "text-gray-300"
-                                : "text-slate-800"
-                            }`}
-                          >
-                            🔧 Panel Admin
-                          </motion.button>
-                        )}
-                        <motion.button 
-                          onClick={handleLogout}
-                          whileHover={{ x: 4, backgroundColor: 'rgba(239,68,68,0.1)' }}
-                          className="w-full text-left px-4 py-3 text-sm font-bold rounded-xl text-red-500 transition-all duration-300"
-                        >
-                          🚪 Cerrar Sesión
-                        </motion.button>
+                          Bienvenido
+                        </p>
+                        <p className={`text-lg font-bold truncate ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                          {user.first_name} {user.last_name}
+                        </p>
+                        <p className={`text-xs truncate mt-1 ${isDarkMode ? "text-gray-400" : "text-slate-600"}`}>
+                          {user.email}
+                        </p>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
+                      {user.rol === "Administrador" && (
                         <motion.button 
-                          onClick={() => { navigate('/login'); setShowProfileMenu(false); }}
-                          whileHover={{ scale: 1.02 }}
-                          className="w-full py-4 rounded-xl bg-gold-600 text-white font-bold text-sm shadow-lg shadow-gold-500/20"
-                        >
-                          Iniciar Sesión
-                        </motion.button>
-                        <motion.button 
-                          onClick={() => { navigate('/register'); setShowProfileMenu(false); }}
-                          whileHover={{ scale: 1.02 }}
-                          className={`w-full py-4 rounded-xl font-bold text-sm border transition-all duration-300 ${
-                            isDarkMode 
-                              ? "border-white/10 text-white hover:bg-white/5" 
-                              : "border-slate-300 text-slate-900 hover:bg-slate-100"
+                          onClick={() => { navigate('/admin'); setShowProfileMenu(false); }}
+                          whileHover={{ x: 4, backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.05)' }}
+                          className={`w-full text-left px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
+                            isDarkMode
+                              ? "text-gray-300"
+                              : "text-slate-800"
                           }`}
                         >
-                          Registrarse
+                          🔧 Panel Admin
                         </motion.button>
-                      </div>
-                    )}
+                      )}
+                      <motion.button 
+                        onClick={handleLogout}
+                        whileHover={{ x: 4, backgroundColor: 'rgba(239,68,68,0.1)' }}
+                        className="w-full text-left px-4 py-3 text-sm font-bold rounded-xl text-red-500 transition-all duration-300"
+                      >
+                        🚪 Cerrar Sesión
+                      </motion.button>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

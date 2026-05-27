@@ -5,12 +5,14 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
+import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
     password: ""
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -41,113 +43,145 @@ export default function Login() {
 
   return (
     <div className={`min-h-screen flex flex-col transition-colors duration-500 ${
-      isDarkMode ? "bg-primary-dark" : "bg-light-100"
+      isDarkMode ? "bg-[#0a0e1a]" : "bg-light-100"
     }`}>
       <Navbar />
-      <main className="flex-grow flex items-center justify-center py-20 px-8 pt-32">
-        <div className={`max-w-xl w-full rounded-[3rem] shadow-2xl overflow-hidden flex flex-col transition-all duration-500 border ${
-          isDarkMode 
-            ? "bg-midnight-DEFAULT border-white/5" 
-            : "bg-white border-light-200"
-        }`}>
-          <div className="w-full p-12 md:p-16">
-            <div className="text-center mb-12">
-              <h2 className={`text-5xl font-serif font-bold mb-4 tracking-tight transition-colors duration-500 ${
-                isDarkMode ? "text-white" : "text-dark-950"
-              }`}>Iniciar Sesión</h2>
-              <p className={`text-xl font-light transition-colors duration-500 ${
-                isDarkMode ? "text-gray-400" : "text-dark-700"
-              }`}>Bienvenido de nuevo a tu portal inmobiliario</p>
-              <div className="w-16 h-1 bg-gold-600 mx-auto mt-6 rounded-full"></div>
-            </div>
-
-            {error && (
-              <div className={`border-l-4 p-6 rounded-2xl mb-8 flex items-center gap-4 transition-all duration-300 ${
-                isDarkMode 
-                  ? "bg-red-500/10 border-red-500/50 text-red-400" 
-                  : "bg-red-50 border-red-500 text-red-700"
-              }`}>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="font-bold">{error}</span>
+      <main className="flex-grow pt-20">
+        <div className="min-h-[calc(100vh-80px)] flex">
+          {/* Left side - Image/Branding */}
+          <div className="hidden lg:flex lg:w-1/2 bg-cover bg-center relative overflow-hidden" style={{ 
+            backgroundImage: 'url(https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&h=1500&fit=crop)' 
+          }}>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80" />
+            <div className="relative z-10 flex flex-col justify-end p-12 w-full">
+              <div className="mb-12">
+                <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center mb-8">
+                  <svg className="w-14 h-14 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                </div>
+                <h1 className="text-5xl font-serif font-bold text-white mb-4">
+                  LUX<span className="text-gray-300 font-light">HABITAT</span>
+                </h1>
+                <p className="text-xl text-gray-300 font-light">
+                  Con LUXHABITAT, tu hogar de ensueño está a un click de distancia
+                </p>
               </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-3">
-                <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
-                  isDarkMode ? "text-slate-400" : "text-slate-600"
-                }`}>
-                  Usuario
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
-                    isDarkMode
-                      ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-gold-500/50 focus:bg-white/12"
-                      : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-600/10"
-                  }`}
-                  placeholder="Tu nombre de usuario"
-                  required
-                />
-              </div>
-
-              <div className="space-y-3">
-                <label className={`text-[10px] font-bold uppercase tracking-[0.2em] ml-1 transition-colors duration-500 ${
-                  isDarkMode ? "text-slate-400" : "text-slate-600"
-                }`}>
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`w-full px-8 py-5 border-2 rounded-2xl focus:outline-none transition-all duration-300 text-lg font-medium ${
-                    isDarkMode
-                      ? "bg-white/8 border-white/15 text-white placeholder:text-slate-500 focus:border-gold-500/50 focus:bg-white/12"
-                      : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-600/10"
-                  }`}
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className={`w-full px-8 py-6 rounded-2xl text-lg font-bold shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest ${
-                  isDarkMode
-                    ? "bg-white text-dark-950 hover:bg-gray-100"
-                    : "bg-gold-600 text-white hover:bg-gold-700 shadow-gold-600/20"
-                }`}
-              >
-                {loading ? "Verificando..." : "Ingresar"}
-              </motion.button>
-            </form>
-
-            <div className="mt-12 text-center space-y-6">
-              <p className={`text-lg font-light transition-colors duration-500 ${
-                isDarkMode ? "text-gray-400" : "text-dark-700"
-              }`}>
-                ¿No tienes una cuenta?{" "}
-                <Link to="/register" className={`font-bold transition-colors duration-500 ${
-                  isDarkMode ? "text-gold-400 hover:text-gold-300" : "text-gold-600 hover:text-gold-700"
-                }`}>
-                  Regístrate ahora
-                </Link>
+              <p className="text-gray-400 text-sm">
+                Encuentra la propiedad perfecta para ti y tu familia
               </p>
-              <Link to="/" className={`inline-block font-medium transition-colors duration-500 ${
-                isDarkMode ? "text-gray-500 hover:text-gray-400" : "text-dark-400 hover:text-dark-950"
-              }`}>
-                ← Volver al inicio
-              </Link>
+            </div>
+          </div>
+
+          {/* Right side - Form */}
+          <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[#0a0e1a]">
+            <div className="w-full max-w-md">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-serif font-bold text-white mb-3">
+                  Bienvenido de nuevo
+                </h2>
+                <p className="text-gray-400">
+                  Ingresa tus credenciales para continuar
+                </p>
+              </div>
+
+              {error && (
+                <div className="border border-red-500/30 bg-red-500/10 p-4 rounded-xl mb-8 text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                    Correo electrónico
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-[#8B5CF6] focus:bg-white/8 transition-all duration-300"
+                      placeholder="tucorreo@ejemplo.com"
+                      required
+                    />
+                    <FaEnvelope className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                    Contraseña
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-[#8B5CF6] focus:bg-white/8 transition-all duration-300"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400"
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-gray-400 text-sm cursor-pointer">
+                    <input type="checkbox" style={{accentColor: 'var(--accent-gold)'}} className="w-4 h-4 rounded border-gray-600 bg-white/5" />
+                    <span>Recordarme</span>
+                  </label>
+                  <Link to="/forgot-password" className="text-[var(--accent-gold)] text-sm font-semibold hover:opacity-90">
+                    ¿Olvidaste tu contraseña?
+                  </Link>
+                </div>
+
+                <div className="flex justify-center gap-4 py-4">
+                  <button type="button" className="w-12 h-12 bg-white rounded-xl flex items-center justify-center hover:bg-gray-100 transition-all" aria-label="Iniciar sesión con Google">
+                    <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M43.6 20.4H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-7 0-12.7-5.7-12.7-12.7S17 10.7 24 10.7c3.2 0 6 1.2 8.2 3.2l5.7-5.7C34.6 5.1 29.6 3 24 3 12.9 3 4 11.9 4 23s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.6z" fill="#EA4335"/>
+                      <path d="M6.3 14.1l6.6 4.8C14.9 15.5 19 12 24 12c3.2 0 6 1.2 8.2 3.2l5.7-5.7C34.6 5.1 29.6 3 24 3 16 3 9.1 7.6 6.3 14.1z" fill="#FBBC05"/>
+                      <path d="M24 44c5.3 0 10-1.8 13.7-4.9l-6.3-5.1C28.7 33.9 26.5 34.7 24 34.7c-5.3 0-9.8-3.1-11.6-7.6l-6.8 5.2C8.2 39.9 15.6 44 24 44z" fill="#34A853"/>
+                      <path d="M43.6 20.4H42V20H24v8h11.3c-1 2.9-3 5.3-5.7 7.1-1.3.9-2.8 1.6-4.3 2.1 5.4 0 10-1.8 13.7-4.9 0 0 0 0 0 0 2-1.6 3.6-3.8 4.6-6.3.1-.3.2-.7.3-1.1z" fill="#1877F2" opacity="0"/>
+                    </svg>
+                  </button>
+                  <button type="button" className="w-12 h-12 bg-white rounded-xl flex items-center justify-center hover:bg-gray-100 transition-all" aria-label="Iniciar sesión con Facebook">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="24" height="24" rx="4" fill="#1877F2"/>
+                      <path d="M15 8.5h-1.3c-.3 0-.8.2-.8.9V10h2.1l-.3 2h-1.8v6h-2.1v-6H9.7v-2h1.2v-1.2c0-1.2.7-2.1 2-2.1H15v2z" fill="#fff"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  style={{background: 'linear-gradient(90deg, var(--accent-gold-dark), var(--accent-gold))', boxShadow: 'var(--shadow-gold)'}}
+                  className="w-full py-4 text-white font-bold uppercase tracking-widest rounded-xl transition-all duration-300 disabled:opacity-50"
+                >
+                  {loading ? "Verificando..." : "Iniciar Sesión"}
+                </motion.button>
+              </form>
+
+              <div className="mt-10 text-center">
+                <p className="text-gray-500 text-sm">
+                  ¿No tienes una cuenta?{" "}
+                  <Link to="/register" className="text-white font-semibold hover:text-[#8B5CF6]">
+                    Registrarse
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>

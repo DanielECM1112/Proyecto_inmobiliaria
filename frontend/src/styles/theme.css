@@ -75,6 +75,14 @@ body {
   outline-offset: 2px;
 }
 
+/* Also ensure regular focus states use premium gold for inputs/selects/textareas */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 0 0 6px rgba(212,175,55,0.06) !important;
+}
+
 /* Improved Link Styling */
 a {
   transition: color 0.3s ease, text-decoration 0.3s ease;
