@@ -53,6 +53,13 @@ class AdminPagoDetailView(generics.UpdateAPIView):
     serializer_class = PagoSerializer
     queryset = Pago.objects.all()
 
+class MisPagosView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PagoSerializer
+
+    def get_queryset(self):
+        return PagoService.obtener_mis_pagos(self.request.user)
+
 class AdminStatsView(APIView):
     permission_classes = [IsAdminRole]
 

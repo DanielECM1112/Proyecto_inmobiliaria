@@ -1,5 +1,6 @@
 import logging
 import uuid
+from datetime import timedelta
 from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from payments.models import Pago
@@ -120,6 +121,13 @@ class PagoService:
             "monto": f"{pago.monto:.2f}",
             "estado": pago.estado
         }
+
+    @staticmethod
+    def obtener_mis_pagos(usuario):
+        """
+        Retorna los pagos del usuario autenticado ordenados por fecha.
+        """
+        return Pago.objects.filter(usuario=usuario).select_related('plan', 'inmueble').order_by('-created_at')
 
     @staticmethod
     def obtener_estadisticas_completas():
