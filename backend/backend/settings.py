@@ -110,20 +110,21 @@ SIMPLE_JWT = {
 }
 
 # --- CORS ---
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
-    cast=Csv()
-)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_HEADERS = list(default_headers) + [
+CORS_ALLOW_HEADERS = [
+    'accept',
     'authorization',
     'content-type',
-    'accept',
     'origin',
-    'x-requested-with'
+    'x-requested-with',
 ]
 
 # --- INTERNACIONALIZACIÓN ---
