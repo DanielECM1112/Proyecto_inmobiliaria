@@ -118,7 +118,7 @@ class MisInmuebleSerializer(serializers.ModelSerializer):
     Serializer para el endpoint de mis inmuebles con estado de pago.
     """
     plan = PlanBasicSerializer(read_only=True)
-    estado_pago = serializers.SerializerMethodField()
+    pago_estado = serializers.SerializerMethodField()
 
     class Meta:
         model = Inmueble
@@ -127,9 +127,29 @@ class MisInmuebleSerializer(serializers.ModelSerializer):
             'tipo', 'estado', 'plan', 'estado_pago', 'created_at'
         )
 
-    def get_estado_pago(self, obj):
+    def get_pago_estado(self, obj):
         pago = obj.pagos.order_by('-created_at').first()
-        return pago.estado if pago else None
+        if not pago:
+            return 'sin_pago'
+        return pago.estado
+
+
+class ImagenUploadSerializer(serializers.Serializer):
+    """Serializer para la carga de imágenes."""
+    imagen = serializers.ImageField(required=True)
+
+    def validate_imagen(self, value):
+        # Validar tamaño máximo 5MB
+        max_size = 5 * 1024 * 1024
+        if value.size > max_size:
+            raise serializers.ValidationError('La imagen excede el tamaño máximo de 5MB.')
+
+        # Validar extensión
+        name = value.name.lower()
+        if not any(name.endswith(ext) for ext in ['.jpg', '.jpeg', '.png', '.webp']):
+            raise serializers.ValidationError('Formato no permitido. Solo jpg, jpeg, png, webp.')
+
+        return value
 
 class FavoritoSerializer(serializers.ModelSerializer):
     """

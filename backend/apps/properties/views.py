@@ -19,6 +19,10 @@ class InmuebleListCreateView(APIView):
 
     def get(self, request):
         filtros = request.query_params.dict()
+        # Indicar al servicio si el request lo hace un admin para relajar filtro de estado
+        if request.user and request.user.is_authenticated and getattr(request.user, 'rol', None) == 'admin':
+            filtros['is_admin'] = True
+
         inmuebles = InmuebleService.listar_inmuebles(filtros)
         serializer = InmuebleListSerializer(inmuebles, many=True, context={'request': request})
         return Response(serializer.data)
@@ -109,11 +113,13 @@ class ImagenView(APIView):
         if 'imagen' not in request.FILES:
             return Response({"error": "No se proporcionó ninguna imagen."}, status=status.HTTP_400_BAD_REQUEST)
 
-        nueva_img, error = InmuebleService.agregar_imagen(pk, request.FILES['imagen'], request.user)
-        if nueva_img:
-            serializer = ImagenSerializer(nueva_img, context={'request': request})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response({"error": error}, status=status.HTTP_400_BAD_REQUEST)
+        resultado, error = InmuebleService.agregar_imagen(pk, request.FILES['imagen'], request.user)
+        if resultado and not error:
+            # resultado contiene mensaje e imagen
+            imagen_obj = resultado.get('imagen')
+            serializer = ImagenSerializer(imagen_obj, context={'request': request})
+            return Response({'mensaje': resultado.get('mensaje'), 'imagen': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"error": error or 'Error al subir imagen.'}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, img_id):
         try:
@@ -139,12 +145,14 @@ class FavoritoView(APIView):
         inmueble_id = request.data.get('inmueble')
         if not inmueble_id:
             return Response({"error": "ID de inmueble requerido."}, status=status.HTTP_400_BAD_REQUEST)
-
         resultado = InmuebleService.toggle_favorito(request.user, inmueble_id)
-        if resultado is True:
-            return Response({"message": "Agregado a favoritos."}, status=status.HTTP_201_CREATED)
-        elif resultado is False:
-            return Response({"message": "Eliminado de favoritos."}, status=status.HTTP_200_OK)
+        if isinstance(resultado, dict):
+            accion = resultado.get('accion')
+            total = resultado.get('total_favoritos', 0)
+            if accion == 'agregado':
+                return Response({"accion": accion, "total_favoritos": total}, status=status.HTTP_201_CREATED)
+            return Response({"accion": accion, "total_favoritos": total}, status=status.HTTP_200_OK)
+
         return Response({"error": "Error al procesar favorito."}, status=status.HTTP_400_BAD_REQUEST)
 
 class ContactoView(APIView):
@@ -159,3 +167,14 @@ class ContactoView(APIView):
             InmuebleService.enviar_contacto(serializer.validated_data)
             return Response({"message": "Mensaje enviado correctamente."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FavoritoCountView(APIView):
+    """
+    Retorna el total de favoritos de un inmueble (público).
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        resultado = InmuebleService.contar_favoritos(pk)
+        return Response(resultado)

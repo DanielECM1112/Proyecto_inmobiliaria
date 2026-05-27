@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     InmuebleListCreateView, InmuebleDetailView,
     InmuebleAdminView, ImagenView, FavoritoView,
-    ContactoView, MisInmueblesView
+    ContactoView, MisInmueblesView, FavoritoCountView
 )
 
 urlpatterns = [
@@ -19,6 +19,7 @@ urlpatterns = [
     # Favoritos
     path('favoritos/', FavoritoView.as_view(), name='favoritos'),
     path('favoritos/<uuid:pk>/', FavoritoView.as_view(), name='favoritos-delete'),
+    path('inmuebles/<uuid:pk>/favoritos/count/', FavoritoCountView.as_view(), name='favoritos-count'),
 
     # Contacto
     path('contacto/', ContactoView.as_view(), name='contacto'),

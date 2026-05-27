@@ -34,6 +34,21 @@ class PagoService:
         if Pago.objects.filter(inmueble=inmueble, estado__in=['pendiente', 'aprobado']).exists():
             raise ValueError("Ya existe un pago pendiente o aprobado para este inmueble.")
 
+        # Validar que el usuario no tenga un plan activo (pago aprobado no expirado)
+        from django.utils import timezone
+        from datetime import timedelta
+        ultimo_aprobado = Pago.objects.filter(usuario=usuario, estado='aprobado').order_by('-created_at').first()
+        if ultimo_aprobado:
+            try:
+                duracion = int(getattr(ultimo_aprobado.plan, 'duracion_dias', 0))
+                fecha_expiracion = ultimo_aprobado.created_at + timedelta(days=duracion)
+                ahora = timezone.now()
+                if fecha_expiracion > ahora:
+                    raise ValueError(f"Ya tienes un plan activo hasta {fecha_expiracion.strftime('%Y-%m-%d')}")
+            except Exception:
+                # Si falla el cálculo simplemente no bloqueamos (mejor que romper)
+                pass
+
         # Validar método de pago
         metodo = (metodo or '').lower()
         if metodo not in ['tarjeta', 'pse', 'nequi']:
@@ -133,6 +148,15 @@ class PagoService:
             finalizados=Count('id', filter=Q(estado='finalizado'))
         )
 
+        # Top 5 ciudades con más inmuebles
+        from django.db.models import Count as DjangoCount
+        inmuebles_por_ciudad_qs = Inmueble.objects.values('ciudad').annotate(total=DjangoCount('id')).order_by('-total')[:5]
+        inmuebles_por_ciudad = [{ 'ciudad': item['ciudad'], 'total': item['total'] } for item in inmuebles_por_ciudad_qs]
+
+        # Conteo por tipo
+        inmuebles_por_tipo_qs = Inmueble.objects.values('tipo').annotate(total=DjangoCount('id')).order_by('-total')
+        inmuebles_por_tipo = [{ 'tipo': item['tipo'], 'total': item['total'] } for item in inmuebles_por_tipo_qs]
+
         pagos_stats = Pago.objects.aggregate(
             total=Count('id'),
             aprobados=Count('id', filter=Q(estado='aprobado')),
@@ -167,6 +191,8 @@ class PagoService:
                 "pendientes": inmuebles_stats['pendientes'],
                 "finalizados": inmuebles_stats['finalizados']
             },
+            "inmuebles_por_ciudad": inmuebles_por_ciudad,
+            "inmuebles_por_tipo": inmuebles_por_tipo,
             "pagos": {
                 "total": pagos_stats['total'],
                 "aprobados": pagos_stats['aprobados'],

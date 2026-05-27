@@ -55,6 +55,21 @@ class PlanAdminDetailView(APIView):
             return Response({"error": "Plan no encontrado."}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class PlanDetailView(APIView):
+    """
+    Vista pública para obtener el detalle de un plan específico.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        from .models import Plan
+        try:
+            plan = Plan.objects.get(id=pk, activo=True)
+            return Response(PlanPublicoSerializer(plan).data)
+        except Plan.DoesNotExist:
+            return Response({"error": "Plan no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
     def delete(self, request, pk):
         """
         Desactivación lógica del plan.

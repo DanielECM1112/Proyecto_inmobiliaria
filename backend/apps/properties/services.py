@@ -15,25 +15,55 @@ class InmuebleService:
         Lista inmuebles con filtros dinámicos.
         Solo muestra 'activos' a menos que se especifique lo contrario.
         """
+        # Evitar N+1: traer usuario y plan y prefetchear imágenes
         queryset = Inmueble.objects.select_related('usuario', 'plan').prefetch_related('imagenes')
 
+        # Aplicar filtros combinables
         if filtros:
-            if filtros.get('ciudad'):
-                queryset = queryset.filter(ciudad__icontains=filtros['ciudad'])
-            if filtros.get('tipo'):
-                queryset = queryset.filter(tipo=filtros['tipo'])
-            if filtros.get('precio_min'):
-                queryset = queryset.filter(precio__gte=filtros['precio_min'])
-            if filtros.get('precio_max'):
-                queryset = queryset.filter(precio__lte=filtros['precio_max'])
+            ciudad = filtros.get('ciudad')
+            if ciudad:
+                queryset = queryset.filter(ciudad__icontains=ciudad)
 
+            tipo = filtros.get('tipo')
+            if tipo:
+                queryset = queryset.filter(tipo=tipo)
+
+            precio_min = filtros.get('precio_min')
+            if precio_min:
+                try:
+                    queryset = queryset.filter(precio__gte=float(precio_min))
+                except Exception:
+                    pass
+
+            precio_max = filtros.get('precio_max')
+            if precio_max:
+                try:
+                    queryset = queryset.filter(precio__lte=float(precio_max))
+                except Exception:
+                    pass
+
+            # Estado: por defecto para público mostrar 'activo'. Si se indica is_admin=True no se aplica el filtro por defecto.
             estado = filtros.get('estado')
+            is_admin = filtros.get('is_admin') in [True, 'True', 'true', '1', 1]
             if estado:
                 queryset = queryset.filter(estado=estado)
-            else:
+            elif not is_admin:
                 queryset = queryset.filter(estado='activo')
+
+            # Ordenamiento
+            ordenar_por = filtros.get('ordenar_por')
+            if ordenar_por == 'precio_asc':
+                queryset = queryset.order_by('precio')
+            elif ordenar_por == 'precio_desc':
+                queryset = queryset.order_by('-precio')
+            elif ordenar_por == 'reciente':
+                queryset = queryset.order_by('-created_at')
+            elif ordenar_por == 'antiguo':
+                queryset = queryset.order_by('created_at')
+
         else:
-            queryset = queryset.filter(estado='activo')
+            # Si no hay filtros, mostrar solo activos
+            queryset = queryset.filter(estado='activo').order_by('-created_at')
 
         return queryset
 
@@ -52,6 +82,7 @@ class InmuebleService:
         """
         Retorna los inmuebles del usuario autenticado ordenados por fecha.
         """
+        # Incluimos pagos para calcular estado de pago cuando sea necesario
         return Inmueble.objects.filter(usuario=usuario).select_related('plan').prefetch_related('imagenes', 'pagos').order_by('-created_at')
 
     @staticmethod
@@ -166,13 +197,15 @@ class InmuebleService:
         """
         Sube una imagen validando tamaño, formato, límite y permisos.
         """
+        # Validaciones de tamaño y extensión
         if imagen_file.size > 5 * 1024 * 1024:
             return None, "La imagen excede el límite de 5MB."
 
         extension = imagen_file.name.split('.')[-1].lower()
         if extension not in ['jpg', 'jpeg', 'png', 'webp']:
-            return None, "Formato no permitido. Solo jpg, png o webp."
+            return None, "Formato no permitido. Solo jpg, jpeg, png o webp."
 
+        # Validar existencia del inmueble y permisos
         try:
             inmueble = Inmueble.objects.select_related('plan', 'usuario').get(id=inmueble_id)
         except Inmueble.DoesNotExist:
@@ -181,12 +214,19 @@ class InmuebleService:
         if inmueble.usuario != usuario:
             return None, "Solo el dueño del inmueble puede subir imágenes."
 
+        # Validar límite de imágenes según el plan
         imagenes_existentes = inmueble.imagenes.count()
         if imagenes_existentes >= inmueble.plan.max_imagenes:
             return None, "El inmueble ya alcanzó el máximo de imágenes permitido por el plan."
 
-        nueva_img = ImagenInmueble.objects.create(inmueble=inmueble, imagen=imagen_file)
-        return nueva_img, None
+        # Calcular orden automático
+        ultimo = inmueble.imagenes.order_by('-orden').first()
+        siguiente_orden = (ultimo.orden + 1) if ultimo and getattr(ultimo, 'orden', None) is not None else 1
+
+        nueva_img = ImagenInmueble.objects.create(inmueble=inmueble, imagen=imagen_file, orden=siguiente_orden)
+
+        # Retornar mensaje y objeto
+        return {"mensaje": "Imagen subida correctamente", "imagen": nueva_img}, None
 
     @staticmethod
     def toggle_favorito(usuario, inmueble_id):
@@ -194,20 +234,29 @@ class InmuebleService:
         Agrega a favoritos si no existe, o lo quita si ya existe.
         """
         try:
-            favorito, created = Favorito.objects.get_or_create(
-                usuario=usuario,
-                inmueble_id=inmueble_id
-            )
+            favorito, created = Favorito.objects.get_or_create(usuario=usuario, inmueble_id=inmueble_id)
             if not created:
                 favorito.delete()
                 logger.info(f"Favorito quitado: {inmueble_id} por {usuario.email}")
-                return False
+                total = Favorito.objects.filter(inmueble_id=inmueble_id).count()
+                return {"accion": "eliminado", "total_favoritos": total}
 
             logger.info(f"Favorito agregado: {inmueble_id} por {usuario.email}")
-            return True
+            total = Favorito.objects.filter(inmueble_id=inmueble_id).count()
+            return {"accion": "agregado", "total_favoritos": total}
         except Exception as e:
             logger.error(f"Error en toggle_favorito: {str(e)}")
             return None
+
+    @staticmethod
+    def contar_favoritos(inmueble_id):
+        """Retorna el total de favoritos de un inmueble."""
+        try:
+            total = Favorito.objects.filter(inmueble_id=inmueble_id).count()
+            return {"total_favoritos": total}
+        except Exception as e:
+            logger.error(f"Error al contar favoritos: {str(e)}")
+            return {"total_favoritos": 0}
 
     @staticmethod
     def enviar_contacto(data):
