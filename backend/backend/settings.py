@@ -56,6 +56,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Middleware personalizado para manejo global de errores
+# Se agrega al final de la pila para capturar excepciones no manejadas
+MIDDLEWARE.append('backend.middleware.GlobalExceptionMiddleware')
+
 ROOT_URLCONF = 'backend.urls'
 
 # --- TEMPLATES ---
@@ -96,6 +100,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour',
+    },
 }
 
 # --- JWT ---
