@@ -1,26 +1,51 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics, viewsets
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Inmueble, ImagenInmueble, Favorito
 from .serializers import (
-    InmuebleListSerializer, InmuebleDetailSerializer, 
-    InmuebleCreateSerializer, ImagenSerializer, 
-    FavoritoSerializer, ContactoSerializer
+    InmuebleListSerializer, InmuebleDetailSerializer,
+    InmuebleCreateSerializer, ImagenSerializer,
+    FavoritoSerializer, ContactoSerializer, MisInmuebleSerializer
 )
 from .services import InmuebleService
 from .permissions import IsOwnerOrAdmin
 
-class InmuebleListView(generics.ListAPIView):
+class InmuebleListCreateView(APIView):
     """
-    Vista pública para listar inmuebles con filtros.
+    Vista para listar inmuebles con filtros y crear nuevos inmuebles.
     """
     permission_classes = [AllowAny]
-    serializer_class = InmuebleListSerializer
 
-    def get_queryset(self):
-        filtros = self.request.query_params.dict()
-        return InmuebleService.listar_inmuebles(filtros)
+    def get(self, request):
+        filtros = request.query_params.dict()
+        inmuebles = InmuebleService.listar_inmuebles(filtros)
+        serializer = InmuebleListSerializer(inmuebles, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        serializer = InmuebleCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                inmueble = InmuebleService.crear_inmueble(request.user, serializer.validated_data)
+                detalle = InmuebleDetailSerializer(inmueble, context={'request': request})
+                return Response(detalle.data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MisInmueblesView(APIView):
+    """
+    Retorna los inmuebles del usuario autenticado.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        inmuebles = InmuebleService.obtener_mis_inmuebles(request.user)
+        serializer = MisInmuebleSerializer(inmuebles, many=True, context={'request': request})
+        return Response(serializer.data)
 
 class InmuebleDetailView(APIView):
     """
@@ -35,22 +60,6 @@ class InmuebleDetailView(APIView):
             return Response(serializer.data)
         return Response({"error": "Inmueble no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
-class InmuebleCreateView(APIView):
-    """
-    Vista para crear un inmueble (requiere autenticación).
-    """
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = InmuebleCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                inmueble = InmuebleService.crear_inmueble(request.user, serializer.validated_data)
-                return Response(InmuebleDetailSerializer(inmueble).data, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class InmuebleAdminView(APIView):
     """
     Vista para edición y desactivación (dueño o admin).
@@ -61,27 +70,25 @@ class InmuebleAdminView(APIView):
         inmueble = InmuebleService.obtener_inmueble(pk)
         if not inmueble:
             return Response({"error": "Inmueble no encontrado."}, status=status.HTTP_404_NOT_FOUND)
-        
+
         self.check_object_permissions(request, inmueble)
-        
-        serializer = InmuebleCreateSerializer(inmueble, data=request.data, partial=True)
+
+        serializer = InmuebleCreateSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             inmueble_editado, error = InmuebleService.editar_inmueble(pk, serializer.validated_data, request.user)
             if inmueble_editado:
-                return Response(InmuebleDetailSerializer(inmueble_editado).data)
+                detalle = InmuebleDetailSerializer(inmueble_editado, context={'request': request})
+                return Response(detalle.data)
             return Response({"error": error}, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        """
-        Desactivación lógica del inmueble.
-        """
         inmueble = InmuebleService.obtener_inmueble(pk)
         if not inmueble:
             return Response({"error": "Inmueble no encontrado."}, status=status.HTTP_404_NOT_FOUND)
-        
+
         self.check_object_permissions(request, inmueble)
-        
+
         if InmuebleService.desactivar_inmueble(pk):
             return Response({"message": "Inmueble marcado como finalizado."}, status=status.HTTP_200_OK)
         return Response({"error": "No se pudo desactivar el inmueble."}, status=status.HTTP_400_BAD_REQUEST)
@@ -96,15 +103,16 @@ class ImagenView(APIView):
         inmueble = InmuebleService.obtener_inmueble(pk)
         if not inmueble:
             return Response({"error": "Inmueble no encontrado."}, status=status.HTTP_404_NOT_FOUND)
-        
+
         self.check_object_permissions(request, inmueble)
-        
+
         if 'imagen' not in request.FILES:
             return Response({"error": "No se proporcionó ninguna imagen."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        nueva_img, error = InmuebleService.agregar_imagen(pk, request.FILES['imagen'])
+
+        nueva_img, error = InmuebleService.agregar_imagen(pk, request.FILES['imagen'], request.user)
         if nueva_img:
-            return Response(ImagenSerializer(nueva_img).data, status=status.HTTP_201_CREATED)
+            serializer = ImagenSerializer(nueva_img, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response({"error": error}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, img_id):
@@ -131,7 +139,7 @@ class FavoritoView(APIView):
         inmueble_id = request.data.get('inmueble')
         if not inmueble_id:
             return Response({"error": "ID de inmueble requerido."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         resultado = InmuebleService.toggle_favorito(request.user, inmueble_id)
         if resultado is True:
             return Response({"message": "Agregado a favoritos."}, status=status.HTTP_201_CREATED)
