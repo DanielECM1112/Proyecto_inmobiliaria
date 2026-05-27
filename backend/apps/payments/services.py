@@ -139,6 +139,16 @@ class PagoService:
             total_ventas=Count('pagos', filter=Q(pagos__estado='aprobado'))
         ).order_by('-total_ventas')[:5]
 
+        planes_populares_data = [
+            {"nombre": plan.nombre, "total_ventas": plan.total_ventas}
+            for plan in planes_populares
+        ]
+
+        if not planes_populares_data:
+            planes_populares_data = [
+                {"nombre": "Plan Básico", "total_ventas": 0}
+            ]
+
         return {
             "usuarios": {
                 "total": usuarios_stats['total'],
@@ -158,8 +168,5 @@ class PagoService:
                 "rechazados": pagos_stats['rechazados'],
                 "ingresos_este_mes": str(pagos_stats['ingresos_mes'] or "0.00")
             },
-            "planes_populares": [
-                {"nombre": p.nombre, "total_ventas": p.total_ventas}
-                for p in planes_populares
-            ]
+            "planes_populares": planes_populares_data
         }

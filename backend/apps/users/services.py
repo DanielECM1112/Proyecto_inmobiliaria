@@ -69,7 +69,6 @@ class UsuarioService:
             usuario.save()
             
             # Lógica de negocio adicional: Inmuebles asociados pasan a estado 'finalizado'
-            # Se asume que la relación existe en el modelo Inmueble
             if hasattr(usuario, 'inmuebles'):
                 usuario.inmuebles.all().update(estado='finalizado')
             
@@ -78,6 +77,29 @@ class UsuarioService:
         except Usuario.DoesNotExist:
             logger.error(f"No se encontró el usuario con ID {usuario_id} para desactivar.")
             return None
+
+    @staticmethod
+    def activar_usuarios(queryset):
+        """
+        Activa múltiples usuarios desde el panel administrativo.
+        """
+        actualizado = queryset.update(is_active=True)
+        logger.info(f"Se activaron {actualizado} usuarios desde el admin.")
+        return actualizado
+
+    @staticmethod
+    def desactivar_usuarios(queryset):
+        """
+        Desactiva múltiples usuarios desde el panel administrativo.
+        """
+        usuarios = list(queryset)
+        for usuario in usuarios:
+            usuario.is_active = False
+            usuario.save()
+            if hasattr(usuario, 'inmuebles'):
+                usuario.inmuebles.all().update(estado='finalizado')
+        logger.info(f"Se desactivaron {len(usuarios)} usuarios desde el admin.")
+        return len(usuarios)
 
     @staticmethod
     def obtener_todos_los_usuarios():

@@ -88,15 +88,29 @@ class InmuebleService:
             return None, "Inmueble no encontrado."
 
     @staticmethod
-    def desactivar_inmueble(inmueble_id):
+    def activar_inmueble(inmueble_id):
         """
-        Cambia el estado del inmueble a 'finalizado' en lugar de borrarlo.
+        Activa un inmueble desde el panel administrativo.
+        """
+        try:
+            inmueble = Inmueble.objects.get(id=inmueble_id)
+            inmueble.estado = 'activo'
+            inmueble.save()
+            logger.info(f"Inmueble activado: {inmueble_id}")
+            return True
+        except Inmueble.DoesNotExist:
+            return False
+
+    @staticmethod
+    def finalizar_inmueble(inmueble_id):
+        """
+        Finaliza un inmueble desde el panel administrativo.
         """
         try:
             inmueble = Inmueble.objects.get(id=inmueble_id)
             inmueble.estado = 'finalizado'
             inmueble.save()
-            logger.info(f"Inmueble finalizado/desactivado: {inmueble_id}")
+            logger.info(f"Inmueble finalizado: {inmueble_id}")
             return True
         except Inmueble.DoesNotExist:
             return False

@@ -29,6 +29,7 @@ class Inmueble(models.Model):
     direccion = models.CharField(max_length=255, verbose_name="Dirección")
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, verbose_name="Tipo de Inmueble")
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente', verbose_name="Estado")
+    whatsapp_contacto = models.CharField(max_length=20, blank=True, verbose_name="Whatsapp de contacto")
     url_video_youtube = models.URLField(max_length=255, blank=True, null=True, verbose_name="URL Video Youtube")
     
     # Relaciones
