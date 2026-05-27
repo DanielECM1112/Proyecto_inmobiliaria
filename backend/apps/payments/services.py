@@ -30,8 +30,14 @@ class PagoService:
         if inmueble.usuario_id != usuario.id:
             raise PermissionDenied("El inmueble no pertenece al usuario autenticado.")
 
-        if Pago.objects.filter(inmueble=inmueble, estado='aprobado').exists():
-            raise ValueError("Ya existe un pago aprobado para este inmueble.")
+        # Verificar que no exista un pago pendiente o aprobado para el mismo inmueble
+        if Pago.objects.filter(inmueble=inmueble, estado__in=['pendiente', 'aprobado']).exists():
+            raise ValueError("Ya existe un pago pendiente o aprobado para este inmueble.")
+
+        # Validar método de pago
+        metodo = (metodo or '').lower()
+        if metodo not in ['tarjeta', 'pse', 'nequi']:
+            raise ValueError("Método de pago inválido. Opciones válidas: tarjeta, pse, nequi.")
 
         try:
             plan = Plan.objects.get(id=plan_id)
