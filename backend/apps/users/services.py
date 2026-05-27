@@ -123,3 +123,67 @@ class UsuarioService:
         except Usuario.DoesNotExist:
             logger.error(f"No se encontró el usuario con ID {usuario_id} para actualizar.")
             return None
+
+    # ------------------ Recuperación de contraseña ------------------
+    @staticmethod
+    def _validar_contrasena(password):
+        import re
+        if len(password) < 8:
+            raise ValueError('La contraseña debe tener al menos 8 caracteres.')
+        if not re.search(r'[A-Z]', password):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula.')
+        if not re.search(r'\d', password):
+            raise ValueError('La contraseña debe contener al menos un número.')
+        if not re.search(r'[!@#$%^&*]', password):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (!@#$%^&*).')
+
+    @staticmethod
+    def solicitar_recuperacion(email):
+        """
+        Busca usuario por email, crea un PasswordResetToken y lo registra.
+        En desarrollo imprime el token en el log.
+        Retorna un mensaje informativo.
+        """
+        from users.models import PasswordResetToken
+        try:
+            usuario = Usuario.objects.get(email=email)
+        except Usuario.DoesNotExist:
+            raise ValueError('Email no registrado')
+
+        # Crear token
+        token_obj = PasswordResetToken.objects.create(usuario=usuario)
+        logger.info(f"Token de recuperación generado para {email}: {token_obj.token}")
+
+        # En producción aquí se enviaría el email. En desarrollo solo logueamos.
+        return {"mensaje": "Si el email existe recibirás instrucciones"}
+
+    @staticmethod
+    def confirmar_recuperacion(token, nueva_password):
+        """
+        Valida el token, la nueva contraseña y actualiza la contraseña del usuario.
+        El token expira a la hora.
+        """
+        from users.models import PasswordResetToken
+        try:
+            token_obj = PasswordResetToken.objects.get(token=token)
+        except PasswordResetToken.DoesNotExist:
+            raise ValueError('Token inválido o no encontrado')
+
+        if token_obj.esta_expirado():
+            # Borrar el token expirado
+            token_obj.delete()
+            raise ValueError('Token expirado')
+
+        # Validar nueva contraseña
+        UsuarioService._validar_contrasena(nueva_password)
+
+        # Actualizar contraseña del usuario
+        usuario = token_obj.usuario
+        usuario.set_password(nueva_password)
+        usuario.save()
+
+        # Eliminar token usado
+        token_obj.delete()
+
+        logger.info(f"Contraseña actualizada para usuario: {usuario.email}")
+        return {"mensaje": "Contraseña actualizada"}

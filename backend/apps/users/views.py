@@ -111,3 +111,35 @@ class AdminUsuarioDetailView(APIView):
         if usuario:
             return Response({"message": "Usuario desactivado correctamente"})
         return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# ------------------ Vistas de recuperación de contraseña ------------------
+class PasswordResetView(APIView):
+    """Solicita la recuperación de contraseña (no requiere auth)."""
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "El campo email es obligatorio."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            result = UsuarioService.solicitar_recuperacion(email=email)
+            return Response(result, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmView(APIView):
+    """Confirma la recuperación usando token y nueva contraseña (no requiere auth)."""
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data.get('token')
+        nueva_password = request.data.get('nueva_password')
+        if not token or not nueva_password:
+            return Response({"error": "token y nueva_password son obligatorios."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            result = UsuarioService.confirmar_recuperacion(token=token, nueva_password=nueva_password)
+            return Response(result, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
