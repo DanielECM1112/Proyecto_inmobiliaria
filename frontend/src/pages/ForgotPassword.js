@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
@@ -20,7 +20,7 @@ export default function ForgotPassword() {
 
     try {
       // Intentamos llamar al endpoint estándar; si no existe, mostramos mensaje UX seguro
-      await axios.post("http://localhost:8000/api/auth/password-reset/", { email });
+      await api.post('/auth/password-reset/', { email });
       setMessage("Si tu correo está registrado, recibirás instrucciones para restablecer la contraseña.");
     } catch (err) {
       // Si el backend no implementa el endpoint, igual informamos al usuario de forma segura

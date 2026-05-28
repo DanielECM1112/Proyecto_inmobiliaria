@@ -51,6 +51,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "INICIO", path: "/" },
     { name: "PROPIEDADES", path: "/properties" },
+    { name: "PLANES", path: "/planes" },
     { name: "PUBLICA TU PROPIEDAD", path: "/publish" },
     { name: "UBICACIÓN", path: "/location" },
     { name: "NOSOTROS", path: "/about" },
@@ -180,7 +181,7 @@ export default function Navbar() {
               >
                 {user ? (
                   <div className="w-full h-full bg-gold-600 flex items-center justify-center text-white font-bold text-lg uppercase">
-                    {user.username?.[0] || 'U'}
+                    {(user.user?.nombre?.[0] || user.user?.email?.[0] || 'U')}
                   </div>
                 ) : (
                   <FaUserCircle className="text-2xl" />
@@ -210,25 +211,12 @@ export default function Navbar() {
                           Bienvenido
                         </p>
                         <p className={`text-lg font-bold truncate ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                          {user.first_name} {user.last_name}
+                          {user.user?.nombre || "Usuario"}
                         </p>
                         <p className={`text-xs truncate mt-1 ${isDarkMode ? "text-gray-400" : "text-slate-600"}`}>
-                          {user.email}
+                          {user.user?.email}
                         </p>
                       </div>
-                      {user.rol === "Administrador" && (
-                        <motion.button 
-                          onClick={() => { navigate('/admin'); setShowProfileMenu(false); }}
-                          whileHover={{ x: 4, backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.05)' }}
-                          className={`w-full text-left px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
-                            isDarkMode
-                              ? "text-gray-300"
-                              : "text-slate-800"
-                          }`}
-                        >
-                          🔧 Panel Admin
-                        </motion.button>
-                      )}
                       <motion.button 
                         onClick={handleLogout}
                         whileHover={{ x: 4, backgroundColor: 'rgba(239,68,68,0.1)' }}

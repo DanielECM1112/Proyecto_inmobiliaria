@@ -5,6 +5,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Properties from './pages/Properties';
+import PropertyDetail from './pages/PropertyDetail';
+import Plans from './pages/Plans';
+import Payment from './pages/Payment';
 import About from './pages/About';
 import Location from './pages/Location';
 import ScrollToTop from './components/ScrollToTop';
@@ -19,6 +22,8 @@ import Selling from './pages/services/Selling';
 
 // IMPORTACIÓN DE PANEL ADMINISTRATIVO
 import AdminLayout from './admin/AdminLayout';
+import AdminLogin from './admin/AdminLogin';
+import AdminRoute from './admin/AdminRoute';
 
 function App() {
   return (
@@ -32,9 +37,12 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/properties" element={<Properties />} />
+          <Route path="/properties/:id" element={<PropertyDetail />} />
+          <Route path="/planes" element={<Plans />} />
+          <Route path="/publish" element={<PublishProperty />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/about" element={<About />} />
           <Route path="/location" element={<Location />} />
-          <Route path="/publish" element={<PublishProperty />} />
           
           {/* Rutas Legales */}
           <Route path="/terms" element={<Terms />} />
@@ -45,8 +53,9 @@ function App() {
           <Route path="/services/buying" element={<Buying />} />
           <Route path="/services/selling" element={<Selling />} />
 
-          {/* NUEVA RUTA EXCLUSIVA DE ADMINISTRACIÓN */}
-          <Route path="/admin" element={<AdminLayout />} />
+          {/* Admin */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/*" element={<AdminRoute><AdminLayout /></AdminRoute>} />
         </Routes>
       </div>
     </Router>

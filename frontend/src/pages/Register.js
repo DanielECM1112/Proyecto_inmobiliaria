@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
@@ -9,13 +9,11 @@ import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     first_name: "",
     last_name: "",
     password: "",
-    phone: "",
-    address: ""
+    password_confirm: ""
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -38,7 +36,13 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:8000/api/users/register/", formData);
+      const payload = {
+        nombre: `${formData.first_name} ${formData.last_name}`.trim(),
+        email: formData.email,
+        password: formData.password,
+        password_confirm: formData.password_confirm
+      };
+      await api.post('/auth/register/', payload);
       setSuccess("¡Registro exitoso! Redirigiendo...");
       setTimeout(() => {
         navigate("/login");
@@ -176,9 +180,21 @@ export default function Register() {
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
-                  <div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
-                    <div className="h-full w-1/4 bg-gradient-to-r from-[#7C3AED] to-[#8B5CF6] rounded-full" />
-                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                    Confirmar contraseña
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password_confirm"
+                    value={formData.password_confirm}
+                    onChange={handleChange}
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-[#8B5CF6] focus:bg-white/8 transition-all duration-300"
+                    placeholder="••••••••"
+                    required
+                  />
                 </div>
 
                 <div className="flex justify-center gap-4 py-2">

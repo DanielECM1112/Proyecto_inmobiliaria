@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
@@ -9,13 +9,15 @@ import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: ""
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.redirect || '/properties';
   const { isDarkMode } = useTheme();
 
   const handleChange = (e) => {
@@ -31,11 +33,26 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8000/api/users/login/", formData);
-      localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/");
+      const response = await api.post('/auth/login/', formData);
+      const userData = response.data;
+
+      const rol = userData.user?.rol?.toString().toLowerCase();
+      if (rol === 'admin' || rol === 'administrador') {
+        setError('Para administradores: accede desde /admin/login');
+        setLoading(false);
+        return;
+      }
+
+      localStorage.setItem('user', JSON.stringify(userData));
+      window.dispatchEvent(new Event('storage'));
+
+      if (redirectPath === '/publish' && location.state?.planId) {
+        navigate('/publish', { state: { planId: location.state.planId } });
+      } else {
+        navigate(redirectPath);
+      }
     } catch (err) {
-      setError(err.response?.data?.error || "Error al iniciar sesión");
+      setError(err.response?.data?.error || err.response?.data?.detail || "Error al iniciar sesión");
     } finally {
       setLoading(false);
     }
@@ -99,9 +116,9 @@ export default function Login() {
                   </label>
                   <div className="relative">
                     <input
-                      type="text"
-                      name="username"
-                      value={formData.username}
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleChange}
                       className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-[#8B5CF6] focus:bg-white/8 transition-all duration-300"
                       placeholder="tucorreo@ejemplo.com"
