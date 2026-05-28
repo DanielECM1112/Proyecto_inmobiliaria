@@ -1,24 +1,27 @@
 from django.urls import path
 from .views import (
-    InmuebleListView, InmuebleDetailView, InmuebleCreateView, 
-    InmuebleAdminView, ImagenView, FavoritoView, ContactoView
+    InmuebleListCreateView, InmuebleDetailView,
+    InmuebleAdminView, ImagenView, FavoritoView,
+    ContactoView, MisInmueblesView, FavoritoCountView
 )
 
 urlpatterns = [
     # Inmuebles
-    path('inmuebles/', InmuebleListView.as_view(), name='inmueble-list'),
-    path('inmuebles/<uuid:pk>/', InmuebleDetailView.as_view(), name='inmueble-detail'),
-    path('inmuebles/crear/', InmuebleCreateView.as_view(), name='inmueble-create'),
-    path('inmuebles/admin/<uuid:pk>/', InmuebleAdminView.as_view(), name='inmueble-admin'),
-    
+    path('properties/', InmuebleListCreateView.as_view(), name='property-list-create'),
+    path('properties/mis-inmuebles/', MisInmueblesView.as_view(), name='mis-properties'),
+    path('properties/<uuid:pk>/', InmuebleDetailView.as_view(), name='property-detail'),
+    path('properties/<uuid:pk>/edit/', InmuebleAdminView.as_view(), name='property-edit'),
+    path('properties/admin/<uuid:pk>/', InmuebleAdminView.as_view(), name='property-admin'),
+
     # Imágenes
-    path('inmuebles/<uuid:pk>/imagenes/', ImagenView.as_view(), name='inmueble-imagenes'),
-    path('inmuebles/<uuid:pk>/imagenes/<uuid:img_id>/', ImagenView.as_view(), name='inmueble-imagen-delete'),
-    
+    path('properties/<uuid:pk>/imagenes/', ImagenView.as_view(), name='property-imagenes'),
+    path('properties/<uuid:pk>/imagenes/<uuid:img_id>/', ImagenView.as_view(), name='property-imagen-delete'),
+
     # Favoritos
     path('favoritos/', FavoritoView.as_view(), name='favoritos'),
-    path('favoritos/<uuid:pk>/', FavoritoView.as_view(), name='favoritos-delete'), # pk del inmueble
-    
+    path('favoritos/<uuid:pk>/', FavoritoView.as_view(), name='favoritos-delete'),
+    path('properties/<uuid:pk>/favoritos/count/', FavoritoCountView.as_view(), name='favoritos-count'),
+
     # Contacto
     path('contacto/', ContactoView.as_view(), name='contacto'),
 ]

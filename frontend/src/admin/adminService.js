@@ -1,142 +1,125 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api';
-
-// Configurar instancia de axios con interceptor para el token
-const api = axios.create({
-  baseURL: API_URL
-});
-
-api.interceptors.request.use(config => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user && user.token) {
-    config.headers.Authorization = `Token ${user.token}`;
-  }
-  return config;
-});
+import api from '../services/api';
 
 export const adminService = {
   // === MÓDULO DE INMUEBLES ===
   getInmuebles: async () => {
     try {
-      const response = await api.get('/properties/admin-properties/');
+      const response = await api.get('/inmuebles/');
       return response.data.map(i => ({
         id: i.id,
-        titulo: i.title,
-        precio: `$${parseFloat(i.price).toLocaleString()}`,
-        estado: i.status.charAt(0).toUpperCase() + i.status.slice(1)
+        titulo: i.titulo,
+        precio: `$${parseFloat(i.precio).toLocaleString()}`,
+        estado: i.estado ? i.estado.charAt(0).toUpperCase() + i.estado.slice(1) : 'Desconocido'
       }));
     } catch (error) {
-      console.error("Error fetching properties:", error);
+      console.error('Error fetching properties:', error);
       return [];
     }
   },
-  
+
   aprobarInmueble: async (id) => {
-    await api.patch(`/properties/admin-properties/${id}/`, { status: 'activo' });
+    await api.patch(`/inmuebles/admin/${id}/`, { estado: 'activo' });
   },
-  
-  desaprobarInmueble: async (id) => {
-    await api.patch(`/properties/admin-properties/${id}/`, { status: 'pendiente' });
+
+  finalizarInmueble: async (id) => {
+    await api.patch(`/inmuebles/admin/${id}/`, { estado: 'finalizado' });
   },
-  
+
   eliminarInmueble: async (id) => {
-    await api.delete(`/properties/admin-properties/${id}/`);
+    await api.delete(`/inmuebles/admin/${id}/`);
   },
 
   // === MÓDULO DE USUARIOS ===
   getUsuarios: async () => {
     try {
-      const response = await api.get('/users/admin-users/');
+      const response = await api.get('/admin/usuarios/');
       return response.data.map(u => ({
         id: u.id,
-        nombre: `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username,
+        nombre: u.nombre,
         correo: u.email,
-        rol: (u.is_superuser || u.is_staff) ? "Administrador" : "Usuario"
+        rol: u.rol === 'admin' ? 'Administrador' : 'Usuario',
+        activo: u.is_active ?? false
       }));
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching users:', error);
       return [];
     }
   },
-  
-  editarRolUsuario: async (id, nuevoRol) => {
-    const isStaff = nuevoRol === "Administrador";
-    await api.patch(`/users/admin-users/${id}/`, { is_staff: isStaff, is_superuser: isStaff });
+
+  toggleUsuarioActivo: async (id, activo) => {
+    await api.patch(`/admin/usuarios/${id}/`, { is_active: activo });
   },
-  
-  eliminarUsuario: async (id) => {
-    await api.delete(`/users/admin-users/${id}/`);
+
+  editarRolUsuario: async (id, nuevoRol) => {
+    const rol = nuevoRol === 'Administrador' ? 'admin' : 'usuario';
+    await api.patch(`/admin/usuarios/${id}/`, { rol });
   },
 
   // === MÓDULO DE PLANES ===
   getPlanes: async () => {
     try {
-      const response = await api.get('/plans/admin-plans/');
+      const response = await api.get('/admin/planes/');
       return response.data.map(p => ({
         id: p.id,
         nombre: p.nombre,
-        precio: p.precio,
-        duracion: p.duration_days,
-        inmuebles: p.max_properties,
-        imagenes: p.max_images
+        precio: `$${parseFloat(p.precio).toLocaleString()}`,
+        duracion: p.duracion_dias,
+        inmuebles: p.max_inmuebles,
+        imagenes: p.max_imagenes,
+        activo: p.activo ?? true
       }));
     } catch (error) {
-      console.error("Error fetching plans:", error);
+      console.error('Error fetching plans:', error);
       return [];
     }
   },
-  
-  eliminarPlan: async (id) => {
-    await api.delete(`/plans/admin-plans/${id}/`);
+
+  desactivarPlan: async (id) => {
+    await api.patch(`/admin/planes/${id}/`, { activo: false });
   },
-  
+
   actualizarPlan: async (id, planActualizado) => {
     try {
       const cleanNumber = (val) => {
         if (typeof val === 'number') return val;
         if (!val) return 0;
-        return parseInt(val.toString().replace(/[^0-9]/g, '')) || 0;
+        return parseInt(val.toString().replace(/[^0-9]/g, ''), 10) || 0;
       };
 
       const data = {
         nombre: planActualizado.nombre,
-        name: planActualizado.nombre,
         precio: cleanNumber(planActualizado.precio),
-        price: cleanNumber(planActualizado.precio),
-        duration_days: cleanNumber(planActualizado.duracion),
-        max_properties: cleanNumber(planActualizado.inmuebles),
-        max_images: cleanNumber(planActualizado.imagenes),
-        active: true
+        duracion_dias: cleanNumber(planActualizado.duracion),
+        max_inmuebles: cleanNumber(planActualizado.inmuebles),
+        max_imagenes: cleanNumber(planActualizado.imagenes),
+        activo: true
       };
-      await api.put(`/plans/admin-plans/${id}/`, data);
+      await api.patch(`/admin/planes/${id}/`, data);
     } catch (error) {
-      console.error("Error updating plan:", error.response?.data || error.message);
+      console.error('Error updating plan:', error.response?.data || error.message);
       throw error;
     }
   },
-  
+
   crearPlan: async (nuevoPlan) => {
     try {
       const cleanNumber = (val) => {
         if (typeof val === 'number') return val;
         if (!val) return 0;
-        return parseInt(val.toString().replace(/[^0-9]/g, '')) || 0;
+        return parseInt(val.toString().replace(/[^0-9]/g, ''), 10) || 0;
       };
 
       const data = {
         nombre: nuevoPlan.nombre,
-        name: nuevoPlan.nombre,
         precio: cleanNumber(nuevoPlan.precio),
-        price: cleanNumber(nuevoPlan.precio),
-        duration_days: cleanNumber(nuevoPlan.duracion),
-        max_properties: cleanNumber(nuevoPlan.inmuebles),
-        max_images: cleanNumber(nuevoPlan.imagenes),
-        active: true
+        duracion_dias: cleanNumber(nuevoPlan.duracion),
+        max_inmuebles: cleanNumber(nuevoPlan.inmuebles),
+        max_imagenes: cleanNumber(nuevoPlan.imagenes),
+        activo: true
       };
-      await api.post('/plans/admin-plans/', data);
+      await api.post('/admin/planes/', data);
     } catch (error) {
-      console.error("Error creating plan:", error.response?.data || error.message);
+      console.error('Error creating plan:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -144,55 +127,43 @@ export const adminService = {
   // === MÓDULO DE PAGOS ===
   getPagos: async () => {
     try {
-      const response = await api.get('/payments/admin-payments/');
+      const response = await api.get('/admin/pagos/');
       return response.data.map(p => ({
-        id: `TX-${p.id}`,
-        usuario: p.user_name || "Usuario Desconocido",
-        plan: p.plan_name || "Plan Estándar",
-        monto: parseFloat(p.amount),
+        id: p.id,
+        referencia: `TX-${String(p.id).substring(0, 8)}`,
+        usuario: p.usuario_nombre || 'Usuario Desconocido',
+        plan: p.plan_nombre || 'Plan Estándar',
+        monto: `$${parseFloat(p.monto).toLocaleString()}`,
         fecha: new Date(p.created_at).toLocaleDateString(),
-        estado: (p.status || p.payment_status || 'pendiente').charAt(0).toUpperCase() + (p.status || p.payment_status || 'pendiente').slice(1)
+        estado: (p.estado || 'pendiente').charAt(0).toUpperCase() + (p.estado || 'pendiente').slice(1)
       }));
     } catch (error) {
-      console.error("Error fetching payments:", error);
+      console.error('Error fetching payments:', error);
       return [];
     }
   },
-  
+
   cambiarEstadoPago: async (id, nuevoEstado) => {
-    const numericId = id.replace('TX-', '');
-    await api.patch(`/payments/admin-payments/${numericId}/`, { payment_status: nuevoEstado.toLowerCase() });
+    await api.patch(`/admin/pagos/${id}/`, { estado: nuevoEstado.toLowerCase() });
   },
 
   // === ESTADÍSTICAS EN TIEMPO REAL PARA EL DASHBOARD ===
   getMetrics: async () => {
     try {
-      const [props, users, payments] = await Promise.all([
-        api.get('/properties/admin-properties/'),
-        api.get('/users/admin-users/'),
-        api.get('/payments/admin-payments/')
-      ]);
-
-      const inmueblesActivos = props.data.filter(i => i.status === 'activo').length;
-      const inmueblesPendientes = props.data.filter(i => i.status === 'pendiente').length;
-      const usuariosRegistrados = users.data.length;
-      
-      const ingresos = Array.isArray(payments.data) 
-        ? payments.data
-          .filter(p => (p.status === 'aprobado' || p.payment_status === 'aprobado'))
-          .reduce((sum, p) => sum + parseFloat(p.amount || 0), 0)
-        : 0;
+      const response = await api.get('/admin/stats/');
+      const data = response.data;
 
       return {
-        inmueblesActivos,
-        inmueblesPendientes,
-        usuariosRegistrados,
-        ingresos: `$${ingresos.toLocaleString()}`
+        inmueblesActivos: data.inmuebles?.activos ?? 0,
+        inmueblesPendientes: data.inmuebles?.pendientes ?? 0,
+        usuariosRegistrados: data.usuarios?.total ?? 0,
+        ingresos: `$${parseFloat(data.pagos?.ingresos_este_mes || 0).toLocaleString()}`
       };
     } catch (error) {
-      console.error("Error fetching metrics:", error);
+      console.error('Error fetching metrics:', error);
       return {
         inmueblesActivos: 0,
+        inmueblesPendientes: 0,
         usuariosRegistrados: 0,
         ingresos: '$0'
       };

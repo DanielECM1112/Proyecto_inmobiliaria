@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useTheme } from "../context/ThemeContext";
+import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -10,13 +13,15 @@ export default function Register() {
     first_name: "",
     last_name: "",
     password: "",
-    phone: "",
-    address: ""
+    password_confirm: ""
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const location = useLocation();
 
   const handleChange = (e) => {
     setFormData({
@@ -32,149 +37,209 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const payload = { ...formData, username: formData.email };
-      await axios.post("http://localhost:8000/api/register/", payload);
-      setSuccess("¡Registro exitoso! Redirigiendo...");
+      const payload = {
+        nombre: `${formData.first_name} ${formData.last_name}`.trim(),
+        email: formData.email,
+        password: formData.password,
+        password_confirm: formData.password_confirm
+      };
+      await api.post('/auth/register/', payload);
+      setSuccess("¡Registro exitoso! Redirigiendo a iniciar sesión...");
+      
+      // Preserve redirect parameters for login page
+      const redirectState = {
+        redirect: location.state?.redirect || '/publish',
+        planId: location.state?.planId
+      };
+      
       setTimeout(() => {
-        navigate("/login");
+        navigate('/login', { state: redirectState });
       }, 2000);
     } catch (err) {
-      let errorMsg = "Error al registrarse";
-      
-      if (err.response?.data) {
-        if (err.response.data.error) {
-          errorMsg = err.response.data.error;
-        } else if (err.response.data.username) {
-          errorMsg = `Correo: ${err.response.data.username}`;
-        } else if (err.response.data.email) {
-          errorMsg = `Correo: ${err.response.data.email}`;
-        } else if (err.response.data.password) {
-          errorMsg = `Contraseña: ${err.response.data.password}`;
-        } else if (err.response.data.detail) {
-          errorMsg = err.response.data.detail;
-        } else {
-          errorMsg = "Datos inv\u00e1lidos. Por favor verifica tu informaci\u00f3n.";
-        }
-      } else if (err.message === "Network Error") {
-        errorMsg = "Error de conexi\u00f3n. Aseg\u00farate de que el servidor est\u00e9 corriendo.";
-      }
-      
-      setError(errorMsg);
+      setError(err.response?.data || "Error al registrarse");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen flex flex-col transition-colors duration-500" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navbar />
-      <main className="flex-grow flex items-center justify-center py-20 px-8 pt-32">
-        <div className="max-w-4xl w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
-          <div className="hidden md:flex md:w-1/2 items-center justify-center">
-            <img
-              src="https://i.pinimg.com/736x/e7/9e/9d/e79e9d1beb8a38f5fdab5d7574e5050f.jpg"
-              alt="Registro"
-              className="w-full h-full object-cover rounded-l-[3rem]"
-            />
-          </div>
-          <div className="w-full md:w-1/2 p-12 md:p-16">
-            <div className="text-center mb-12">
-              <h2 className="text-5xl font-black text-gray-900 mb-4 tracking-tighter">Crear Cuenta</h2>
-              <p className="text-xl text-gray-500 font-medium">Únete a nuestra comunidad exclusiva</p>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-6 rounded-2xl mb-8 flex items-center gap-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="font-bold">{typeof error === 'object' ? JSON.stringify(error) : error}</span>
-              </div>
-            )}
-
-            {success && (
-              <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-6 rounded-2xl mb-8 flex items-center gap-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="font-bold">{success}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Nombre</label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleChange}
-                    className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
-                    placeholder="Tu nombre"
-                    required
-                  />
+      <main className="flex-grow pt-20">
+        <div className="min-h-[calc(100vh-80px)] flex">
+          {/* Left side - Image/Branding */}
+          <div className="hidden lg:flex lg:w-1/2 bg-cover bg-center relative overflow-hidden" style={{ 
+            backgroundImage: 'url(https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&h=1500&fit=crop)' 
+          }}>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80" />
+            <div className="relative z-10 flex flex-col justify-end p-12 w-full">
+              <div className="mb-12">
+                <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center mb-8">
+                  <svg className="w-14 h-14 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
                 </div>
-                <div className="space-y-3">
-                  <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Apellido</label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                    className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
-                    placeholder="Tu apellido"
-                    required
-                  />
-                </div>
+                <h1 className="text-5xl font-serif font-bold text-white mb-4">
+                  LUX<span className="text-gray-300 font-light">HABITAT</span>
+                </h1>
+                <p className="text-xl text-gray-300 font-light">
+                  Con LUXHABITAT, tu hogar de ensueño está a un click de distancia
+                </p>
               </div>
-
-
-              <div className="space-y-3">
-                <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
-                  placeholder="tu@email.com"
-                  required
-                />
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-sm font-black text-gray-400 uppercase tracking-widest ml-1">Contraseña</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gray-900 focus:outline-none transition-all duration-300 text-lg font-bold"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gray-900 text-white px-8 py-6 rounded-2xl text-xl font-black hover:bg-gray-800 transition-all duration-300 transform hover:scale-[1.01] shadow-xl disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest"
-              >
-                {loading ? "Creando cuenta..." : "Registrarme"}
-              </button>
-            </form>
-
-            <div className="mt-12 text-center space-y-4">
-              <p className="text-lg text-gray-500 font-medium">
-                ¿Ya tienes una cuenta?{" "}
-                <Link to="/login" className="text-gray-900 font-black hover:underline decoration-4">
-                  Inicia sesión aquí
-                </Link>
+              <p className="text-gray-400 text-sm">
+                Encuentra la propiedad perfecta para ti y tu familia
               </p>
-              <Link to="/" className="inline-block text-gray-400 font-bold hover:text-gray-900 transition-colors">
-                ← Volver al inicio
-              </Link>
+            </div>
+          </div>
+
+          {/* Right side - Form */}
+          <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[#050816] overflow-y-auto">
+            <div className="w-full max-w-md py-8">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-serif font-bold text-white mb-3">
+                  Comienza tu viaje hacia tu hogar ideal
+                </h2>
+              </div>
+
+              {error && (
+                <div className="border border-red-500/30 bg-red-500/10 p-4 rounded-xl mb-8 text-red-400 text-sm">
+                  {typeof error === 'object' ? JSON.stringify(error) : error}
+                </div>
+              )}
+
+              {success && (
+                <div className="border border-green-500/30 bg-green-500/10 p-4 rounded-xl mb-8 text-green-400 text-sm">
+                  {success}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold uppercase tracking-[2px] text-[#d4af37]">
+                      Nombre
+                    </label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-4 bg-[#111111] border border-[#2b2b2b] rounded-xl text-white placeholder:text-[#8f8f8f] focus:outline-none focus:border-[#d4af37] transition-all duration-300"
+                      placeholder="Tu nombre"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold uppercase tracking-[2px] text-[#d4af37]">
+                      Apellido
+                    </label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-4 bg-[#111111] border border-[#2b2b2b] rounded-xl text-white placeholder:text-[#8f8f8f] focus:outline-none focus:border-[#d4af37] transition-all duration-300"
+                      placeholder="Tu apellido"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold uppercase tracking-[2px] text-[#d4af37]">
+                    Correo electrónico
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-[#111111] border border-[#2b2b2b] rounded-xl text-white placeholder:text-[#8f8f8f] focus:outline-none focus:border-[#d4af37] transition-all duration-300"
+                      placeholder="tucorreo@ejemplo.com"
+                      required
+                    />
+                    <FaEnvelope className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f]" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold uppercase tracking-[2px] text-[#d4af37]">
+                    Contraseña
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-[#111111] border border-[#2b2b2b] rounded-xl text-white placeholder:text-[#8f8f8f] focus:outline-none focus:border-[#d4af37] transition-all duration-300"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-gray-400"
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold uppercase tracking-[2px] text-[#d4af37]">
+                    Confirmar contraseña
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password_confirm"
+                    value={formData.password_confirm}
+                    onChange={handleChange}
+                    className="w-full px-5 py-4 bg-[#111111] border border-[#2b2b2b] rounded-xl text-white placeholder:text-[#8f8f8f] focus:outline-none focus:border-[#d4af37] transition-all duration-300"
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-center gap-4 py-2">
+                  <button type="button" className="w-12 h-12 bg-white rounded-xl flex items-center justify-center hover:bg-gray-100 transition-all" aria-label="Registrarse con Google">
+                    <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M43.6 20.4H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-7 0-12.7-5.7-12.7-12.7S17 10.7 24 10.7c3.2 0 6 1.2 8.2 3.2l5.7-5.7C34.6 5.1 29.6 3 24 3 12.9 3 4 11.9 4 23s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.6z" fill="#EA4335"/>
+                      <path d="M6.3 14.1l6.6 4.8C14.9 15.5 19 12 24 12c3.2 0 6 1.2 8.2 3.2l5.7-5.7C34.6 5.1 29.6 3 24 3 16 3 9.1 7.6 6.3 14.1z" fill="#FBBC05"/>
+                      <path d="M24 44c5.3 0 10-1.8 13.7-4.9l-6.3-5.1C28.7 33.9 26.5 34.7 24 34.7c-5.3 0-9.8-3.1-11.6-7.6l-6.8 5.2C8.2 39.9 15.6 44 24 44z" fill="#34A853"/>
+                      <path d="M43.6 20.4H42V20H24v8h11.3c-1 2.9-3 5.3-5.7 7.1-1.3.9-2.8 1.6-4.3 2.1 5.4 0 10-1.8 13.7-4.9 0 0 0 0 0 0 2-1.6 3.6-3.8 4.6-6.3.1-.3.2-.7.3-1.1z" fill="#1877F2" opacity="0"/>
+                    </svg>
+                  </button>
+                  <button type="button" className="w-12 h-12 bg-white rounded-xl flex items-center justify-center hover:bg-gray-100 transition-all" aria-label="Registrarse con Facebook">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="24" height="24" rx="4" fill="#1877F2"/>
+                      <path d="M15 8.5h-1.3c-.3 0-.8.2-.8.9V10h2.1l-.3 2h-1.8v6h-2.1v-6H9.7v-2h1.2v-1.2c0-1.2.7-2.1 2-2.1H15v2z" fill="#fff"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  style={{background: 'linear-gradient(90deg, var(--accent-gold-dark), var(--accent-gold))', boxShadow: 'var(--shadow-gold)'}}
+                  className="w-full py-4 text-white font-bold uppercase tracking-widest rounded-xl transition-all duration-300 disabled:opacity-50"
+                >
+                  {loading ? "Creando cuenta..." : "Crear cuenta"}
+                </motion.button>
+              </form>
+
+              <div className="mt-8 text-center">
+                <p className="text-gray-500 text-sm">
+                  ¿Ya tienes una cuenta?{" "}
+                  <Link to="/login" className="text-white font-semibold hover:text-[#8B5CF6]">
+                    Iniciar sesión
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>

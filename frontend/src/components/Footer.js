@@ -36,7 +36,7 @@ export default function Footer() {
   const services = [
     { name: "Compra de Propiedades", path: "/services/buying" },
     { name: "Venta de Inmuebles", path: "/services/selling" },
-    { name: "Publica Tu Propiedad", path: "/publish" }
+    { name: "Planes", path: "/planes" }
   ];
 
   const quickLinks = [

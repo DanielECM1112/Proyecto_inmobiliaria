@@ -1,5 +1,8 @@
 import logging
+import uuid
+from datetime import timedelta
 from django.db import transaction
+from django.core.exceptions import PermissionDenied
 from payments.models import Pago
 from properties.models import Inmueble
 
@@ -7,52 +10,124 @@ logger = logging.getLogger('apps')
 
 class PagoService:
     @staticmethod
-    def iniciar_pago(usuario, plan, inmueble=None, metodo='tarjeta', monto=None):
+    @transaction.atomic
+    def iniciar_pago(usuario, inmueble_id, plan_id, metodo='tarjeta'):
         """
-        Crea un registro de pago en estado 'pendiente'.
+        Inicia un pago verificando que el inmueble y el plan sean válidos,
+        que el inmueble pertenezca al usuario y que no exista un pago aprobado previo.
         """
-        referencia = f"LUX-{transaction.get_connection().connection.get_autocommit()}-{Pago.objects.count() + 1}"
-        # En un sistema real usaríamos un generador de UUID o algo más robusto
-        import uuid
-        referencia = f"LUX-{str(uuid.uuid4())[:8].upper()}"
-        
+        from plans.models import Plan
+
+        if not inmueble_id:
+            raise ValueError("El campo inmueble_id es obligatorio.")
+        if not plan_id:
+            raise ValueError("El campo plan_id es obligatorio.")
+
+        try:
+            inmueble = Inmueble.objects.get(id=inmueble_id)
+        except Inmueble.DoesNotExist:
+            raise ValueError("Inmueble no encontrado.")
+
+        if inmueble.usuario_id != usuario.id:
+            raise PermissionDenied("El inmueble no pertenece al usuario autenticado.")
+
+        # Verificar que no exista un pago pendiente o aprobado para el mismo inmueble
+        if Pago.objects.filter(inmueble=inmueble, estado__in=['pendiente', 'aprobado']).exists():
+            raise ValueError("Ya existe un pago pendiente o aprobado para este inmueble.")
+
+        # Validar que el usuario no tenga un plan activo (pago aprobado no expirado)
+        from django.utils import timezone
+        from datetime import timedelta
+        ultimo_aprobado = Pago.objects.filter(usuario=usuario, estado='aprobado').order_by('-created_at').first()
+        if ultimo_aprobado:
+            try:
+                duracion = int(getattr(ultimo_aprobado.plan, 'duracion_dias', 0))
+                fecha_expiracion = ultimo_aprobado.created_at + timedelta(days=duracion)
+                ahora = timezone.now()
+                if fecha_expiracion > ahora:
+                    raise ValueError(f"Ya tienes un plan activo hasta {fecha_expiracion.strftime('%Y-%m-%d')}")
+            except Exception:
+                # Si falla el cálculo simplemente no bloqueamos (mejor que romper)
+                pass
+
+        # Validar método de pago
+        metodo = (metodo or '').lower()
+        if metodo not in ['tarjeta', 'pse', 'nequi']:
+            raise ValueError("Método de pago inválido. Opciones válidas: tarjeta, pse, nequi.")
+
+        try:
+            plan = Plan.objects.get(id=plan_id)
+        except Plan.DoesNotExist:
+            raise ValueError("Plan no encontrado.")
+
+        if not getattr(plan, 'activo', True):
+            raise ValueError("El plan seleccionado no está activo.")
+
+        referencia = f"{uuid.uuid4()}"
+        monto = plan.precio
+
         pago = Pago.objects.create(
             usuario=usuario,
             plan=plan,
             inmueble=inmueble,
-            monto=monto or plan.precio,
+            monto=monto,
             metodo=metodo,
             estado='pendiente',
             referencia_externa=referencia
         )
+
         logger.info(f"Pago iniciado: {referencia} por {usuario.email}")
-        return pago
+
+        return {
+            "referencia": referencia,
+            "monto": f"{monto:.2f}",
+            "estado": pago.estado
+        }
 
     @staticmethod
     @transaction.atomic
     def confirmar_pago(referencia):
         """
-        Simula la confirmación de una pasarela. Aprueba el pago y activa el inmueble.
+        Confirma el pago con la referencia enviada, aprueba el pago y activa el inmueble.
         """
+        if not referencia:
+            raise ValueError("El campo referencia es obligatorio.")
+
         try:
-            pago = Pago.objects.get(referencia_externa=referencia)
-            if pago.estado == 'aprobado':
-                return pago
-            
-            pago.estado = 'aprobado'
-            pago.save()
-            
-            # Regla de negocio: Activar inmueble asociado
-            if pago.inmueble:
-                pago.inmueble.estado = 'activo'
-                pago.inmueble.save()
-                logger.info(f"Inmueble activado por pago: {pago.inmueble.id}")
-            
-            logger.info(f"Pago confirmado: {referencia}")
-            return pago
+            pago = Pago.objects.select_for_update().get(referencia_externa=referencia)
         except Pago.DoesNotExist:
-            logger.error(f"Intento de confirmar pago inexistente: {referencia}")
             return None
+
+        if pago.estado == 'aprobado':
+            logger.info(f"Pago ya estaba aprobado: {referencia}")
+            return {
+                "referencia": pago.referencia_externa,
+                "monto": f"{pago.monto:.2f}",
+                "estado": pago.estado
+            }
+
+        pago.estado = 'aprobado'
+        pago.save()
+
+        if pago.inmueble:
+            pago.inmueble.estado = 'activo'
+            pago.inmueble.save()
+            logger.info(f"Inmueble activado por pago: {pago.inmueble.id}")
+
+        logger.info(f"Pago confirmado: {referencia}")
+
+        return {
+            "referencia": pago.referencia_externa,
+            "monto": f"{pago.monto:.2f}",
+            "estado": pago.estado
+        }
+
+    @staticmethod
+    def obtener_mis_pagos(usuario):
+        """
+        Retorna los pagos del usuario autenticado ordenados por fecha.
+        """
+        return Pago.objects.filter(usuario=usuario).select_related('plan', 'inmueble').order_by('-created_at')
 
     @staticmethod
     def obtener_estadisticas_completas():
@@ -64,26 +139,32 @@ class PagoService:
         from plans.models import Plan
         from django.utils import timezone
         from django.db.models import Sum, Count, Q
-        
+
         ahora = timezone.now()
         inicio_mes = ahora.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        
-        # Agregaciones de Usuarios
+
         usuarios_stats = Usuario.objects.aggregate(
             total=Count('id'),
             activos=Count('id', filter=Q(is_active=True)),
             nuevos_mes=Count('id', filter=Q(created_at__gte=inicio_mes))
         )
-        
-        # Agregaciones de Inmuebles
+
         inmuebles_stats = Inmueble.objects.aggregate(
             total=Count('id'),
             activos=Count('id', filter=Q(estado='activo')),
             pendientes=Count('id', filter=Q(estado='pendiente')),
             finalizados=Count('id', filter=Q(estado='finalizado'))
         )
-        
-        # Agregaciones de Pagos
+
+        # Top 5 ciudades con más inmuebles
+        from django.db.models import Count as DjangoCount
+        inmuebles_por_ciudad_qs = Inmueble.objects.values('ciudad').annotate(total=DjangoCount('id')).order_by('-total')[:5]
+        inmuebles_por_ciudad = [{ 'ciudad': item['ciudad'], 'total': item['total'] } for item in inmuebles_por_ciudad_qs]
+
+        # Conteo por tipo
+        inmuebles_por_tipo_qs = Inmueble.objects.values('tipo').annotate(total=DjangoCount('id')).order_by('-total')
+        inmuebles_por_tipo = [{ 'tipo': item['tipo'], 'total': item['total'] } for item in inmuebles_por_tipo_qs]
+
         pagos_stats = Pago.objects.aggregate(
             total=Count('id'),
             aprobados=Count('id', filter=Q(estado='aprobado')),
@@ -91,11 +172,20 @@ class PagoService:
             rechazados=Count('id', filter=Q(estado='rechazado')),
             ingresos_mes=Sum('monto', filter=Q(estado='aprobado', created_at__gte=inicio_mes))
         )
-        
-        # Planes populares (ventas aprobadas)
+
         planes_populares = Plan.objects.annotate(
             total_ventas=Count('pagos', filter=Q(pagos__estado='aprobado'))
         ).order_by('-total_ventas')[:5]
+
+        planes_populares_data = [
+            {"nombre": plan.nombre, "total_ventas": plan.total_ventas}
+            for plan in planes_populares
+        ]
+
+        if not planes_populares_data:
+            planes_populares_data = [
+                {"nombre": "Plan Básico", "total_ventas": 0}
+            ]
 
         return {
             "usuarios": {
@@ -109,6 +199,8 @@ class PagoService:
                 "pendientes": inmuebles_stats['pendientes'],
                 "finalizados": inmuebles_stats['finalizados']
             },
+            "inmuebles_por_ciudad": inmuebles_por_ciudad,
+            "inmuebles_por_tipo": inmuebles_por_tipo,
             "pagos": {
                 "total": pagos_stats['total'],
                 "aprobados": pagos_stats['aprobados'],
@@ -116,8 +208,5 @@ class PagoService:
                 "rechazados": pagos_stats['rechazados'],
                 "ingresos_este_mes": str(pagos_stats['ingresos_mes'] or "0.00")
             },
-            "planes_populares": [
-                {"nombre": p.nombre, "total_ventas": p.total_ventas} 
-                for p in planes_populares
-            ]
+            "planes_populares": planes_populares_data
         }

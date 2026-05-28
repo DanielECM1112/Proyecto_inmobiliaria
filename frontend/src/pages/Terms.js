@@ -8,48 +8,37 @@ export default function Terms() {
   const { isDarkMode } = useTheme();
   
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${
-      isDarkMode ? "bg-[#05080a]" : "bg-white"
-    }`}>
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-500" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navbar />
-      <div className={`pt-44 pb-32 text-center px-8 relative overflow-hidden transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" 
-          : "bg-gradient-to-br from-slate-50 via-gold-50 to-slate-100"
-      }`}>
-        {/* Imagen de fondo con opacidad ajustada para ambos temas */}
-        <div className={`absolute inset-0 bg-[url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center transition-opacity duration-500 ${
-          isDarkMode ? "opacity-15" : "opacity-20"
-        }`}></div>
+      <div className="pt-44 pb-32 text-center px-8 relative overflow-hidden transition-colors duration-500" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        {/* Imagen de fondo con opacidad ajustada */}
+        <div
+          className="absolute inset-0 transition-opacity duration-500"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
+            opacity: 0.1
+          }}
+        />
         
-        {/* Overlay inteligente que mejora contraste */}
-        <div className={`absolute inset-0 transition-colors duration-500 ${
-          isDarkMode 
-            ? "bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-slate-900/80" 
-            : "bg-gradient-to-r from-white/70 via-gold-50/50 to-white/70"
-        }`}></div>
+        {/* Overlay */}
+        <div className="absolute inset-0" style={{ background: 'var(--section-overlay)' }} />
         
         <div className="relative z-10 max-w-4xl mx-auto">
-          <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className={`text-5xl md:text-7xl font-serif font-bold mb-6 tracking-tight ${
-            isDarkMode ? "text-white" : "text-dark-900"
-          }`}>Términos y <span className={`italic font-light ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Condiciones</span></motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className={`text-xl font-light max-w-2xl mx-auto ${
-            isDarkMode ? "text-gray-300" : "text-dark-700"
-          }`}>Acuerdo legal para el uso de nuestra plataforma inmobiliaria premium.</motion.p>
+          <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-5xl md:text-7xl font-serif font-bold mb-6 tracking-tight" style={{ color: 'var(--text-primary)' }}>Términos y <span className="italic font-light" style={{ color: 'var(--text-secondary)' }}>Condiciones</span></motion.h1>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="text-xl font-light max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>Acuerdo legal para el uso de nuestra plataforma inmobiliaria premium.</motion.p>
         </div>
       </div>
-      <main className={`flex-grow py-24 px-8 transition-colors duration-500 ${
-        isDarkMode ? "bg-[#05080a]" : "bg-white"
-      }`}>
-        <div className={`max-w-4xl mx-auto space-y-12 font-light leading-relaxed ${
-          isDarkMode ? "text-gray-300" : "text-slate-700"
-        }`}>
+      <main className="flex-grow py-24 px-8 transition-colors duration-500" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+        <div className="max-w-4xl mx-auto space-y-12 font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           <section>
-            <h2 className={`text-2xl font-serif font-bold mb-6 ${isDarkMode ? "text-white" : "text-dark-900"}`}>1. Aceptación de los Términos</h2>
+            <h2 className="text-2xl font-serif font-bold mb-6" style={{ color: 'var(--text-primary)' }}>1. Aceptación de los Términos</h2>
             <p>Al acceder y utilizar el sitio web de LUXHABITAT, usted acepta estar sujeto a estos términos y condiciones. Si no está de acuerdo con alguna parte de estos términos, no podrá utilizar nuestros servicios.</p>
           </section>
           <section>
-            <h2 className={`text-2xl font-serif font-bold mb-6 ${isDarkMode ? "text-white" : "text-dark-900"}`}>2. Publicación de Propiedades</h2>
+            <h2 className="text-2xl font-serif font-bold mb-6" style={{ color: 'var(--text-primary)' }}>2. Publicación de Propiedades</h2>
             <p>Los usuarios que contraten planes de publicación son responsables de la veracidad de la información proporcionada. LUXHABITAT se reserva el derecho de retirar cualquier publicación que contenga información falsa o engañosa.</p>
           </section>
           <section>

@@ -1,47 +1,24 @@
 /* THEME SYSTEM - LUXHABITAT Premium Gold Edition */
 
-/* Dark Mode (LUNA 🌙) - Cinematográfico Premium */
-:root, .dark {
-  /* Fondo Cinematográfico */
-  --bg-primary: #0A0E1F;
-  --bg-secondary: #121829;
-  --bg-tertiary: #1A1F3A;
-  
-  /* Textos Claros Legibles */
-  --text-primary: #F8FAFC;
-  --text-secondary: #D4D9E3;
-  --text-tertiary: #A0A8B8;
-  
-  /* Bordes Premium Sutiles */
-  --border-primary: rgba(255, 255, 255, 0.08);
-  --border-secondary: rgba(255, 255, 255, 0.04);
-  
-  /* Colores Acentuados */
-  --accent-gold: #D4AF37;
-  --accent-gold-light: #E5C158;
-  --accent-gold-dark: #B8941B;
-  --accent-night-blue: #1e3a8a;
-  --accent-deep-blue: #1e40af;
-  
-  /* Sombras Cinematográficas */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6);
-  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.15);
-}
-
 /* Light Mode (SOL ☀️) - Elegancia Premium */
-:not(.dark) {
-  /* Fondo Blanco Elegante */
-  --bg-primary: #FAFBFC;
-  --bg-secondary: #F0F3F7;
+:root {
+  /* Fondos Elegantes */
+  --bg-primary: #FAFAF7;
+  --bg-secondary: #F2EFE8;
   --bg-tertiary: #E4EAF2;
   
-  /* Textos Oscuros Legibles */
-  --text-primary: #0A0E1F;
-  --text-secondary: #2C3E50;
+  /* Textos Legibles */
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
   --text-tertiary: #5A6B7D;
+  
+  /* Cards Premium */
+  --card-bg: #FFFFFF;
+  --card-border: rgba(201, 168, 76, 0.25);
+  
+  /* Overlays */
+  --overlay-hero: rgba(0, 0, 0, 0.40);
+  --section-overlay: rgba(250, 250, 247, 0.88);
   
   /* Bordes Sutiles */
   --border-primary: rgba(10, 14, 31, 0.08);
@@ -62,6 +39,45 @@
   --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.12);
 }
 
+/* Dark Mode (LUNA 🌙) - Cinematográfico Premium */
+[data-theme="dark"], .dark {
+  /* Fondos Cinematográficos */
+  --bg-primary: #0D0D0D;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1A1F3A;
+  
+  /* Textos Claros Legibles */
+  --text-primary: #F5F0E8;
+  --text-secondary: #C8C0B0;
+  --text-tertiary: #A0A8B8;
+  
+  /* Cards Premium Dark */
+  --card-bg: #1C1C1C;
+  --card-border: rgba(212, 168, 83, 0.3);
+  
+  /* Overlays Dark */
+  --overlay-hero: rgba(0, 0, 0, 0.65);
+  --section-overlay: rgba(13, 13, 13, 0.88);
+  
+  /* Bordes Premium Sutiles */
+  --border-primary: rgba(255, 255, 255, 0.08);
+  --border-secondary: rgba(255, 255, 255, 0.04);
+  
+  /* Colores Acentuados */
+  --accent-gold: #D4AF37;
+  --accent-gold-light: #E5C158;
+  --accent-gold-dark: #B8941B;
+  --accent-night-blue: #1e3a8a;
+  --accent-deep-blue: #1e40af;
+  
+  /* Sombras Cinematográficas */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.15);
+}
+
 /* Global Accessibility Improvements */
 body {
   background-color: var(--bg-primary);
@@ -73,6 +89,14 @@ body {
 *:focus-visible {
   outline: 2px solid var(--accent-gold);
   outline-offset: 2px;
+}
+
+/* Also ensure regular focus states use premium gold for inputs/selects/textareas */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 0 0 6px rgba(212,175,55,0.06) !important;
 }
 
 /* Improved Link Styling */

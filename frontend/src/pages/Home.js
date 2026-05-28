@@ -25,9 +25,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`flex flex-col min-h-screen transition-colors duration-500 font-sans ${
-      isDarkMode ? "bg-primary-dark" : "bg-light-100"
-    }`}>
+    <div className="flex flex-col min-h-screen transition-colors duration-500 font-sans" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navbar />
       
       {/* Hero Section with Video */}

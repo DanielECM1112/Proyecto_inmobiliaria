@@ -21,16 +21,14 @@ export default function About() {
   ];
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${
-      isDarkMode ? "bg-primary-dark" : "bg-light-100"
-    }`}>
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-500" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navbar />
       
       {/* Hero Section */}
       <section className="relative pt-48 pb-32 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" 
+            src="https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80" 
             alt="About Background" 
             className="w-full h-full object-cover"
             style={{

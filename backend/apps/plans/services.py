@@ -13,7 +13,7 @@ class PlanService:
         """
         Retorna todos los planes marcados como activos para el público.
         """
-        return Plan.objects.filter(activo=True)
+        return Plan.objects.filter(is_active=True)
 
     @staticmethod
     def crear_plan(data):

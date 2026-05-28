@@ -5,10 +5,27 @@ import LocationIcon3D from '../components/LocationIcon3D';
 
 export default function Location() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navbar />
-      <main className="flex-grow pt-32 pb-20 px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-grow pt-32 pb-20 px-8 relative">
+        {/* Fondo con imagen */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1920&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
+            opacity: 0.08
+          }}
+        />
+        {/* Overlay */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{ background: 'var(--section-overlay)' }}
+        />
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Hero con icono 3D */}
           <div className="text-center mb-20">
             <div className="flex justify-center mb-8">

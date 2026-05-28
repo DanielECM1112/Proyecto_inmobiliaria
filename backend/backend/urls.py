@@ -17,14 +17,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', RedirectView.as_view(url='admin/', permanent=True)),
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
+    path('api/', include('plans.urls')),
+    path('api/', include('properties.urls')),
+    path('api/', include('payments.urls')),
     # REST auth (login/registration)
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
     # allauth (social login flows)
     path('accounts/', include('allauth.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

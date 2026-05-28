@@ -1,0 +1,295 @@
+{
+  "version": "1.1",
+  "collections": [
+    {
+      "id": "a1b2c3d4-e5f6-47a8-9b0c-123456789abc",
+      "name": "Proyecto Inmobiliaria - Backend",
+      "created": 1700000000000,
+      "modified": 1700000000000,
+      "folders": [
+        { "id": "AUTH", "name": "AUTH", "parentId": null },
+        { "id": "PLANES", "name": "PLANES", "parentId": null },
+        { "id": "INMUEBLES", "name": "INMUEBLES", "parentId": null },
+        { "id": "FAVORITOS", "name": "FAVORITOS", "parentId": null },
+        { "id": "CONTACTO", "name": "CONTACTO", "parentId": null },
+        { "id": "PAGOS", "name": "PAGOS", "parentId": null },
+        { "id": "ADMIN", "name": "ADMIN", "parentId": null }
+      ],
+      "requests": [
+        {
+          "id": "auth-register",
+          "name": "POST /api/auth/register/",
+          "method": "POST",
+          "url": "{{base_url}}/api/auth/register/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"nombre\": \"Erik Bello\",\n  \"email\": \"erikbello23@test.com\",\n  \"password\": \"Test1234!\",\n  \"password_confirm\": \"Test1234!\"\n}"
+          },
+          "folder": "AUTH",
+          "description": "Registro de usuario público"
+        },
+        {
+          "id": "auth-login",
+          "name": "POST /api/auth/login/",
+          "method": "POST",
+          "url": "{{base_url}}/api/auth/login/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"erikbello23@test.com\",\n  \"password\": \"Test1234!\"\n}"
+          },
+          "folder": "AUTH",
+          "description": "Login y obtención de tokens"
+        },
+        {
+          "id": "auth-refresh",
+          "name": "POST /api/auth/token/refresh/",
+          "method": "POST",
+          "url": "{{base_url}}/api/auth/token/refresh/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+          },
+          "folder": "AUTH",
+          "description": "Actualizar token JWT usando refresh token"
+        },
+        {
+          "id": "planes-list",
+          "name": "GET /api/planes/",
+          "method": "GET",
+          "url": "{{base_url}}/api/planes/",
+          "headers": [],
+          "folder": "PLANES",
+          "description": "Listado público de planes"
+        },
+        {
+          "id": "planes-create",
+          "name": "POST /api/admin/planes/",
+          "method": "POST",
+          "url": "{{base_url}}/api/admin/planes/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" },
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"nombre\": \"Plan Premium\",\n  \"descripcion\": \"Publicación destacada\",\n  \"duracion_dias\": 30,\n  \"max_inmuebles\": 10,\n  \"max_imagenes\": 20,\n  \"precio\": 199900.00,\n  \"activo\": true\n}"
+          },
+          "folder": "PLANES",
+          "description": "Crear un plan nuevo como administrador"
+        },
+        {
+          "id": "planes-update",
+          "name": "PATCH /api/admin/planes/{id}/",
+          "method": "PATCH",
+          "url": "{{base_url}}/api/admin/planes/{{plan_id}}/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" },
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"precio\": 149900.00,\n  \"activo\": false\n}"
+          },
+          "folder": "PLANES",
+          "description": "Editar un plan existente como administrador"
+        },
+        {
+          "id": "inmuebles-list",
+          "name": "GET /api/inmuebles/",
+          "method": "GET",
+          "url": "{{base_url}}/api/inmuebles/",
+          "headers": [],
+          "folder": "INMUEBLES",
+          "description": "Listado público de inmuebles con filtros opcionales"
+        },
+        {
+          "id": "inmuebles-filter",
+          "name": "GET /api/inmuebles/?ciudad=Bogota&tipo=apartamento",
+          "method": "GET",
+          "url": "{{base_url}}/api/inmuebles/?ciudad=Bogota&tipo=apartamento",
+          "headers": [],
+          "folder": "INMUEBLES",
+          "description": "Listado público de inmuebles filtrados por ciudad y tipo"
+        },
+        {
+          "id": "inmuebles-detail",
+          "name": "GET /api/inmuebles/{id}/",
+          "method": "GET",
+          "url": "{{base_url}}/api/inmuebles/{{inmueble_id}}/",
+          "headers": [],
+          "folder": "INMUEBLES",
+          "description": "Detalle completo de un inmueble"
+        },
+        {
+          "id": "inmuebles-create",
+          "name": "POST /api/inmuebles/crear/",
+          "method": "POST",
+          "url": "{{base_url}}/api/inmuebles/crear/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" },
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"titulo\": \"Apartamento en Chapinero\",\n  \"descripcion\": \"Hermoso apartamento con terraza\",\n  \"precio\": 350000000.00,\n  \"ciudad\": \"Bogota\",\n  \"direccion\": \"Calle 100 #20-30\",\n  \"tipo\": \"apartamento\",\n  \"url_video_youtube\": \"https://youtu.be/ejemplo\",\n  \"plan\": \"{{plan_id}}\"\n}"
+          },
+          "folder": "INMUEBLES",
+          "description": "Crear un nuevo inmueble autenticado"
+        },
+        {
+          "id": "inmuebles-update",
+          "name": "PATCH /api/inmuebles/admin/{id}/",
+          "method": "PATCH",
+          "url": "{{base_url}}/api/inmuebles/admin/{{inmueble_id}}/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" },
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"precio\": 330000000.00,\n  \"estado\": \"activo\"\n}"
+          },
+          "folder": "INMUEBLES",
+          "description": "Editar un inmueble autenticado como dueño o admin"
+        },
+        {
+          "id": "favoritos-list",
+          "name": "GET /api/favoritos/",
+          "method": "GET",
+          "url": "{{base_url}}/api/favoritos/",
+          "headers": [
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "folder": "FAVORITOS",
+          "description": "Listado de favoritos del usuario autenticado"
+        },
+        {
+          "id": "favoritos-add",
+          "name": "POST /api/favoritos/",
+          "method": "POST",
+          "url": "{{base_url}}/api/favoritos/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" },
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"inmueble\": \"{{inmueble_id}}\"\n}"
+          },
+          "folder": "FAVORITOS",
+          "description": "Agregar o eliminar favorito según estado actual"
+        },
+        {
+          "id": "favoritos-delete",
+          "name": "DELETE /api/favoritos/{id}/",
+          "method": "DELETE",
+          "url": "{{base_url}}/api/favoritos/{{favorito_id}}/",
+          "headers": [
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "folder": "FAVORITOS",
+          "description": "Eliminar favorito por ID de favorito"
+        },
+        {
+          "id": "contacto-create",
+          "name": "POST /api/contacto/",
+          "method": "POST",
+          "url": "{{base_url}}/api/contacto/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"inmueble\": \"{{inmueble_id}}\",\n  \"nombre\": \"Interesado\",\n  \"email\": \"interesado@test.com\",\n  \"mensaje\": \"Estoy interesado en este inmueble.\"\n}"
+          },
+          "folder": "CONTACTO",
+          "description": "Enviar un mensaje de contacto para un inmueble"
+        },
+        {
+          "id": "pagos-iniciar",
+          "name": "POST /api/pagos/iniciar/",
+          "method": "POST",
+          "url": "{{base_url}}/api/pagos/iniciar/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" },
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"plan_id\": \"{{plan_id}}\",\n  \"inmueble_id\": \"{{inmueble_id}}\",\n  \"metodo\": \"tarjeta\"\n}"
+          },
+          "folder": "PAGOS",
+          "description": "Iniciar un pago para un plan y inmueble"
+        },
+        {
+          "id": "pagos-confirmar",
+          "name": "POST /api/pagos/confirmar/",
+          "method": "POST",
+          "url": "{{base_url}}/api/pagos/confirmar/",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"referencia\": \"{{referencia_pago}}\"\n}"
+          },
+          "folder": "PAGOS",
+          "description": "Confirmar un pago usando la referencia de pago"
+        },
+        {
+          "id": "pagos-mis-pagos",
+          "name": "GET /api/pagos/mis-pagos/",
+          "method": "GET",
+          "url": "{{base_url}}/api/pagos/mis-pagos/",
+          "headers": [
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "folder": "PAGOS",
+          "description": "Listado de mis pagos (nota: este endpoint no está implementado actualmente en el backend)"
+        },
+        {
+          "id": "pagos-admin-list",
+          "name": "GET /api/admin/pagos/",
+          "method": "GET",
+          "url": "{{base_url}}/api/admin/pagos/",
+          "headers": [
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "folder": "PAGOS",
+          "description": "Listado de pagos para administradores"
+        },
+        {
+          "id": "admin-usuarios-list",
+          "name": "GET /api/admin/usuarios/",
+          "method": "GET",
+          "url": "{{base_url}}/api/admin/usuarios/",
+          "headers": [
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "folder": "ADMIN",
+          "description": "Listado de usuarios para administradores"
+        },
+        {
+          "id": "admin-stats",
+          "name": "GET /api/admin/stats/",
+          "method": "GET",
+          "url": "{{base_url}}/api/admin/stats/",
+          "headers": [
+            { "key": "Authorization", "value": "Bearer {{token}}" }
+          ],
+          "folder": "ADMIN",
+          "description": "Obtener estadísticas administrativas del sistema"
+        }
+      ]
+    }
+  ]
+}
