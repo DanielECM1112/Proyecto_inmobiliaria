@@ -1,0 +1,24 @@
+[33mcommit 42e0720fbe69613eb3c20b27733582148c1896e3[m
+Author: Manuel Estiven Penagos <manuelestiven2006@gmail.com>
+Date:   Wed Jun 3 22:09:43 2026 -0500
+
+    feat: flujo publicar completo + MySQL + admin planes y propiedades
+
+ backend/apps/plans/models.py          |   1 [31m-[m
+ backend/apps/properties/urls.py       |   3 [32m+[m[31m-[m
+ backend/apps/properties/views.py      |  13 [32m+[m[31m-[m
+ backend/backend/__init__.py           |   3 [32m+[m
+ backend/backend/settings.py           |  16 [32m+[m[31m-[m
+ backend/backend/urls.py               |   2 [32m+[m
+ backend/backup_sqlite.json            | 158 [32m+++++++++++++++++[m
+ frontend/src/admin/Plans.jsx          | 321 [32m+++++++++++++++++++++++++[m[31m---------[m
+ frontend/src/admin/Properties.jsx     | 306 [32m++++++++++++++++++++++++[m[31m--------[m
+ frontend/src/admin/adminService.js    | 132 [32m+++++++[m[31m-------[m
+ frontend/src/components/Navbar.js     |  19 [32m++[m
+ frontend/src/pages/Checkout.js        |   6 [32m+[m[31m-[m
+ frontend/src/pages/Home.js            |   2 [32m+[m[31m-[m
+ frontend/src/pages/Plans.js           |  49 [32m++++[m[31m--[m
+ frontend/src/pages/Properties.js      |  43 [32m++[m[31m---[m
+ frontend/src/pages/PropertyDetail.js  |   8 [32m+[m[31m-[m
+ frontend/src/pages/PublishProperty.js |   9 [32m+[m[31m-[m
+ 17 files changed, 806 insertions(+), 285 deletions(-)

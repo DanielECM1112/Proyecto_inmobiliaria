@@ -1,0 +1,158 @@
+[
+{
+  "model": "sites.site",
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$e6FPEcTUOajZCJT3lfcswa$aJj63vJIEjYfujSlD7IFiSC7uylx1jHI2XKh2gldeW0=",
+    "last_login": "2026-05-30T17:53:23.377Z",
+    "is_superuser": true,
+    "nombre": "Manu",
+    "email": "manuelestiven2006@gmail.com",
+    "telefono": "3223147352",
+    "ciudad": "Ibague",
+    "rol": "admin",
+    "is_active": true,
+    "is_staff": true,
+    "avatar": "avatars/foto_SX2SY0T.jpeg",
+    "created_at": "2026-05-30T17:52:46.829Z",
+    "updated_at": "2026-06-02T12:50:04.546Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$CDGXHxRe7fQp9q5dBaWeOk$1WYDhFyfZw+ta2zaseFNLWbPN7Bl+mDJW+TpO0F9UB4=",
+    "last_login": null,
+    "is_superuser": false,
+    "nombre": "daniel cardozo",
+    "email": "danielcardozo@gmail.com",
+    "telefono": null,
+    "ciudad": null,
+    "rol": "usuario",
+    "is_active": true,
+    "is_staff": false,
+    "avatar": "",
+    "created_at": "2026-06-01T12:21:06.118Z",
+    "updated_at": "2026-06-01T12:21:06.118Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$ui8X4DDSmdS8y2pB6jBDnL$mWl99rh1RV9BwGNdnnw/ysv54MU+VNyBeKhjIewyWFs=",
+    "last_login": null,
+    "is_superuser": false,
+    "nombre": "Usuario de Prueba",
+    "email": "test@test.com",
+    "telefono": null,
+    "ciudad": null,
+    "rol": "usuario",
+    "is_active": true,
+    "is_staff": false,
+    "avatar": "",
+    "created_at": "2026-05-30T22:34:52.179Z",
+    "updated_at": "2026-05-30T22:34:52.179Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "00a67187-711a-4e87-bd21-38aa0ef19397",
+  "fields": {
+    "name": "Gratis",
+    "slug": "gratis",
+    "description": "",
+    "duration_days": 5,
+    "max_properties": 1,
+    "max_photos": 5,
+    "price": "0.00",
+    "features": "[]",
+    "is_featured": false,
+    "is_active": false,
+    "created_at": "2026-06-02T13:43:23.273Z",
+    "updated_at": "2026-06-04T01:45:59.555Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "88c02398-0daa-4b25-8762-53bc635e17a6",
+  "fields": {
+    "name": "Basico",
+    "slug": "basico-1",
+    "description": "",
+    "duration_days": 30,
+    "max_properties": 1,
+    "max_photos": 5,
+    "price": "20.00",
+    "features": "[\"Publicacion destacada\"]",
+    "is_featured": false,
+    "is_active": true,
+    "created_at": "2026-06-04T01:48:54.492Z",
+    "updated_at": "2026-06-04T01:48:54.492Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "ab4f6565-27ef-4284-8e28-7e7e851982f9",
+  "fields": {
+    "name": "Basico",
+    "slug": "basico",
+    "description": "",
+    "duration_days": 10,
+    "max_properties": 1,
+    "max_photos": 6,
+    "price": "0.00",
+    "features": "[]",
+    "is_featured": false,
+    "is_active": true,
+    "created_at": "2026-06-04T01:43:25.537Z",
+    "updated_at": "2026-06-04T01:43:25.537Z"
+  }
+},
+{
+  "model": "properties.propiedad",
+  "pk": 1,
+  "fields": {
+    "titulo": "Apartamento",
+    "tipo": "apartamento",
+    "precio": "1000000.00",
+    "area": 250.0,
+    "habitaciones": 4,
+    "banos": 2,
+    "ubicacion": "Belen",
+    "descripcion": "Apartamamento peque�o",
+    "estado": "disponible",
+    "estrato": 2,
+    "garaje": true,
+    "piscina": false,
+    "amoblado": false,
+    "plan_nombre": "Basico",
+    "propietario": [
+      "manuelestiven2006@gmail.com"
+    ],
+    "creado_en": "2026-06-04T01:44:39.127Z",
+    "activo": true
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 1,
+  "fields": {
+    "propiedad": 1,
+    "imagen": "properties/602045013.jpg",
+    "es_principal": true,
+    "subida_en": "2026-06-04T01:44:39.138Z"
+  }
+}
+]

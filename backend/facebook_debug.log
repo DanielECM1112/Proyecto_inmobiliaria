@@ -1,0 +1,22 @@
+
+=========================================
+INTENTO ENTRADA - is_register: False
+token recibido: fake-token...
+FB Graph Response Status: 200
+FB Data: {'id': '123', 'name': 'FB Test', 'email': 'noexiste@example.com'}
+Usuario no existe, redirigiendo a: http://localhost:3000/register?email=noexiste%40example.com&social=facebook
+
+=========================================
+INTENTO ENTRADA - is_register: False
+token recibido: EAAVnYKSW8CQBRtYCcEg...
+FB Graph Response Status: 200
+FB Data: {'id': '4577032235874564', 'name': 'Daniel Cardozo', 'email': 'danielcar-12@hotmail.com'}
+Usuario no existe, redirigiendo a: http://localhost:3000/register?email=danielcar-12%40hotmail.com&social=facebook
+
+=========================================
+INTENTO ENTRADA - is_register: True
+token recibido: EAAVnYKSW8CQBRlM5UbT...
+FB Graph Response Status: 200
+FB Data: {'id': '4577032235874564', 'name': 'Daniel Cardozo', 'email': 'danielcar-12@hotmail.com'}
+NUEVO USUARIO CREADO EXITOSAMENTE: danielcar-12@hotmail.com (ID: 896ce582-3cd4-44be-8143-7166c8d73e77)
+AUTENTICACION EXITOSA: danielcar-12@hotmail.com

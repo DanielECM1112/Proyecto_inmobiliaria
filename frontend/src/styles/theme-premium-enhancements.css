@@ -1,0 +1,205 @@
+/* ═══════════════════════════════════════════════════════════ */
+/* LUXHABITAT PREMIUM GOLD EDITION - ENHANCED CINEMATOGRAPHIC STYLING */
+/* ═══════════════════════════════════════════════════════════ */
+
+/* Cinematic depth background for dark mode */
+.dark {
+  background-image: 
+    radial-gradient(at 100% 0%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(30, 58, 138, 0.02) 0%, transparent 50%);
+}
+
+/* Premium card shadows for depth */
+.dark .premium-card {
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+}
+
+.premium-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+}
+
+/* Luxury text gradient effect */
+.luxury-text {
+  background: linear-gradient(135deg, #D4AF37, #E5C158);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Premium borders with gold accents */
+.dark .premium-border {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.2);
+}
+
+.premium-border {
+  border: 1px solid rgba(10, 14, 31, 0.08);
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.15);
+}
+
+/* Premium input styling with gold focus */
+.premium-input {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.premium-input:focus {
+  border-color: #D4AF37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  background-color: var(--bg-tertiary);
+}
+
+.dark .premium-input:focus {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Premium button styling */
+.premium-button {
+  background: linear-gradient(135deg, #D4AF37, #E5C158);
+  color: #0A0E1F;
+  border: none;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.premium-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15), 0 8px 20px rgba(212, 175, 55, 0.25);
+}
+
+.premium-button:active {
+  transform: translateY(0);
+}
+
+/* Image luxury overlay for cinematic look */
+.image-luxury-overlay {
+  position: relative;
+}
+
+.dark .image-luxury-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 14, 31, 0.3), transparent);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.image-luxury-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Elegant premium dividers */
+.premium-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  opacity: 0.8;
+}
+
+.dark .premium-divider {
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+}
+
+/* Enhanced image visibility in dark mode */
+.dark img,
+.dark picture {
+  filter: brightness(0.95) contrast(1.05);
+}
+
+/* Premium section headers */
+.premium-section-header {
+  position: relative;
+  display: inline-block;
+}
+
+.premium-section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #D4AF37, transparent);
+}
+
+/* Smooth color transitions for theme changes */
+* {
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+}
+
+/* Disable transitions on animations to avoid conflicts */
+[data-framer-component],
+.framer-container {
+  transition: none !important;
+}
+
+/* Premium text selections */
+::selection {
+  background-color: #D4AF37;
+  color: #0A0E1F;
+}
+
+::-moz-selection {
+  background-color: #D4AF37;
+  color: #0A0E1F;
+}
+
+/* Accessibility - Enhanced focus states */
+:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+}
+
+/* Premium link styling */
+a {
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.dark a {
+  color: #D4D9E3;
+}
+
+a:hover {
+  color: #D4AF37;
+}
+
+/* Responsive enhancements for mobile */
+@media (max-width: 768px) {
+  .premium-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .dark .premium-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Prefers color scheme: dark */
+@media (prefers-color-scheme: dark) {
+  .theme-auto {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+}
+
+/* Prefers color scheme: light */
+@media (prefers-color-scheme: light) {
+  .theme-auto {
+    background-color: #FAFBFC;
+    color: #0A0E1F;
+  }
+}

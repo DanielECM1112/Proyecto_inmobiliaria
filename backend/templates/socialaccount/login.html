@@ -1,0 +1,70 @@
+{% load socialaccount %}
+
+<form method="post" action="{% provider_login_url provider.id process=process %}" id="socialForm" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Redirigiendo a {{ provider.name }} - LuxHabitat</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Inter', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(201, 168, 76, 0.08);
+            border-radius: 32px;
+            border: 1px solid rgba(201, 168, 76, 0.25);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 0 0 10px;
+            color: #C9A84C;
+        }
+        p {
+            color: rgba(255,255,255,0.65);
+            font-size: 16px;
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(201, 168, 76, 0.25);
+            border-top: 4px solid #C9A84C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto 0;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            document.getElementById('socialForm').submit();
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Conectando con {{ provider.name }}...</h1>
+        <p>Te estamos redirigiendo de forma segura.</p>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>

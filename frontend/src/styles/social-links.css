@@ -1,0 +1,170 @@
+/* Social Links Isométrico — UIverse by MijailVillegas
+   Adaptado para LuxHabitat (modo claro + oscuro) */
+
+:root { --social-gold: #C9A84C; }
+
+/* ── CARD BASE ── */
+.social-card {
+  max-width: fit-content;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: 0.5s;
+}
+
+/* ── MODO CLARO ── */
+.social-card.light {
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.5),
+    inset 0 0 5px rgba(255,255,255,0.6),
+    0 5px 15px rgba(0,0,0,0.08);
+}
+.social-card.light:hover {
+  background: rgba(200,200,200,0.08);
+}
+.social-card.light .social-svg {
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.5),
+    inset 0 0 5px rgba(255,255,255,0.7),
+    0 5px 10px rgba(0,0,0,0.1);
+}
+.social-card.light .social-text {
+  background-color: rgba(255,255,255,0.6);
+  box-shadow:
+    -5px 0 1px rgba(153,153,153,0.2),
+    -10px 0 1px rgba(153,153,153,0.1),
+    inset 0 0 20px rgba(255,255,255,0.5),
+    0 5px 5px rgba(0,0,0,0.05);
+}
+.social-card.light .iso-pro span {
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.4),
+    inset 0 0 5px rgba(255,255,255,0.6),
+    0 5px 5px rgba(0,0,0,0.1);
+}
+
+/* ── MODO OSCURO ── */
+.social-card.dark {
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.05),
+    inset 0 0 5px rgba(255,255,255,0.08),
+    0 5px 20px rgba(0,0,0,0.5);
+}
+.social-card.dark:hover {
+  background: rgba(255,255,255,0.03);
+}
+.social-card.dark .social-svg {
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.05),
+    inset 0 0 5px rgba(255,255,255,0.08),
+    0 5px 10px rgba(0,0,0,0.5);
+}
+.social-card.dark .social-text {
+  background-color: rgba(20,20,20,0.7);
+  box-shadow:
+    -5px 0 1px rgba(80,80,80,0.15),
+    inset 0 0 10px rgba(255,255,255,0.03),
+    0 5px 5px rgba(0,0,0,0.4);
+}
+.social-card.dark .iso-pro span {
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.03),
+    inset 0 0 5px rgba(255,255,255,0.05),
+    0 5px 5px rgba(0,0,0,0.5);
+}
+
+/* ── LISTA ── */
+.social-card ul {
+  padding: 1rem;
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin: 0;
+}
+
+/* ── ICONO SVG ── */
+.social-svg {
+  transition: all 0.3s;
+  padding: 1rem;
+  height: 60px;
+  width: 60px;
+  border-radius: 100%;
+  color: var(--social-gold);
+  fill: currentColor;
+  display: block;
+}
+
+/* ── TOOLTIP ── */
+.social-text {
+  opacity: 0;
+  border-radius: 6px;
+  padding: 5px 10px;
+  transition: all 0.3s;
+  color: var(--social-gold);
+  position: absolute;
+  z-index: 9999;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── EFECTO ISOMÉTRICO ── */
+.iso-pro {
+  transition: 0.5s;
+  position: relative;
+  cursor: pointer;
+}
+.iso-pro:hover a > .social-svg {
+  transform: translate(15px, -15px);
+}
+.iso-pro:hover .social-text {
+  opacity: 1;
+  transform: translate(25px, -2px) skew(-5deg);
+}
+.iso-pro:hover .social-svg {
+  transform: translate(5px, -5px);
+}
+.iso-pro span {
+  opacity: 0;
+  position: absolute;
+  border-radius: 50%;
+  transition: all 0.3s;
+  height: 60px;
+  width: 60px;
+  top: 0;
+  left: 0;
+}
+.iso-pro:hover span          { opacity: 1; }
+.iso-pro:hover span:nth-child(1) { opacity: 0.2; }
+.iso-pro:hover span:nth-child(2) { opacity: 0.4; transform: translate(5px, -5px); }
+.iso-pro:hover span:nth-child(3) { opacity: 0.6; transform: translate(10px, -10px); }
+
+/* ── El link cubre toda el área del item ── */
+.iso-link {
+  display: block;
+  position: relative;
+  text-decoration: none;
+}
+
+/* ── Mover los spans al hover del link en vez del li ── */
+.iso-pro:hover .iso-link > .social-svg {
+  transform: translate(15px, -15px);
+}
+.iso-pro:hover .iso-link .social-text {
+  opacity: 1;
+  transform: translate(25px, -2px) skew(-5deg);
+}
+.iso-pro:hover .iso-link span:nth-child(1) { opacity: 0.2; }
+.iso-pro:hover .iso-link span:nth-child(2) { opacity: 0.4; transform: translate(5px, -5px); }
+.iso-pro:hover .iso-link span:nth-child(3) { opacity: 0.6; transform: translate(10px, -10px); }

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>LuxHabitat - Bienvenido!</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Inter', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(201, 168, 76, 0.08);
+            border-radius: 32px;
+            border: 1px solid rgba(201, 168, 76, 0.25);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+        }
+        .icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+            animation: bounce 0.8s ease;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin: 0 0 10px;
+            color: #C9A84C;
+        }
+        p {
+            color: rgba(255,255,255,0.65);
+            font-size: 16px;
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(201, 168, 76, 0.25);
+            border-top: 4px solid #C9A84C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto 0;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="icon">✅</div>
+        <h1>Bienvenido a LuxHabitat!</h1>
+        <p>Redirigiendo...</p>
+        <div class="loader"></div>
+    </div>
+
+    <script>
+        const token = "{{ token|default_if_none:''|escapejs }}";
+        const userJson = {{ user_json|default:'null'|safe }};
+
+        function redirectToFrontend() {
+            window.location.replace('http://localhost:3000/');
+        }
+
+        function redirectWithToken() {
+            const fragment = `#token=${encodeURIComponent(token)}&user=${encodeURIComponent(JSON.stringify(userJson))}`;
+            window.location.replace(`http://localhost:3000/${fragment}`);
+        }
+
+        function setStatus(message) {
+            const status = document.querySelector('.container p');
+            if (status) {
+                status.textContent = message;
+            }
+        }
+
+        try {
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({ type: 'social_login', token, user: userJson }, 'http://localhost:3000');
+                setStatus('Cerrando popup...');
+                window.close();
+            } else if (token && token.trim() !== '') {
+                setStatus('Redirigiendo al frontend...');
+                redirectWithToken();
+            } else {
+                console.error('No hay token válido');
+                setStatus('Error: no hay token válido. Redirigiendo...');
+                setTimeout(redirectToFrontend, 2000);
+            }
+        } catch (e) {
+            console.error('Error al comunicar con la ventana padre:', e);
+            setStatus('Error de redirección. Intenta de nuevo en unos segundos.');
+            setTimeout(redirectToFrontend, 4000);
+        }
+
+        setTimeout(() => {
+            redirectToFrontend();
+        }, 6000);
+    </script>
+</body>
+</html>

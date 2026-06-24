@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:15
+    container_name: luxhabitat_db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=luxhabitat_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d luxhabitat_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: luxhabitat_backend
+
+    volumes:
+      - ./backend:/app
+
+    ports:
+      - "8000:8000"
+
+    # Cargar variables del archivo .env
+    env_file:
+      - ./backend/.env
+
+    environment:
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      - SECRET_KEY=django-insecure-docker-dev-key
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=luxhabitat_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin123
+      - DB_HOST=db
+      - DB_PORT=5432
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: luxhabitat_frontend
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      - WDS_SOCKET_PORT=0
+      - CHOKIDAR_USEPOLLING=true
+
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

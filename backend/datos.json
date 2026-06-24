@@ -1,0 +1,505 @@
+[
+{
+  "model": "sites.site",
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$uimptSYcEaH9tzK0MSFWHo$PP0wjbtyyYd9uUXOPRBiuNCNqXbmULepghm39z8XOZo=",
+    "last_login": null,
+    "is_superuser": false,
+    "nombre": "Jhon Penagos",
+    "email": "jhonjaiderpenagos204@gmail.com",
+    "telefono": null,
+    "ciudad": null,
+    "rol": "usuario",
+    "is_active": true,
+    "is_staff": false,
+    "avatar": "",
+    "created_at": "2026-06-11T02:34:19.398Z",
+    "updated_at": "2026-06-11T02:34:19.398Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$K8Go2j4IgqyFV2TAUerGH9$mKVaQNr+uFE/HbUV+QBLx8i8G8oMgqASY5MQvFAU5VE=",
+    "last_login": "2026-05-30T17:53:23.377Z",
+    "is_superuser": true,
+    "nombre": "Manu",
+    "email": "manuelestiven2006@gmail.com",
+    "telefono": "3223147352",
+    "ciudad": "Ibague",
+    "rol": "admin",
+    "is_active": true,
+    "is_staff": true,
+    "avatar": "avatars/foto_SX2SY0T.jpeg",
+    "created_at": "2026-05-30T17:52:46.829Z",
+    "updated_at": "2026-06-11T03:19:02.848Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$CDGXHxRe7fQp9q5dBaWeOk$1WYDhFyfZw+ta2zaseFNLWbPN7Bl+mDJW+TpO0F9UB4=",
+    "last_login": null,
+    "is_superuser": false,
+    "nombre": "daniel cardozo",
+    "email": "danielcardozo@gmail.com",
+    "telefono": null,
+    "ciudad": null,
+    "rol": "usuario",
+    "is_active": true,
+    "is_staff": false,
+    "avatar": "",
+    "created_at": "2026-06-01T12:21:06.118Z",
+    "updated_at": "2026-06-01T12:21:06.118Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.usuario",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$ui8X4DDSmdS8y2pB6jBDnL$mWl99rh1RV9BwGNdnnw/ysv54MU+VNyBeKhjIewyWFs=",
+    "last_login": null,
+    "is_superuser": false,
+    "nombre": "Usuario de Prueba",
+    "email": "test@test.com",
+    "telefono": null,
+    "ciudad": null,
+    "rol": "usuario",
+    "is_active": true,
+    "is_staff": false,
+    "avatar": "",
+    "created_at": "2026-05-30T22:34:52.179Z",
+    "updated_at": "2026-05-30T22:34:52.179Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "00a67187-711a-4e87-bd21-38aa0ef19397",
+  "fields": {
+    "name": "Gratis",
+    "slug": "gratis",
+    "description": "",
+    "duration_days": 5,
+    "max_properties": 1,
+    "max_photos": 5,
+    "price": "0.00",
+    "features": "[]",
+    "is_featured": false,
+    "is_active": false,
+    "created_at": "2026-06-02T13:43:23.273Z",
+    "updated_at": "2026-06-04T01:45:59.555Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "365f72ce-ecc8-4f04-a668-50e3b72b89d4",
+  "fields": {
+    "name": "Pla Premium",
+    "slug": "pla-premium",
+    "description": "",
+    "duration_days": 30,
+    "max_properties": 2,
+    "max_photos": 8,
+    "price": "50.00",
+    "features": "[]",
+    "is_featured": true,
+    "is_active": true,
+    "created_at": "2026-06-09T15:24:51.317Z",
+    "updated_at": "2026-06-09T15:24:51.317Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "88c02398-0daa-4b25-8762-53bc635e17a6",
+  "fields": {
+    "name": "Basico",
+    "slug": "basico-1",
+    "description": "",
+    "duration_days": 30,
+    "max_properties": 1,
+    "max_photos": 5,
+    "price": "20.00",
+    "features": "[\"Publicacion destacada\"]",
+    "is_featured": false,
+    "is_active": true,
+    "created_at": "2026-06-04T01:48:54.492Z",
+    "updated_at": "2026-06-04T01:48:54.492Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": "ab4f6565-27ef-4284-8e28-7e7e851982f9",
+  "fields": {
+    "name": "Basico",
+    "slug": "basico",
+    "description": "",
+    "duration_days": 10,
+    "max_properties": 1,
+    "max_photos": 6,
+    "price": "0.00",
+    "features": "[]",
+    "is_featured": false,
+    "is_active": true,
+    "created_at": "2026-06-04T01:43:25.537Z",
+    "updated_at": "2026-06-04T01:43:25.537Z"
+  }
+},
+{
+  "model": "properties.propiedad",
+  "pk": 1,
+  "fields": {
+    "titulo": "Apartamento",
+    "tipo": "apartamento",
+    "precio": "1000000.00",
+    "area": 250.0,
+    "habitaciones": 4,
+    "banos": 2,
+    "ubicacion": "Belen",
+    "descripcion": "Apartamamento pequeño",
+    "estado": "disponible",
+    "estrato": 2,
+    "garaje": true,
+    "piscina": false,
+    "amoblado": false,
+    "contacto_nombre": "",
+    "contacto_telefono": "",
+    "contacto_email": "",
+    "plan_nombre": "Basico",
+    "dias_duracion": 36500,
+    "prioridad_plan": "999999.00",
+    "fecha_expira": "2126-05-17T21:49:53.980Z",
+    "propietario": [
+      "manuelestiven2006@gmail.com"
+    ],
+    "creado_en": "2026-06-04T01:44:39.127Z",
+    "activo": true
+  }
+},
+{
+  "model": "properties.propiedad",
+  "pk": 2,
+  "fields": {
+    "titulo": "Apartamento",
+    "tipo": "apartamento",
+    "precio": "20000000.00",
+    "area": 350.0,
+    "habitaciones": 4,
+    "banos": 2,
+    "ubicacion": "La pola",
+    "descripcion": "Apartamento Medio Grande Amoblado.",
+    "estado": "disponible",
+    "estrato": 2,
+    "garaje": true,
+    "piscina": false,
+    "amoblado": false,
+    "contacto_nombre": "Manu",
+    "contacto_telefono": "3126197058",
+    "contacto_email": "manuelestiven2006@gmail.com",
+    "plan_nombre": "Basico",
+    "dias_duracion": 36500,
+    "prioridad_plan": "999999.00",
+    "fecha_expira": "2126-05-17T21:49:53.980Z",
+    "propietario": [
+      "manuelestiven2006@gmail.com"
+    ],
+    "creado_en": "2026-06-09T21:20:02.742Z",
+    "activo": true
+  }
+},
+{
+  "model": "properties.propiedad",
+  "pk": 3,
+  "fields": {
+    "titulo": "apartamento",
+    "tipo": "apartamento",
+    "precio": "600.00",
+    "area": 29.0,
+    "habitaciones": 3,
+    "banos": 1,
+    "ubicacion": "La pola",
+    "descripcion": "Apartamento en Arriendo en Ibagué en el Sector 1\r\nApartamento ubicado en un 4° piso, que consta de sala comedor, cocina integral, zona de ropas, 2 habitaciones sin closet, 1 baño y parqueadero; Zonas comunes: Piscina para niños y adultos, Zonas Verdes, Salón social, BBQ, Cancha multiple, parqueadero comunal y servicio de vigilancia 24 horas.",
+    "estado": "disponible",
+    "estrato": 2,
+    "garaje": true,
+    "piscina": true,
+    "amoblado": false,
+    "contacto_nombre": "Erik Bello",
+    "contacto_telefono": "3058193470",
+    "contacto_email": "erikbello120721@gmail.com",
+    "plan_nombre": "Plan Admin",
+    "dias_duracion": 36500,
+    "prioridad_plan": "999999.00",
+    "fecha_expira": "2126-05-17T21:49:53.980Z",
+    "propietario": [
+      "manuelestiven2006@gmail.com"
+    ],
+    "creado_en": "2026-06-10T14:02:39.210Z",
+    "activo": true
+  }
+},
+{
+  "model": "properties.propiedad",
+  "pk": 4,
+  "fields": {
+    "titulo": "apartamento",
+    "tipo": "apartamento",
+    "precio": "874.00",
+    "area": 54.0,
+    "habitaciones": 1,
+    "banos": 1,
+    "ubicacion": "La pola",
+    "descripcion": "Apartamento en arriendo ubicado el en Edificio Palo Alto en el sector de la Pola, Excelente ubicación cerca al Centro de la Ciudad, por el sector encontramos: Ibal, Can de la pola, Hotel Casa Morales, Restaurantes, Cómodas vías de acceso. El inmueble se encuentra distribuido: Sala comedor, dos habitaciones con closet, cocina integral, baño social, zona de ropas, calentador y parqueadero cubierto.",
+    "estado": "disponible",
+    "estrato": 2,
+    "garaje": true,
+    "piscina": true,
+    "amoblado": false,
+    "contacto_nombre": "Daniel Cardozo",
+    "contacto_telefono": "3123151527",
+    "contacto_email": "danielesteban@gmail.com",
+    "plan_nombre": "Plan Admin",
+    "dias_duracion": 36500,
+    "prioridad_plan": "999999.00",
+    "fecha_expira": "2126-05-17T21:49:53.980Z",
+    "propietario": [
+      "manuelestiven2006@gmail.com"
+    ],
+    "creado_en": "2026-06-10T15:07:48.719Z",
+    "activo": true
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 1,
+  "fields": {
+    "propiedad": 1,
+    "imagen": "properties/602045013.jpg",
+    "es_principal": true,
+    "subida_en": "2026-06-04T01:44:39.138Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 2,
+  "fields": {
+    "propiedad": 2,
+    "imagen": "properties/images.jpg",
+    "es_principal": true,
+    "subida_en": "2026-06-09T21:20:02.756Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 3,
+  "fields": {
+    "propiedad": 3,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_8.40.06_AM.jpeg",
+    "es_principal": true,
+    "subida_en": "2026-06-10T14:02:39.230Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 4,
+  "fields": {
+    "propiedad": 3,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_8.40.25_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T14:02:39.240Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 5,
+  "fields": {
+    "propiedad": 3,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_8.40.49_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T14:02:39.248Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 6,
+  "fields": {
+    "propiedad": 3,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_8.41.37_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T14:02:39.255Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 7,
+  "fields": {
+    "propiedad": 3,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_8.41.49_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T14:02:39.263Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 8,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_9.54.24_AM.jpeg",
+    "es_principal": true,
+    "subida_en": "2026-06-10T15:07:48.730Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 9,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.00.46_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.738Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 10,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.00.59_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.745Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 11,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.01.08_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.746Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 12,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.01.20_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.754Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 13,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.01.31_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.762Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 14,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.01.38_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.774Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 15,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.01.47_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.781Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 16,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.01.57_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.788Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 17,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.02.04_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.794Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 18,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.03.16_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.802Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 19,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.02.36_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.807Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 20,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.03.47_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.812Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 21,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.03.38_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.821Z"
+  }
+},
+{
+  "model": "properties.imagenpropiedad",
+  "pk": 22,
+  "fields": {
+    "propiedad": 4,
+    "imagen": "properties/WhatsApp_Image_2026-06-10_at_10.03.27_AM.jpeg",
+    "es_principal": false,
+    "subida_en": "2026-06-10T15:07:48.829Z"
+  }
+}
+]

@@ -1,0 +1,167 @@
+/* ============================================
+   LUXHABITAT — Animaciones Premium
+   Inspiradas en UIverse.io
+   ============================================ */
+
+/* ─────────────────────────────────────────
+   1. LOGO — Trazo animado al cargar
+   ───────────────────────────────────────── */
+@keyframes drawStroke {
+  to { stroke-dashoffset: 0; }
+}
+
+.logo-svg path,
+.logo-svg polyline {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: drawStroke 1.2s ease forwards;
+}
+
+.logo-svg path:nth-child(1) { animation-delay: 0s; }
+.logo-svg polyline:nth-child(2) { animation-delay: 0.4s; }
+
+/* ─────────────────────────────────────────
+   2. NAV LINKS — Underline deslizante dorado
+   ───────────────────────────────────────── */
+.nav-link-fancy {
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-link-fancy::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+  border-radius: 2px;
+  transition: width 0.4s ease, left 0.4s ease;
+  box-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
+}
+
+.nav-link-fancy:hover::after,
+.nav-link-fancy.active::after {
+  width: 100%;
+  left: 0%;
+}
+
+/* ─────────────────────────────────────────
+   3. BOTÓN USUARIO — Glow dorado al hover
+   ───────────────────────────────────────── */
+@keyframes goldPulse {
+  0%   { box-shadow: 0 0 0px rgba(201, 168, 76, 0); }
+  50%  { box-shadow: 0 0 18px rgba(201, 168, 76, 0.5); }
+  100% { box-shadow: 0 0 8px rgba(201, 168, 76, 0.3); }
+}
+
+.user-btn-glow {
+  transition: all 0.3s ease;
+}
+
+.user-btn-glow:hover {
+  animation: goldPulse 0.6s ease forwards;
+  border-color: #C9A84C !important;
+}
+
+/* ─────────────────────────────────────────
+   4. BOTONES CTA — Shimmer dorado
+   ───────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%) skewX(-12deg); }
+  100% { transform: translateX(250%) skewX(-12deg); }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-12deg);
+}
+
+.btn-shimmer:hover::before {
+  animation: shimmer 0.8s ease forwards;
+}
+
+/* ─────────────────────────────────────────
+   5. CARDS — Efecto 3D Tilt + glow
+   ───────────────────────────────────────── */
+.card-3d {
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card-3d:hover {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(201, 168, 76, 0.12);
+}
+
+/* Efecto de brillo en esquina al hover */
+.card-3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(201, 168, 76, 0.08) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.card-3d:hover::after {
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────
+   6. PÁGINA — Fade entrada suave
+   ───────────────────────────────────────── */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ─────────────────────────────────────────
+   7. TAILWIND OVERRIDES — Fuerza CSS personalizado
+   ───────────────────────────────────────── */
+
+/* Override Tailwind para nav-link-fancy */
+.nav-link-fancy {
+  border-bottom: none !important;
+}
+
+/* Override overflow para user-btn-glow */
+.user-btn-glow {
+  overflow: visible !important;
+}
