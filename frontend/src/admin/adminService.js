@@ -158,23 +158,23 @@ export const adminService = {
   // ESTADÍSTICAS DASHBOARD
   // ═══════════════════════════════════════
   getMetrics: async () => {
-    try {
-      const response = await api.get('/admin/stats/');
-      const data = response.data;
-      return {
-        inmueblesActivos:     data.inmuebles?.activos ?? 0,
-        inmueblesPendientes:  data.inmuebles?.pendientes ?? 0,
-        usuariosRegistrados:  data.usuarios?.total ?? 0,
-        ingresos:             `$${parseFloat(data.pagos?.ingresos_este_mes || 0).toLocaleString()}`
-      };
-    } catch (error) {
-      console.error('Error fetching metrics:', error);
-      return {
-        inmueblesActivos: 0,
-        inmueblesPendientes: 0,
-        usuariosRegistrados: 0,
-        ingresos: '$0'
-      };
+        try {
+            const response = await api.get('/admin/stats/');
+            const data = response.data;
+            return {
+                inmueblesActivos:     data.propiedades?.activos ?? 0,
+                inmueblesPendientes:  data.propiedades?.pendientes ?? 0,
+                usuariosRegistrados:  data.usuarios?.total ?? 0,
+                ingresos:             `$${parseFloat(data.pagos?.ingresos_este_mes || 0).toLocaleString()}`
+            };
+        } catch (error) {
+            console.error('Error fetching metrics:', error);
+            return {
+                inmueblesActivos: 0,
+                inmueblesPendientes: 0,
+                usuariosRegistrados: 0,
+                ingresos: '$0'
+            };
+        }
     }
-  }
 };

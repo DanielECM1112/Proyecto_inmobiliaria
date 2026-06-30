@@ -21,7 +21,7 @@ class PlanAdminView(APIView):
     """
     Vista administrativa para listar y crear planes.
     """
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
 
     def get(self, request):
         from .models import Plan
@@ -44,7 +44,7 @@ class PlanAdminDetailView(APIView):
     """
     Vista administrativa para editar, desactivar y eliminar planes.
     """
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
 
     def patch(self, request, pk):
         serializer = PlanAdminSerializer(data=request.data, partial=True)

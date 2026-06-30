@@ -1,12 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import api, { BACKEND_ORIGIN } from '../services/api';
+import { FaGoogle } from 'react-icons/fa';
 
 export default function AdminLogin() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Guardamos en sessionStorage que estamos en login de admin para redirigir correctamente después de social login
+  useEffect(() => {
+    sessionStorage.setItem('isAdminLogin', 'true');
+    return () => sessionStorage.removeItem('isAdminLogin');
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,14 +30,19 @@ export default function AdminLogin() {
       const userData = response.data;
       const rol = userData.user?.rol?.toString().toLowerCase();
 
-      if (rol !== 'admin' && rol !== 'administrador') {
+      if (rol !== 'admin' && rol !== 'administrador' && !userData.user?.is_staff) {
         setError('Acceso restringido a administradores');
         setLoading(false);
         return;
       }
 
-      localStorage.setItem('user', JSON.stringify(userData));
-      navigate('/admin/dashboard');
+      // Guardar token y usuario correctamente (igual que Login.js)
+      if (userData.access) localStorage.setItem('token', userData.access);
+      else if (userData.token) localStorage.setItem('token', userData.token);
+      if (userData.user) localStorage.setItem('user', JSON.stringify(userData.user));
+      
+      window.dispatchEvent(new Event('storage'));
+      navigate('/admin');
     } catch (err) {
       setError(err.response?.data?.error || err.response?.data?.detail || 'Error al iniciar sesión');
     } finally {
@@ -48,7 +61,7 @@ export default function AdminLogin() {
               </div>
             </div>
             <div>
-              <h1 className="text-4xl font-black text-white">Panel Administrativo</h1>
+              <h1 className="text-4xl font-serif font-bold text-white">Panel Administrativo</h1>
               <p className="mt-4 max-w-sm text-slate-400 leading-relaxed">
                 Accede al panel de control, administra planes, usuarios, pagos e inmuebles con seguridad profesional.
               </p>
@@ -62,7 +75,7 @@ export default function AdminLogin() {
           <div className="p-10 lg:p-14">
             <div className="mb-8">
               <span className="text-xs uppercase tracking-[0.35em] text-[#b38b1d]">Acceso Admin</span>
-              <h2 className="mt-4 text-4xl font-black text-white">Inicia sesión</h2>
+              <h2 className="mt-4 text-4xl font-serif font-bold text-white">Inicia sesión</h2>
               <p className="mt-3 text-sm text-slate-400">Ingresa tus credenciales administrativas para entrar al dashboard.</p>
             </div>
 
@@ -107,6 +120,22 @@ export default function AdminLogin() {
                 {loading ? 'Verificando...' : 'Acceder al panel'}
               </button>
             </form>
+
+            <div className="mt-8">
+              <p className="text-sm mb-4 text-center text-slate-500">
+                O inicia sesión con
+              </p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  type="button"
+                  onClick={() => window.location.href = `${BACKEND_ORIGIN}/accounts/google/login/?process=login`}
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 border rounded-3xl transition-all duration-300 hover:border-[#C9A84C] bg-white/5"
+                >
+                  <FaGoogle className="text-red-500" />
+                  <span className="text-sm font-semibold text-white/80">Google</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

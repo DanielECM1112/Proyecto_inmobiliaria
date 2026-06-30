@@ -1,29 +1,39 @@
 import React from 'react';
 
-export default function Sidebar({ setSeccion }) {
+export default function Sidebar({ setSeccion, seccionActual }) {
   const menuItems = [
     { id: 'dashboard', name: 'Dashboard' },
     { id: 'properties', name: 'Inmuebles' },
     { id: 'users', name: 'Usuarios' },
     { id: 'payments', name: 'Pagos' },
-     { id: 'plans', name: 'Planes' }
+    { id: 'plans', name: 'Planes' }
   ];
 
   return (
-    <div className="w-64 h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-900 text-white flex flex-col p-4 fixed left-0 top-0 z-50 shadow-2xl transition-all duration-500 hover:to-indigo-900">
+    <div className="w-72 h-screen bg-[#070708] text-white flex flex-col p-8 fixed left-0 top-0 z-50 border-r border-white/10">
       
-      {/* Título con efecto Hover Tornasolado */}
-      <h2 className="text-xl font-extrabold mb-8 text-center text-slate-100 border-b border-slate-700/50 pb-4 tracking-wide cursor-pointer transition-all duration-300 hover:text-cyan-400 hover:border-cyan-500/50 drop-shadow-[0_2px_8px_rgba(34,211,238,0.2)]">
-        LUXHABITAT <span className="text-cyan-400 hover:text-slate-100">Admin</span>
-      </h2>
+      {/* Título */}
+      <div className="mb-12">
+        <p className="text-[11px] font-bold uppercase mb-2 text-center" style={{ color: "#D4B05E", letterSpacing: "7px" }}>
+          LUXHABITAT
+        </p>
+        <h2 className="text-2xl font-serif text-center" style={{ fontWeight: 500 }}>
+          Panel Admin
+        </h2>
+        <div className="h-px w-16 mt-4 mx-auto" style={{ background: "#C9A84C" }} />
+      </div>
       
       {/* Menú de Opciones */}
-      <nav className="flex flex-col gap-2.5">
+      <nav className="flex flex-col gap-3">
         {menuItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setSeccion(item.id)}
-            className="text-left px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm tracking-wide bg-slate-900/40 border border-transparent hover:bg-gradient-to-r hover:from-cyan-950 hover:to-blue-950 hover:text-cyan-300 hover:border-cyan-500/30 hover:translate-x-1 hover:shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+            className={`text-left px-6 py-4 rounded-[2rem] transition-all duration-300 font-semibold text-sm tracking-wider border ${
+              seccionActual === item.id 
+                ? 'border-[#b38b1d]/30 bg-[#b38b1d]/10 text-white' 
+                : 'border-transparent bg-transparent text-white/50 hover:bg-white/5 hover:text-white'
+            }`}
           >
             {item.name}
           </button>

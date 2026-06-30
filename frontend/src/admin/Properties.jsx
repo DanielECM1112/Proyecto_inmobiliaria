@@ -11,22 +11,22 @@ const FORM_VACIO = {
 
 const estadoBadge = (estado) => {
   const map = {
-    disponible:  'bg-emerald-950/50 text-emerald-400 border-emerald-500/20',
-    negociacion: 'bg-amber-950/50 text-amber-400 border-amber-500/20',
-    vendido:     'bg-rose-950/50 text-rose-400 border-rose-500/20',
+    disponible:  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    negociacion: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    vendido:     'bg-rose-500/10 text-rose-400 border-rose-500/20',
   };
   const label = {
     disponible:  'Disponible',
     negociacion: 'En Negociación',
     vendido:     'Vendido',
   };
-  const cls = map[estado] || 'bg-slate-950/80 text-slate-300 border-slate-700';
+  const cls = map[estado] || 'bg-white/5 text-white/50 border-white/10';
   const txt = label[estado] || (estado ? estado.charAt(0).toUpperCase() + estado.slice(1) : 'Desconocido');
-  return <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${cls}`}>{txt}</span>;
+  return <span className={`px-3 py-1.5 rounded-[2rem] text-xs font-bold border ${cls}`}>{txt}</span>;
 };
 
-const inputCls = "w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500";
-const labelCls = "text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1";
+const inputCls = "w-full bg-[#070708] border border-white/10 rounded-[2rem] px-4 py-3 text-sm text-white focus:outline-none focus:border-[#C9A84C]";
+const labelCls = "text-[10px] font-bold text-white/50 uppercase tracking-wider block mb-2";
 
 export default function Properties() {
   const [inmuebles, setInmuebles]         = useState([]);
@@ -98,7 +98,7 @@ export default function Properties() {
         setTimeout(cerrarModal, 1200);
         return;
       }
-      if (modalTipo === 'aprobar')   await adminService.aprobarInmueble(idSeleccionado);
+      if (modalTipo === 'aprobar')  await adminService.aprobarInmueble(idSeleccionado);
       if (modalTipo === 'finalizar') await adminService.finalizarInmueble(idSeleccionado);
       if (modalTipo === 'eliminar')  await adminService.eliminarInmueble(idSeleccionado);
       await cargarInmuebles();
@@ -109,44 +109,52 @@ export default function Properties() {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 min-h-screen text-slate-100 transition-all duration-1000 hover:to-indigo-950/80 relative">
-      <h1 className="text-3xl font-bold mb-6 tracking-wide text-white">Gestión de Inmuebles</h1>
+    <div className="p-8 bg-[#070708] min-h-screen">
+      <div className="mb-10">
+        <p className="text-[11px] font-bold uppercase mb-3" style={{ color: '#C9A84C', letterSpacing: '7px' }}>
+          LUXHABITAT · INMUEBLES
+        </p>
+        <h1 className="text-4xl font-serif text-white" style={{ fontWeight: 500 }}>
+          Gestión de Inmuebles
+        </h1>
+        <div className="h-px w-12 mt-4" style={{ background: '#C9A84C' }} />
+      </div>
 
-      {error && <div className="mb-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 p-4 text-rose-100 text-sm">{error}</div>}
-      {exito && <div className="mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 text-emerald-200 text-sm">{exito}</div>}
+      {error && <div className="mb-6 rounded-[2rem] bg-rose-500/10 border border-rose-500/20 p-4 text-rose-100 text-sm">{error}</div>}
+      {exito && <div className="mb-6 rounded-[2rem] bg-emerald-500/10 border border-emerald-500/20 p-4 text-emerald-200 text-sm">{exito}</div>}
 
-      <div className="bg-slate-900/50 border border-slate-800 rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm">
-        <table className="min-w-full divide-y divide-slate-800/60 text-left">
-          <thead className="bg-slate-950/80 text-slate-400 text-xs uppercase font-bold tracking-wider">
+      <div className="border border-white/10 rounded-[2rem] bg-[#0f1116]/95 shadow-2xl shadow-black/50 backdrop-blur-xl overflow-hidden">
+        <table className="min-w-full divide-y divide-white/10 text-left">
+          <thead className="bg-[#070708] text-white/50 text-xs uppercase font-bold tracking-wider">
             <tr>
-              <th className="px-6 py-4">Inmueble</th>
-              <th className="px-6 py-4">Precio</th>
-              <th className="px-6 py-4">Estado</th>
-              <th className="px-6 py-4">Acciones</th>
+              <th className="px-8 py-6">Inmueble</th>
+              <th className="px-8 py-6">Precio</th>
+              <th className="px-8 py-6">Estado</th>
+              <th className="px-8 py-6">Acciones</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40 text-sm text-slate-300">
+          <tbody className="divide-y divide-white/5 text-sm text-white/80">
             {inmuebles.map((inmueble) => (
-              <tr key={inmueble.id} className="hover:bg-slate-800/20 transition-colors duration-200">
-                <td className="px-6 py-4 font-semibold text-white">{inmueble.titulo}</td>
-                <td className="px-6 py-4 text-slate-400">
+              <tr key={inmueble.id} className="hover:bg-white/5 transition-colors duration-200">
+                <td className="px-8 py-6 font-semibold text-white">{inmueble.titulo}</td>
+                <td className="px-8 py-6 text-white/50">
                   ${parseFloat(inmueble.precio || 0).toLocaleString('es-CO')}
                 </td>
-                <td className="px-6 py-4">{estadoBadge(inmueble.estado)}</td>
-                <td className="px-6 py-4 flex flex-wrap gap-2">
+                <td className="px-8 py-6">{estadoBadge(inmueble.estado)}</td>
+                <td className="px-8 py-6 flex flex-wrap gap-2">
                   <button
                     onClick={() => abrirModal(inmueble, 'editar')}
-                    className="text-xs bg-slate-800 hover:bg-cyan-900/60 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/40 text-slate-300 px-3 py-1.5 rounded-lg transition-all font-bold"
+                    className="text-xs bg-white/5 hover:bg-[#C9A84C]/10 hover:text-[#C9A84C] border border-white/10 text-white/50 px-4 py-2 rounded-[2rem] transition-all font-bold"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => abrirModal(inmueble, 'aprobar')}
                     disabled={inmueble.estado === 'disponible'}
-                    className={`text-xs px-3 py-1.5 rounded-lg transition-all font-bold border ${
+                    className={`text-xs px-4 py-2 rounded-[2rem] transition-all font-bold border ${
                       inmueble.estado === 'disponible'
-                        ? 'bg-slate-950 text-slate-600 border-slate-900 cursor-not-allowed opacity-40'
-                        : 'bg-slate-800 hover:bg-emerald-900/60 hover:text-emerald-300 border-slate-700 hover:border-emerald-500/40 text-slate-300'
+                        ? 'bg-white/5 text-white/20 border-white/5 cursor-not-allowed opacity-40'
+                        : 'bg-white/5 hover:bg-emerald-500/10 hover:text-emerald-400 border-white/10 text-white/50'
                     }`}
                   >
                     Disponible
@@ -154,17 +162,17 @@ export default function Properties() {
                   <button
                     onClick={() => abrirModal(inmueble, 'finalizar')}
                     disabled={inmueble.estado === 'vendido'}
-                    className={`text-xs px-3 py-1.5 rounded-lg transition-all font-bold border ${
+                    className={`text-xs px-4 py-2 rounded-[2rem] transition-all font-bold border ${
                       inmueble.estado === 'vendido'
-                        ? 'bg-slate-950 text-slate-600 border-slate-900 cursor-not-allowed opacity-40'
-                        : 'bg-slate-800 hover:bg-amber-900/60 hover:text-amber-300 border-slate-700 hover:border-amber-500/40 text-slate-300'
+                        ? 'bg-white/5 text-white/20 border-white/5 cursor-not-allowed opacity-40'
+                        : 'bg-white/5 hover:bg-amber-500/10 hover:text-amber-400 border-white/10 text-white/50'
                     }`}
                   >
                     Vendido
                   </button>
                   <button
                     onClick={() => abrirModal(inmueble, 'eliminar')}
-                    className="text-xs bg-slate-800 hover:bg-rose-950/80 hover:text-rose-400 border border-slate-700 hover:border-rose-500/40 text-slate-300 px-3 py-1.5 rounded-lg transition-all font-bold"
+                    className="text-xs bg-white/5 hover:bg-rose-500/10 hover:text-rose-400 border-white/10 text-white/50 px-4 py-2 rounded-[2rem] transition-all font-bold"
                   >
                     Eliminar
                   </button>
@@ -178,17 +186,17 @@ export default function Properties() {
       {/* ── MODAL ── */}
       {modalTipo && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-6 rounded-2xl shadow-2xl w-full max-w-lg">
+          <div className="border border-white/10 p-8 rounded-[2rem] bg-[#0f1116]/95 shadow-2xl shadow-black/50 backdrop-blur-xl w-full max-w-lg">
 
             {modalTipo === 'editar' ? (
               <>
-                <div className="text-center mb-5">
-                  <div className="text-3xl mb-2">📝</div>
-                  <h3 className="text-xl font-bold text-white">Editar Inmueble</h3>
+                <div className="text-center mb-6">
+                  <div className="text-3xl mb-3" style={{ color: '#C9A84C' }}>📝</div>
+                  <h3 className="text-2xl font-serif text-white" style={{ fontWeight: 500 }}>Editar Inmueble</h3>
                 </div>
 
-                {error && <div className="mb-3 text-rose-300 text-xs bg-rose-500/10 border border-rose-500/20 rounded-lg p-3">{error}</div>}
-                {exito && <div className="mb-3 text-emerald-300 text-xs bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">{exito}</div>}
+                {error && <div className="mb-4 text-rose-300 text-xs bg-rose-500/10 border border-rose-500/20 rounded-[2rem] p-4">{error}</div>}
+                {exito && <div className="mb-4 text-emerald-300 text-xs bg-emerald-500/10 border border-emerald-500/20 rounded-[2rem] p-4">{exito}</div>}
 
                 <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
 
@@ -199,7 +207,7 @@ export default function Properties() {
                   </div>
 
                   {/* Tipo + Estado */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className={labelCls}>Tipo</label>
                       <select name="tipo" value={formData.tipo} onChange={handleChange} className={inputCls}>
@@ -222,7 +230,7 @@ export default function Properties() {
                   </div>
 
                   {/* Precio + Área */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className={labelCls}>Precio COP *</label>
                       <input type="number" name="precio" value={formData.precio} onChange={handleChange} min="0" className={inputCls} />
@@ -234,7 +242,7 @@ export default function Properties() {
                   </div>
 
                   {/* Habitaciones + Baños */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className={labelCls}>Habitaciones</label>
                       <select name="habitaciones" value={formData.habitaciones} onChange={handleChange} className={inputCls}>
@@ -250,7 +258,7 @@ export default function Properties() {
                   </div>
 
                   {/* Estrato + checkboxes */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className={labelCls}>Estrato</label>
                       <select name="estrato" value={formData.estrato} onChange={handleChange} className={inputCls}>
@@ -258,12 +266,12 @@ export default function Properties() {
                         {[...Array(6)].map((_, i) => <option key={i+1} value={i+1}>{i+1}</option>)}
                       </select>
                     </div>
-                    <div className="flex flex-col justify-end gap-2 pb-1">
+                    <div className="flex flex-col justify-end gap-3 pb-1">
                       {[['garaje','Garaje'],['piscina','Piscina'],['amoblado','Amoblado']].map(([k,l]) => (
-                        <label key={k} className="flex items-center gap-2 cursor-pointer">
+                        <label key={k} className="flex items-center gap-3 cursor-pointer">
                           <input type="checkbox" name={k} checked={formData[k]} onChange={handleChange}
-                            className="w-4 h-4 rounded accent-cyan-400" />
-                          <span className="text-xs text-slate-300">{l}</span>
+                            className="w-4 h-4 rounded accent-[#C9A84C]" />
+                          <span className="text-xs text-white/50">{l}</span>
                         </label>
                       ))}
                     </div>
@@ -283,16 +291,16 @@ export default function Properties() {
                   </div>
 
                   {/* Datos de contacto */}
-                  <div className="pt-1">
-                    <p className="text-[10px] font-bold text-[#C9A84C] uppercase tracking-wider mb-3 border-t border-slate-800 pt-3">
+                  <div className="pt-4">
+                    <p className="text-[10px] font-bold text-[#C9A84C] uppercase tracking-wider mb-4 border-t border-white/10 pt-4">
                       Datos de Contacto
                     </p>
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1 gap-4">
                       <div>
                         <label className={labelCls}>Nombre del contacto</label>
                         <input type="text" name="contacto_nombre" value={formData.contacto_nombre} onChange={handleChange} className={inputCls} placeholder="Nombre del propietario" />
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className={labelCls}>Teléfono / WhatsApp</label>
                           <input type="tel" name="contacto_telefono" value={formData.contacto_telefono} onChange={handleChange} className={inputCls} placeholder="3001234567" />
@@ -307,33 +315,34 @@ export default function Properties() {
 
                 </div>
 
-                <div className="flex gap-3 mt-6">
+                <div className="flex gap-4 mt-8">
                   <button onClick={cerrarModal}
-                    className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg transition-all">
+                    className="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-sm font-bold rounded-[2rem] transition-all">
                     Cancelar
                   </button>
                   <button onClick={procesarAccion}
-                    className="flex-1 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold rounded-lg transition-all">
+                    className="flex-1 py-3 text-sm font-bold rounded-[2rem] transition-all"
+                    style={{ background: 'linear-gradient(to right, #b38b1d, #f9d85b)', color: '#070708' }}>
                     Guardar Cambios
                   </button>
                 </div>
               </>
             ) : (
               <div className="text-center">
-                {modalTipo === 'aprobar'  && <><div className="text-emerald-400 text-4xl mb-3">✔️</div><h3 className="text-xl font-bold text-white mb-2">¿Marcar como Disponible?</h3><p className="text-sm text-slate-400 mb-6">El inmueble será visible en el catálogo.</p></>}
-                {modalTipo === 'finalizar'&& <><div className="text-amber-400 text-4xl mb-3">🏷️</div><h3 className="text-xl font-bold text-white mb-2">¿Marcar como Vendido?</h3><p className="text-sm text-slate-400 mb-6">El inmueble quedará marcado como vendido.</p></>}
-                {modalTipo === 'eliminar' && <><div className="text-rose-500 text-4xl mb-3">⚠️</div><h3 className="text-xl font-bold text-white mb-2">¿Eliminar inmueble?</h3><p className="text-sm text-slate-400 mb-6">Esta acción borrará el inmueble del sistema y no podrá recuperarse.</p></>}
-                {error && <div className="mb-4 text-rose-300 text-xs bg-rose-500/10 border border-rose-500/20 rounded-lg p-3">{error}</div>}
-                <div className="flex gap-3 justify-center">
+                {modalTipo === 'aprobar'  && <><div className="text-5xl mb-4" style={{ color: '#C9A84C' }}>✔️</div><h3 className="text-2xl font-serif text-white mb-3" style={{ fontWeight: 500 }}>¿Marcar como Disponible?</h3><p className="text-sm text-white/60 mb-8">El inmueble será visible en el catálogo.</p></>}
+                {modalTipo === 'finalizar'&& <><div className="text-5xl mb-4" style={{ color: '#C9A84C' }}>🏷️</div><h3 className="text-2xl font-serif text-white mb-3" style={{ fontWeight: 500 }}>¿Marcar como Vendido?</h3><p className="text-sm text-white/60 mb-8">El inmueble quedará marcado como vendido.</p></>}
+                {modalTipo === 'eliminar' && <><div className="text-5xl mb-4 text-rose-500">⚠️</div><h3 className="text-2xl font-serif text-white mb-3" style={{ fontWeight: 500 }}>¿Eliminar inmueble?</h3><p className="text-sm text-white/60 mb-8">Esta acción borrará el inmueble del sistema y no podrá recuperarse.</p></>}
+                {error && <div className="mb-6 text-rose-300 text-xs bg-rose-500/10 border border-rose-500/20 rounded-[2rem] p-4">{error}</div>}
+                <div className="flex gap-4 justify-center">
                   <button onClick={cerrarModal}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg transition-all">
+                    className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-sm font-bold rounded-[2rem] transition-all">
                     Cancelar
                   </button>
                   <button onClick={procesarAccion}
-                    className={`px-4 py-2 text-xs font-bold rounded-lg transition-all border ${
-                      modalTipo === 'eliminar'  ? 'bg-rose-500 hover:bg-rose-400 border-rose-500 text-slate-950' :
-                      modalTipo === 'finalizar' ? 'bg-amber-500 hover:bg-amber-400 border-amber-500 text-slate-950' :
-                                                  'bg-emerald-500 hover:bg-emerald-400 border-emerald-500 text-slate-950'
+                    className={`px-6 py-3 text-sm font-bold rounded-[2rem] transition-all border ${
+                      modalTipo === 'eliminar'  ? 'bg-rose-500 hover:bg-rose-400 border-rose-500 text-white' :
+                      modalTipo === 'finalizar' ? 'bg-amber-500 hover:bg-amber-400 border-amber-500 text-white' :
+                                                  'bg-emerald-500 hover:bg-emerald-400 border-emerald-500 text-white'
                     }`}>
                     {modalTipo === 'aprobar'   && 'Sí, disponible'}
                     {modalTipo === 'finalizar' && 'Sí, vendido'}

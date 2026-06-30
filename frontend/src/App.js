@@ -35,6 +35,8 @@ import Selling from './pages/services/Selling';
 
 // IMPORTACIÓN DE PANEL ADMINISTRATIVO
 import AdminLayout from './admin/AdminLayout';
+import AdminLogin from './admin/AdminLogin';
+import AdminRoute from './admin/AdminRoute';
 
 function App() {
   useEffect(() => {
@@ -45,7 +47,22 @@ function App() {
       if (data && data.type === 'social_login' && data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user || {}));
-        window.location.href = '/';
+        
+        // Verificar si es login de admin y redirigir apropiadamente
+        const isAdminLogin = sessionStorage.getItem('isAdminLogin') === 'true';
+        if (isAdminLogin) {
+          const user = data.user || {};
+          const rol = user.rol?.toString().toLowerCase();
+          const isAdmin = rol === 'admin' || rol === 'administrador' || user.is_staff;
+          if (isAdmin) {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/';
+          }
+          sessionStorage.removeItem('isAdminLogin');
+        } else {
+          window.location.href = '/';
+        }
       }
     }
 
@@ -55,12 +72,31 @@ function App() {
     if (window.location.hash) {
       const hash = new URLSearchParams(window.location.hash.replace('#',''));
       const token = hash.get('token');
-      const user = hash.get('user');
+      const userStr = hash.get('user');
       if (token) {
         localStorage.setItem('token', token);
-        try { localStorage.setItem('user', JSON.stringify(JSON.parse(decodeURIComponent(user)))); } catch(e){}
+        let user = {};
+        try { 
+          user = JSON.parse(decodeURIComponent(userStr));
+          localStorage.setItem('user', JSON.stringify(user)); 
+        } catch(e){}
+        
         window.location.hash = '';
-        window.location.href = '/';
+        
+        // Verificar si es login de admin y redirigir apropiadamente
+        const isAdminLogin = sessionStorage.getItem('isAdminLogin') === 'true';
+        if (isAdminLogin) {
+          const rol = user.rol?.toString().toLowerCase();
+          const isAdmin = rol === 'admin' || rol === 'administrador' || user.is_staff;
+          if (isAdmin) {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/';
+          }
+          sessionStorage.removeItem('isAdminLogin');
+        } else {
+          window.location.href = '/';
+        }
       }
     }
 
@@ -100,7 +136,8 @@ function App() {
             <Route path="/services/selling" element={<Selling />} />
 
             {/* Admin */}
-            <Route path="/admin/*" element={<AdminLayout />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/*" element={<AdminRoute><AdminLayout /></AdminRoute>} />
           </Routes>
         </div>
 

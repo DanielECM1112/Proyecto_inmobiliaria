@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from .models import Usuario
 from .serializers import UsuarioSerializer, RegisterSerializer, LoginSerializer, UsuarioAdminSerializer
+from .permissions import IsAdminRole
 
 
 class RegisterView(APIView):
@@ -184,7 +185,7 @@ class PerfilView(APIView):
 
 
 class AdminUsuarioListView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
 
     def get(self, request):
         usuarios = Usuario.objects.all()
@@ -193,7 +194,7 @@ class AdminUsuarioListView(APIView):
 
 
 class AdminUsuarioDetailView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
 
     def get(self, request, pk):
         try:

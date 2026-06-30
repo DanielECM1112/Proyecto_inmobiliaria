@@ -5,6 +5,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Propiedad, ImagenPropiedad
 from .serializers import PropiedadSerializer, PropiedadCreateSerializer
 from .permissions import IsOwnerOrReadOnly
+from users.permissions import IsAdminRole
 from rest_framework.decorators import api_view, permission_classes
 
 class PropiedadListView(generics.ListAPIView):
@@ -60,7 +61,7 @@ class MisPropiedadesView(generics.ListAPIView):
 
 
 class PropiedadAdminUpdateView(generics.UpdateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
     serializer_class = PropiedadSerializer
     queryset = Propiedad.objects.all()
 

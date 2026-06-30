@@ -60,13 +60,13 @@ class ConfirmarPagoView(APIView):
 
 
 class AdminPagoListView(generics.ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
     serializer_class = PagoSerializer
     queryset = Pago.objects.all()
 
 
 class AdminPagoDetailView(generics.UpdateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
     serializer_class = PagoSerializer
     queryset = Pago.objects.all()
 
@@ -80,7 +80,7 @@ class MisPagosView(generics.ListAPIView):
 
 
 class AdminStatsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminRole]
 
     def get(self, request):
         stats = PagoService.obtener_estadisticas_completas()
