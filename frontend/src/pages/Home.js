@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaExclamationTriangle } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import video1 from "../assets/video1.mp4";
@@ -15,6 +16,7 @@ export default function Home() {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [user, setUser] = useState(null);
   const [planStatus, setPlanStatus] = useState(null);
+  const [showLimitMessage, setShowLimitMessage] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export default function Home() {
       setPlanStatus(status);
       
       if (status.propiedades_disponibles <= 0 && !status.es_admin) {
-        navigate('/planes');
+        setShowLimitMessage(true);
         return;
       }
       
@@ -201,6 +203,46 @@ export default function Home() {
                 Publicar ahora
               </button>
             </div>
+
+            {/* Mensaje de límite */}
+            <AnimatePresence>
+              {showLimitMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mt-8 max-w-2xl mx-auto p-6 rounded-2xl border border-red-500/30 bg-red-500/10 backdrop-blur-sm"
+                >
+                  <div className="flex items-start gap-4">
+                    <FaExclamationTriangle size={32} style={{ color: "#f87171", flexShrink: 0 }} />
+                    <div className="flex-1">
+                      <h4 className="text-lg font-serif font-bold mb-2" style={{ color: "#f87171" }}>
+                        ¡Has alcanzado el límite de propiedades!
+                      </h4>
+                      <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.8)" }}>
+                        Ya has usado todas las propiedades disponibles de tu plan. Para seguir publicando, actualiza tu plan a uno con más capacidad.
+                      </p>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => navigate("/planes")}
+                          className="px-6 py-2.5 text-[11px] font-bold uppercase tracking-[2px] rounded-full transition-all hover:opacity-90"
+                          style={{ background: "#C9A84C", color: "#0D0D0D" }}
+                        >
+                          Ver Planes
+                        </button>
+                        <button
+                          onClick={() => setShowLimitMessage(false)}
+                          className="px-6 py-2.5 text-[11px] font-bold uppercase tracking-[2px] rounded-full transition-all hover:opacity-90"
+                          style={{ background: "transparent", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.3)" }}
+                        >
+                          Cerrar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
 

@@ -585,7 +585,7 @@ export default function Profile() {
                         <p className="text-[10px] font-bold uppercase tracking-[2px] mb-4" style={{ color: '#C9A84C' }}>
                           Estado de Propiedades
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
                           <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(201, 168, 76, 0.05)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
                             <p className="text-3xl font-serif font-bold" style={{ color: '#C9A84C' }}>
                               {planStatus.propiedades_activas}
@@ -595,7 +595,7 @@ export default function Profile() {
                             </p>
                           </div>
                           <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(201, 168, 76, 0.05)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
-                            <p className="text-3xl font-serif font-bold" style={{ color: '#C9A84C' }}>
+                            <p className="text-3xl font-serif font-bold" style={{ color: planStatus.propiedades_disponibles > 0 ? '#C9A84C' : '#f87171' }}>
                               {planStatus.propiedades_disponibles}
                             </p>
                             <p className="text-xs mt-2" style={{ color: sub }}>
@@ -611,6 +611,25 @@ export default function Profile() {
                             </p>
                           </div>
                         </div>
+                        
+                        {/* Message when no properties available */}
+                        {planStatus.propiedades_disponibles <= 0 && !planStatus.es_admin && (
+                          <div className="p-6 rounded-2xl border border-red-500/30 bg-red-500/10">
+                            <div className="flex items-start gap-4">
+                              <div className="flex-shrink-0">
+                                <FaExclamationTriangle size={32} style={{ color: '#f87171' }} />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="text-lg font-serif font-bold mb-2" style={{ color: '#f87171' }}>
+                                  ¡Has alcanzado el límite de propiedades!
+                                </h4>
+                                <p className="text-sm mb-4" style={{ color: sub }}>
+                                  Ya has usado todas las propiedades disponibles de tu plan. Para seguir publicando, actualiza tu plan a uno con más capacidad.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                       
                       {/* Dates */}

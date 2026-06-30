@@ -46,6 +46,7 @@ export default function PublishProperty() {
   const [isDragging, setIsDragging] = useState(false);
   const [planStatus, setPlanStatus] = useState(null);
   const [planLoading, setPlanLoading] = useState(true);
+  const [showLimitMessage, setShowLimitMessage] = useState(false);
 
   // Cargar datos básicos al inicio
   useEffect(() => {
@@ -61,9 +62,9 @@ export default function PublishProperty() {
       try {
         const status = await getUserPlanStatus();
         setPlanStatus(status);
-        // Redirigir a planes si no puede publicar más
+        // Mostrar mensaje si no puede publicar más
         if (status.propiedades_disponibles <= 0 && !status.es_admin) {
-          navigate('/planes');
+          setShowLimitMessage(true);
         }
       } catch (error) {
         console.error('Error al cargar estado del plan:', error);
@@ -246,6 +247,27 @@ export default function PublishProperty() {
               <FaCheckCircle className="text-6xl mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">¡Propiedad publicada exitosamente! 🎉</h2>
               <p>Redirigiendo al catálogo de propiedades...</p>
+            </motion.div>
+          ) : showLimitMessage ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-8 rounded-3xl border border-red-500/30 bg-red-500/10 text-center"
+            >
+              <FaExclamationTriangle size={56} className="mx-auto mb-6" style={{ color: "#f87171" }} />
+              <h2 className="text-3xl font-serif font-bold mb-4" style={{ color: "#f87171" }}>
+                ¡Has alcanzado el límite de propiedades!
+              </h2>
+              <p className="text-lg mb-8" style={{ color: "rgba(255,255,255,0.8)" }}>
+                Ya has usado todas las propiedades disponibles de tu plan. Para seguir publicando, actualiza tu plan a uno con más capacidad.
+              </p>
+              <button
+                onClick={() => navigate("/planes")}
+                className="px-10 py-4 text-[12px] font-bold uppercase tracking-[3px] transition-all hover:opacity-90"
+                style={{ background: "#C9A84C", color: "#0D0D0D" }}
+              >
+                Ver Planes
+              </button>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
