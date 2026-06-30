@@ -13,6 +13,7 @@ import Footer from '../components/Footer';
 import PageWrapper from '../components/PageWrapper';
 import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
+import { getUserPlanStatus } from '../admin/adminService';
 
 const ADMIN_EMAIL = 'manuelestiven2006@gmail.com';
 const ADMIN_WHATSAPP = '573223147352';
@@ -44,6 +45,7 @@ export default function Profile() {
   const [error, setError] = useState('');
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [activeTab, setActiveTab] = useState('personal');
+  const [planStatus, setPlanStatus] = useState(null);
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({ nombre: '', telefono: '', ciudad: '' });
@@ -52,8 +54,18 @@ export default function Profile() {
   useEffect(() => {
     fetchProfile();
     fetchMisProps();
+    fetchPlanStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchPlanStatus = async () => {
+    try {
+      const status = await getUserPlanStatus();
+      setPlanStatus(status);
+    } catch (err) {
+      console.error('Error al cargar estado del plan:', err);
+    }
+  };
 
   const fetchMisProps = async () => {
     try {
@@ -538,13 +550,13 @@ export default function Profile() {
                 <div className="p-6 md:p-8" style={cardStyle}>
                   <h2 className="text-2xl font-serif font-bold mb-6" style={{ color: txt }}>Mi Plan</h2>
                   
-                  {user?.plan_activo ? (
+                  {planStatus ? (
                     <div className="space-y-6">
                       {/* Plan Name and Status */}
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="text-xl font-serif font-bold" style={{ color: txt }}>
-                            {user.plan_activo.name}
+                            {planStatus.plan_activo}
                           </h3>
                           <div className="flex items-center gap-2 mt-2">
                             <span 
@@ -562,96 +574,102 @@ export default function Profile() {
                         <div 
                           className="text-right"
                           style={{ 
-                            color: user.plan_activo.name === 'Premium' ? '#C9A84C' : txt 
+                            color: planStatus.plan_activo === 'Premium' ? '#C9A84C' : txt 
                           }}
                         >
-                          <p className="text-3xl font-serif font-bold">
-                            ${parseFloat(user.plan_activo.price).toLocaleString('es-CO')}
-                          </p>
-                          <p className="text-xs" style={{ color: sub }}>
-                            Por {user.plan_activo.duration_days} días
-                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Properties Status */}
+                      <div className="pt-6" style={{ borderTop: `1px solid ${cardBd}` }}>
+                        <p className="text-[10px] font-bold uppercase tracking-[2px] mb-4" style={{ color: '#C9A84C' }}>
+                          Estado de Propiedades
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                          <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(201, 168, 76, 0.05)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
+                            <p className="text-3xl font-serif font-bold" style={{ color: '#C9A84C' }}>
+                              {planStatus.propiedades_activas}
+                            </p>
+                            <p className="text-xs mt-2" style={{ color: sub }}>
+                              Publicadas
+                            </p>
+                          </div>
+                          <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(201, 168, 76, 0.05)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
+                            <p className="text-3xl font-serif font-bold" style={{ color: '#C9A84C' }}>
+                              {planStatus.propiedades_disponibles}
+                            </p>
+                            <p className="text-xs mt-2" style={{ color: sub }}>
+                              Disponibles para publicar
+                            </p>
+                          </div>
+                          <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(201, 168, 76, 0.05)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
+                            <p className="text-3xl font-serif font-bold" style={{ color: '#C9A84C' }}>
+                              {planStatus.max_propiedades}
+                            </p>
+                            <p className="text-xs mt-2" style={{ color: sub }}>
+                              Máximo del plan
+                            </p>
+                          </div>
                         </div>
                       </div>
                       
                       {/* Dates */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6" style={{ borderTop: `1px solid ${cardBd}` }}>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[2px] mb-2" style={{ color: sub }}>
-                            Fecha de activación
+                      {planStatus.plan_expira && (
+                        <div className="pt-6" style={{ borderTop: `1px solid ${cardBd}` }}>
+                          <p className="text-[10px] font-bold uppercase tracking-[2px] mb-4" style={{ color: '#C9A84C' }}>
+                            Fechas
                           </p>
-                          <p className="text-sm font-medium" style={{ color: txt }}>
-                            {new Date(user.plan_activado_at).toLocaleDateString('es-CO', { 
-                              year: 'numeric', month: 'long', day: 'numeric' 
-                            })}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[2px] mb-2" style={{ color: sub }}>
-                            Fecha de vencimiento
-                          </p>
-                          <p className="text-sm font-medium" style={{ color: txt }}>
-                            {new Date(user.plan_expira_at).toLocaleDateString('es-CO', { 
-                              year: 'numeric', month: 'long', day: 'numeric' 
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Features */}
-                      <div className="pt-6" style={{ borderTop: `1px solid ${cardBd}` }}>
-                        <p className="text-[10px] font-bold uppercase tracking-[2px] mb-4" style={{ color: '#C9A84C' }}>
-                          Incluye
-                        </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="flex items-center gap-2">
-                            <Check size={14} style={{ color: '#C9A84C' }} />
-                            <span className="text-sm" style={{ color: sub }}>
-                              Hasta {user.plan_activo.max_properties} propiedad{user.plan_activo.max_properties !== 1 ? 'es' : ''}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Check size={14} style={{ color: '#C9A84C' }} />
-                            <span className="text-sm" style={{ color: sub }}>
-                              Hasta {user.plan_activo.max_photos} foto{user.plan_activo.max_photos !== 1 ? 's' : ''} por propiedad
-                            </span>
-                          </div>
-                          {user.plan_activo.features?.map((feature, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <Check size={14} style={{ color: '#C9A84C' }} />
-                              <span className="text-sm" style={{ color: sub }}>{feature}</span>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                              <p className="text-xs" style={{ color: sub }}>
+                                Fecha de vencimiento
+                              </p>
+                              <p className="text-sm font-medium mt-1" style={{ color: txt }}>
+                                {new Date(planStatus.plan_expira).toLocaleDateString('es-CO', { 
+                                  year: 'numeric', month: 'long', day: 'numeric' 
+                                })}
+                              </p>
                             </div>
-                          ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                       
-                      {/* Change Plan Button */}
+                      {/* Action Buttons */}
                       <div className="pt-6" style={{ borderTop: `1px solid ${cardBd}` }}>
-                        <button
-                          onClick={() => navigate('/planes')}
-                          className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3 font-bold text-[12px] uppercase tracking-[2px] transition-all hover:opacity-90"
-                          style={{ color: '#C9A84C', border: '1px solid rgba(201,168,76,0.4)' }}
-                        >
-                          Cambiar Plan <ChevronRight size={15} />
-                        </button>
+                        <div className="flex flex-wrap gap-3">
+                          {planStatus.propiedades_disponibles > 0 ? (
+                            <button
+                              onClick={() => navigate('/planes')}
+                              className="flex items-center justify-center gap-2 px-8 py-3 font-bold text-[12px] uppercase tracking-[2px] transition-all hover:opacity-90"
+                              style={{ background: '#C9A84C', color: '#0D0D0D' }}
+                            >
+                              Publicar Propiedad <ChevronRight size={15} />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => navigate('/planes')}
+                              className="flex items-center justify-center gap-2 px-8 py-3 font-bold text-[12px] uppercase tracking-[2px] transition-all hover:opacity-90"
+                              style={{ background: '#C9A84C', color: '#0D0D0D' }}
+                            >
+                              Actualizar Plan <ChevronRight size={15} />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => navigate('/planes')}
+                            className="flex items-center justify-center gap-2 px-8 py-3 font-bold text-[12px] uppercase tracking-[2px] transition-all hover:opacity-90"
+                            style={{ color: '#C9A84C', border: '1px solid rgba(201,168,76,0.4)' }}
+                          >
+                            Ver Todos los Planes <ChevronRight size={15} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center py-12">
                       <TrendingUp size={34} className="mx-auto mb-5" style={{ color: sub }} />
                       <h3 className="text-2xl font-serif font-bold mb-2" style={{ color: txt }}>
-                        No tienes un plan activo
+                        Cargando información...
                       </h3>
-                      <p className="text-sm mb-7 max-w-sm mx-auto" style={{ color: sub }}>
-                        Elige un plan y empieza a publicar tus propiedades hoy mismo.
-                      </p>
-                      <button
-                        onClick={() => navigate('/planes')}
-                        className="inline-flex items-center gap-2 px-8 py-3 font-bold text-[12px] uppercase tracking-[2px] transition-all hover:opacity-90"
-                        style={{ background: '#C9A84C', color: '#0D0D0D' }}
-                      >
-                        Ver Planes <ChevronRight size={15} />
-                      </button>
                     </div>
                   )}
                 </div>

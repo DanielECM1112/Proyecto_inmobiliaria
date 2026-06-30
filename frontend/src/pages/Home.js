@@ -6,12 +6,15 @@ import Footer from "../components/Footer";
 import video1 from "../assets/video1.mp4";
 import video2 from "../assets/video2.mp4";
 import video5 from "../assets/video5.mp4";
+import { getUserPlanStatus } from "../admin/adminService";
+import api from "../services/api";
 
 const videos = [video1, video2, video5];
 
 export default function Home() {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [user, setUser] = useState(null);
+  const [planStatus, setPlanStatus] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +45,42 @@ export default function Home() {
       window.removeEventListener('userUpdated', handleUserUpdated);
     };
   }, []);
+
+  const handlePublishClick = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login?redirect=/planes');
+      return;
+    }
+    
+    try {
+      const status = await getUserPlanStatus();
+      setPlanStatus(status);
+      
+      if (status.propiedades_disponibles <= 0 && !status.es_admin) {
+        navigate('/planes');
+        return;
+      }
+      
+      // Si tiene plan activo, usar ese
+      if (status.plan_id) {
+        // Obtenemos los detalles del plan
+        const planesResponse = await api.get('/admin/plans/');
+        const plan = planesResponse.data.find(p => p.id === status.plan_id);
+        if (plan) {
+          navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`);
+        } else {
+          navigate('/planes');
+        }
+      } else {
+        // Si no tiene plan, ir a la página de planes
+        navigate('/planes');
+      }
+    } catch (error) {
+      console.error('Error al verificar estado del plan:', error);
+      navigate('/login?redirect=/planes');
+    }
+  };
 
   return (
     <div
@@ -142,13 +181,7 @@ export default function Home() {
                 Explorar propiedades
               </button>
               <button
-                onClick={() => {
-                  if (user?.plan_activo) {
-                    navigate(`/publish?planId=${user.plan_activo.id}&planNombre=${encodeURIComponent(user.plan_activo.name)}&maxFotos=${user.plan_activo.max_photos}`);
-                  } else {
-                    navigate("/planes");
-                  }
-                }}
+                onClick={handlePublishClick}
                 className="px-10 py-4 text-[12px] font-bold uppercase transition-all duration-300"
                 style={{
                   background: "transparent",

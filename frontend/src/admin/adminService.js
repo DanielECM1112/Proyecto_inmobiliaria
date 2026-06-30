@@ -2,22 +2,33 @@ import api from '../services/api';
 
 // Convierte textarea (una línea por feature) → JSON array string
 const convertFeatures = (features) => {
-  if (!features) return '[]';
-  if (Array.isArray(features)) return JSON.stringify(features);
-  try {
-    JSON.parse(features);
-    return features; // ya es JSON válido
-  } catch {
-    const arr = features.split('\n').map(f => f.trim()).filter(f => f.length > 0);
-    return JSON.stringify(arr);
-  }
+    if (!features) return '[]';
+    if (Array.isArray(features)) return JSON.stringify(features);
+    try {
+        JSON.parse(features);
+        return features; // ya es JSON válido
+    } catch {
+        const arr = features.split('\n').map(f => f.trim()).filter(f => f.length > 0);
+        return JSON.stringify(arr);
+    }
 };
 
 // Limpia strings con $ y comas → número entero
 const cleanNumber = (val) => {
-  if (typeof val === 'number') return val;
-  if (!val) return 0;
-  return parseInt(val.toString().replace(/[^0-9]/g, ''), 10) || 0;
+    if (typeof val === 'number') return val;
+    if (!val) return 0;
+    return parseInt(val.toString().replace(/[^0-9]/g, ''), 10) || 0;
+};
+
+// Obtiene el estado del plan del usuario
+export const getUserPlanStatus = async () => {
+    try {
+        const response = await api.get('/properties/plan-status/');
+        return response.data;
+    } catch (error) {
+        console.error('Error obteniendo estado del plan:', error);
+        throw error;
+    }
 };
 
 export const adminService = {

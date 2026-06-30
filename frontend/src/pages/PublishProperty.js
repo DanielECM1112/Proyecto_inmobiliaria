@@ -6,7 +6,8 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PageWrapper from '../components/PageWrapper';
 import { useTheme } from '../context/ThemeContext';
-import { FaTrash, FaCloudUploadAlt, FaCheckCircle, FaExclamationTriangle, FaCrown } from 'react-icons/fa';
+import { FaTrash, FaCloudUploadAlt, FaCheckCircle, FaExclamationTriangle, FaCrown, FaPlus, FaCreditCard } from 'react-icons/fa';
+import { getUserPlanStatus } from '../admin/adminService';
 
 export default function PublishProperty() {
   const navigate = useNavigate();
@@ -43,15 +44,35 @@ export default function PublishProperty() {
   const [success, setSuccess] = useState(false);
   const [generalError, setGeneralError] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  const [planStatus, setPlanStatus] = useState(null);
+  const [planLoading, setPlanLoading] = useState(true);
 
   // Cargar datos básicos al inicio
   useEffect(() => {
-    // Primero verificar token
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login?redirect=/publish');
-      return;
-    }
+    const loadData = async () => {
+      // Primero verificar token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login?redirect=/publish');
+        return;
+      }
+      
+      // Cargar estado del plan
+      try {
+        const status = await getUserPlanStatus();
+        setPlanStatus(status);
+        // Redirigir a planes si no puede publicar más
+        if (status.propiedades_disponibles <= 0 && !status.es_admin) {
+          navigate('/planes');
+        }
+      } catch (error) {
+        console.error('Error al cargar estado del plan:', error);
+      } finally {
+        setPlanLoading(false);
+      }
+    };
+    
+    loadData();
   }, [navigate]);
 
   const handleInputChange = (e) => {
