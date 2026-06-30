@@ -7,7 +7,7 @@ import {
   Headphones, Shield, Settings, ChevronRight,
   MessageSquare, Edit
 } from 'lucide-react';
-import { FaCrown } from 'react-icons/fa';
+import { FaCrown, FaExclamationTriangle } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PageWrapper from '../components/PageWrapper';
@@ -658,7 +658,21 @@ export default function Profile() {
                         <div className="flex flex-wrap gap-3">
                           {planStatus.propiedades_disponibles > 0 ? (
                             <button
-                              onClick={() => navigate('/planes')}
+                              onClick={async () => {
+                                // Obtener detalles del plan para pasar a la página de publicación
+                                try {
+                                  const planesResponse = await api.get('/admin/plans/');
+                                  const plan = planesResponse.data.find(p => p.id === planStatus.plan_id);
+                                  if (plan) {
+                                    navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`);
+                                  } else {
+                                    navigate('/planes');
+                                  }
+                                } catch (err) {
+                                  console.error('Error al obtener planes:', err);
+                                  navigate('/planes');
+                                }
+                              }}
                               className="flex items-center justify-center gap-2 px-8 py-3 font-bold text-[12px] uppercase tracking-[2px] transition-all hover:opacity-90"
                               style={{ background: '#C9A84C', color: '#0D0D0D' }}
                             >

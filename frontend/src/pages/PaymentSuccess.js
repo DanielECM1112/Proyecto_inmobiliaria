@@ -129,7 +129,13 @@ export default function PaymentSuccess() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/publish')}
+                  onClick={() => {
+                    if (plan) {
+                      navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`);
+                    } else {
+                      navigate('/publish');
+                    }
+                  }}
                   className="flex-1 py-4 text-center font-bold uppercase tracking-[2px] rounded-xl transition-all duration-300"
                   style={{ 
                     background: 'linear-gradient(90deg, #C9A84C, #f9d85b)',

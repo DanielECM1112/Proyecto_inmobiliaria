@@ -15,8 +15,8 @@ export default function PublishProperty() {
   const { isDarkMode } = useTheme();
   
   const queryParams = new URLSearchParams(search);
-  const planNombre = queryParams.get('planNombre') || 'Plan Gratuito';
-  const maxFotos = parseInt(queryParams.get('maxFotos')) || 3;
+  const [planNombre, setPlanNombre] = useState(queryParams.get('planNombre') || 'Plan Gratuito');
+  const [maxFotos, setMaxFotos] = useState(parseInt(queryParams.get('maxFotos')) || 3);
   
   const [formData, setFormData] = useState({
     titulo: '',
@@ -65,6 +65,29 @@ export default function PublishProperty() {
         // Mostrar mensaje si no puede publicar más
         if (status.propiedades_disponibles <= 0 && !status.es_admin) {
           setShowLimitMessage(true);
+        } else {
+          // Si el usuario no tiene parámetros de plan pero sí tiene plan activo
+          const queryParams = new URLSearchParams(window.location.search);
+          const currentPlanNombre = queryParams.get('planNombre');
+          const currentMaxFotos = queryParams.get('maxFotos');
+          if (!currentPlanNombre && status.plan_id) {
+            // Obtener los detalles del plan
+            try {
+              const planesResponse = await api.get('/admin/plans/');
+              const plan = planesResponse.data.find(p => p.id === status.plan_id);
+              if (plan) {
+                // Redirigir con los parámetros
+                navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`, { replace: true });
+              }
+            } catch (err) {
+              console.error('Error al obtener plan:', err);
+            }
+          } else if (currentPlanNombre) {
+            setPlanNombre(currentPlanNombre);
+            if (currentMaxFotos) {
+              setMaxFotos(parseInt(currentMaxFotos));
+            }
+          }
         }
       } catch (error) {
         console.error('Error al cargar estado del plan:', error);
