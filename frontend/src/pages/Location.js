@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { HiOutlineSearch, HiOutlineHome, HiOutlineUsers, HiOutlineHeart, HiOutlineLocationMarker, HiOutlineArrowNarrowRight } from 'react-icons/hi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HiOutlineSearch, HiOutlineHome, HiOutlineUsers, HiOutlineHeart, HiOutlineLocationMarker, HiOutlineArrowNarrowRight, HiOutlineX, HiOutlineCheck } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
@@ -25,6 +25,8 @@ export default function Location() {
   const [filters, setFilters] = useState(FILTERS_INIT);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [compareSelected, setCompareSelected] = useState([]);
+  const [showCompareModal, setShowCompareModal] = useState(false);
 
   useEffect(() => {
     api.get('/properties/')
@@ -75,6 +77,18 @@ export default function Location() {
     return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
   };
 
+  const toggleCompare = (prop) => {
+    if (compareSelected.find(p => p.id === prop.id)) {
+      setCompareSelected(compareSelected.filter(p => p.id !== prop.id));
+    } else {
+      if (compareSelected.length < 2) {
+        setCompareSelected([...compareSelected, prop]);
+      }
+    }
+  };
+
+  const clearCompare = () => setCompareSelected([]);
+
   return (
     <PageWrapper>
       <div className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${
@@ -114,6 +128,58 @@ export default function Location() {
             </motion.div>
           </div>
         </section>
+
+        {/* Compare Bar */}
+        <AnimatePresence>
+          {compareSelected.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className={`sticky top-20 z-30 py-4 px-6 shadow-xl transition-colors duration-500 ${
+                isDarkMode ? 'bg-[#121829] border-b border-white/10' : 'bg-white border-b border-[rgba(10,14,31,0.1)]'
+              }`}
+            >
+              <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <HiOutlineCheck className="text-xl text-[#D4AF37]" />
+                  <div>
+                    <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                      {compareSelected.length} {compareSelected.length === 1 ? 'propiedad seleccionada' : 'propiedades seleccionadas'} para comparar
+                    </p>
+                    {compareSelected.length < 2 && (
+                      <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                        Selecciona 2 propiedades para compararlas
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={clearCompare}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                      isDarkMode
+                        ? 'bg-white/10 text-gray-300 hover:bg-white/20'
+                        : 'bg-[#F0F3F7] text-[#5A6B7D] hover:bg-[#E4EAF2]'
+                    }`}
+                  >
+                    Limpiar
+                  </button>
+
+                  {compareSelected.length === 2 && (
+                    <button
+                      onClick={() => setShowCompareModal(true)}
+                      className="px-6 py-2 rounded-xl bg-[#D4AF37] text-[#0A0E1F] font-bold text-sm hover:bg-[#E5C158] transition-all duration-300 shadow-lg"
+                    >
+                      Comparar Ahora
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <main className="flex-grow py-12 px-6 md:px-8">
           <div className="max-w-7xl mx-auto">
@@ -503,16 +569,33 @@ export default function Location() {
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {filteredProperties.map((prop, index) => (
-                        <motion.div
-                          key={prop.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: Math.min(index * 0.08, 0.4) }}
-                        >
-                          <PropertyCard prop={prop} />
-                        </motion.div>
-                      ))}
+                      {filteredProperties.map((prop, index) => {
+                        const isSelected = compareSelected.find(p => p.id === prop.id);
+                        return (
+                          <motion.div
+                            key={prop.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: Math.min(index * 0.08, 0.4) }}
+                            className="relative"
+                          >
+                            <PropertyCard prop={prop} />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleCompare(prop);
+                              }}
+                              className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                                isSelected
+                                  ? 'bg-[#D4AF37] text-[#0A0E1F] scale-110'
+                                  : 'bg-white/90 text-[#D4AF37] hover:bg-white hover:scale-105 border border-[#D4AF37]/30'
+                              }`}
+                            >
+                              {isSelected ? <HiOutlineCheck className="text-lg" /> : <HiOutlineCheck className="text-lg" />}
+                            </button>
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -520,6 +603,204 @@ export default function Location() {
             </div>
           </div>
         </main>
+
+        {/* Compare Modal */}
+        <AnimatePresence>
+          {showCompareModal && compareSelected.length === 2 && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowCompareModal(false)}
+                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              />
+
+              {/* Modal */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className={`relative w-full max-w-6xl rounded-3xl overflow-hidden shadow-2xl ${
+                  isDarkMode ? 'bg-[#121829] border border-white/10' : 'bg-white border border-[rgba(10,14,31,0.1)]'
+                }`}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowCompareModal(false)}
+                  className={`absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                    isDarkMode
+                      ? 'bg-white/10 text-white hover:bg-white/20'
+                      : 'bg-[#F0F3F7] text-[#5A6B7D] hover:bg-[#E4EAF2]'
+                  }`}
+                >
+                  <HiOutlineX className="text-xl" />
+                </button>
+
+                {/* Modal Header */}
+                <div className="p-8 border-b border-white/10">
+                  <h2 className={`text-3xl font-serif font-bold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                    Comparar Propiedades
+                  </h2>
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {compareSelected.map((prop, idx) => (
+                      <div
+                        key={prop.id}
+                        className={`rounded-2xl overflow-hidden border ${
+                          isDarkMode ? 'border-white/10' : 'border-[rgba(10,14,31,0.1)]'
+                        }`}
+                      >
+                        <div className="relative">
+                          <img
+                            src={getTooltipImg(prop)}
+                            alt={prop.titulo}
+                            className="w-full h-64 object-cover"
+                          />
+                          <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold uppercase ${
+                            prop.estado === 'vendido' ? 'bg-red-500/90 text-white' :
+                            prop.estado === 'negociacion' ? 'bg-yellow-500/90 text-white' :
+                            'bg-green-500/90 text-white'
+                          }`}>
+                            {prop.estado === 'vendido' ? 'Vendido' :
+                             prop.estado === 'negociacion' ? 'En Negociación' :
+                             'Disponible'}
+                          </span>
+                        </div>
+
+                        <div className={`p-6 ${isDarkMode ? 'bg-[#0a0e1a]' : 'bg-[#FAFBFC]'}`}>
+                          <h3 className={`text-xl font-serif font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                            {prop.titulo}
+                          </h3>
+
+                          <div className="flex items-center gap-2 mb-4">
+                            <HiOutlineLocationMarker className="text-[#D4AF37]" />
+                            <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                              {prop.ubicacion}
+                            </span>
+                          </div>
+
+                          <p className="text-2xl font-bold text-[#D4AF37] mb-6">
+                            {formatPrice(prop.precio)}
+                          </p>
+
+                          <div className="grid grid-cols-3 gap-4 mb-6">
+                            <div className="flex flex-col items-center text-center">
+                              <HiOutlineHome className="text-[#D4AF37] mb-1" />
+                              <span className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                                {prop.habitaciones}
+                              </span>
+                              <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-[#7A8C9E]'}`}>
+                                Habitaciones
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center text-center">
+                              <HiOutlineUsers className="text-[#D4AF37] mb-1" />
+                              <span className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                                {prop.banos}
+                              </span>
+                              <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-[#7A8C9E]'}`}>
+                                Baños
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center text-center">
+                              <HiOutlineLocationMarker className="text-[#D4AF37] mb-1" />
+                              <span className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                                {prop.area} m²
+                              </span>
+                              <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-[#7A8C9E]'}`}>
+                                Área
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3 mb-6">
+                            <div className={`flex items-center justify-between p-3 rounded-xl ${
+                              isDarkMode ? 'bg-white/5' : 'bg-[#F0F3F7]'
+                            }`}>
+                              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                                Tipo
+                              </span>
+                              <span className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                                {prop.tipo}
+                              </span>
+                            </div>
+                            <div className={`flex items-center justify-between p-3 rounded-xl ${
+                              isDarkMode ? 'bg-white/5' : 'bg-[#F0F3F7]'
+                            }`}>
+                              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                                Estrato
+                              </span>
+                              <span className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
+                                {prop.estrato || 'N/A'}
+                              </span>
+                            </div>
+                            <div className={`flex items-center justify-between p-3 rounded-xl ${
+                              isDarkMode ? 'bg-white/5' : 'bg-[#F0F3F7]'
+                            }`}>
+                              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                                Garaje
+                              </span>
+                              <span className={`text-sm font-semibold ${
+                                prop.garaje
+                                  ? (isDarkMode ? 'text-green-400' : 'text-green-600')
+                                  : (isDarkMode ? 'text-gray-500' : 'text-gray-500')
+                              }`}>
+                                {prop.garaje ? 'Sí' : 'No'}
+                              </span>
+                            </div>
+                            <div className={`flex items-center justify-between p-3 rounded-xl ${
+                              isDarkMode ? 'bg-white/5' : 'bg-[#F0F3F7]'
+                            }`}>
+                              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                                Piscina
+                              </span>
+                              <span className={`text-sm font-semibold ${
+                                prop.piscina
+                                  ? (isDarkMode ? 'text-green-400' : 'text-green-600')
+                                  : (isDarkMode ? 'text-gray-500' : 'text-gray-500')
+                              }`}>
+                                {prop.piscina ? 'Sí' : 'No'}
+                              </span>
+                            </div>
+                            <div className={`flex items-center justify-between p-3 rounded-xl ${
+                              isDarkMode ? 'bg-white/5' : 'bg-[#F0F3F7]'
+                            }`}>
+                              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
+                                Amoblado
+                              </span>
+                              <span className={`text-sm font-semibold ${
+                                prop.amoblado
+                                  ? (isDarkMode ? 'text-green-400' : 'text-green-600')
+                                  : (isDarkMode ? 'text-gray-500' : 'text-gray-500')
+                              }`}>
+                                {prop.amoblado ? 'Sí' : 'No'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              setShowCompareModal(false);
+                              navigate(`/properties/${prop.id}`);
+                            }}
+                            className="w-full py-3 rounded-xl bg-[#D4AF37] text-[#0A0E1F] font-bold text-sm hover:bg-[#E5C158] transition-all"
+                          >
+                            Ver Propiedad
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         <Footer />
       </div>

@@ -1,10 +1,11 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Propiedad, ImagenPropiedad
 from .serializers import PropiedadSerializer, PropiedadCreateSerializer
 from .permissions import IsOwnerOrReadOnly
+from rest_framework.decorators import api_view, permission_classes
 
 class PropiedadListView(generics.ListAPIView):
     permission_classes = [AllowAny]
@@ -62,4 +63,18 @@ class PropiedadAdminUpdateView(generics.UpdateAPIView):
     permission_classes = [AllowAny]
     serializer_class = PropiedadSerializer
     queryset = Propiedad.objects.all()
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_property_image(request, pk):
+    try:
+        imagen = ImagenPropiedad.objects.get(pk=pk)
+        # Verificar que el usuario es el propietario de la propiedad
+        if imagen.propiedad.propietario != request.user and not request.user.is_staff:
+            return Response({"error": "No tienes permiso para eliminar esta imagen"}, status=status.HTTP_403_FORBIDDEN)
+        imagen.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except ImagenPropiedad.DoesNotExist:
+        return Response({"error": "Imagen no encontrada"}, status=status.HTTP_404_NOT_FOUND)
 

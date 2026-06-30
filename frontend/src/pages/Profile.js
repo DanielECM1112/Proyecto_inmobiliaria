@@ -5,7 +5,7 @@ import {
   User, Mail, Phone, MapPin, Power, Camera,
   Calendar, Save, X, Check, Home, TrendingUp,
   Headphones, Shield, Settings, ChevronRight,
-  MessageSquare
+  MessageSquare, Edit
 } from 'lucide-react';
 import { FaCrown } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
@@ -696,13 +696,26 @@ export default function Profile() {
                       const imgUrl = img ? (img.startsWith('http') ? img : `http://localhost:8000${img}`) : null;
                       const statusColors = { disponible: '#4ade80', negociacion: '#fbbf24', vendido: '#f87171' };
                       const statusLabel = { disponible: 'Disponible', negociacion: 'En Negociación', vendido: 'Vendido' };
+                      const nextStatus = { disponible: 'negociacion', negociacion: 'vendido', vendido: 'disponible' };
+
+                      const handleStatusChange = async (e) => {
+                        e.stopPropagation(); // Para que no navegue al detalle al hacer click en el botón
+                        try {
+                          const nuevoEstado = nextStatus[prop.estado] || 'disponible';
+                          await api.patch(`/properties/${prop.id}/`, { estado: nuevoEstado });
+                          setMisProps(misProps.map(p => p.id === prop.id ? { ...p, estado: nuevoEstado } : p));
+                        } catch (err) {
+                          console.error('Error al cambiar estado:', err);
+                        }
+                      };
+
                       return (
                         <div key={prop.id}
-                          className="overflow-hidden flex gap-5 p-5 cursor-pointer transition-all hover:translate-x-1"
-                          style={cardStyle}
-                          onClick={() => navigate(`/properties/${prop.id}`)}>
-                          <div className="w-24 h-20 overflow-hidden flex-shrink-0"
-                            style={{ background: 'rgba(201,168,76,0.06)' }}>
+                          className="overflow-hidden flex gap-5 p-5 transition-all hover:translate-x-1"
+                          style={cardStyle}>
+                          <div className="w-24 h-20 overflow-hidden flex-shrink-0 cursor-pointer"
+                            style={{ background: 'rgba(201,168,76,0.06)' }}
+                            onClick={() => navigate(`/properties/${prop.id}`)}>
                             {imgUrl ? (
                               <img src={imgUrl} alt={prop.titulo} className="w-full h-full object-cover" />
                             ) : (
@@ -711,21 +724,34 @@ export default function Profile() {
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 min-w-0">
+                          <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/properties/${prop.id}`)}>
                             <p className="font-serif font-bold text-[15px] truncate" style={{ color: txt }}>{prop.titulo}</p>
                             <p className="text-xs mt-1 truncate" style={{ color: sub }}>{prop.ubicacion || '—'}</p>
                             <p className="text-sm font-bold mt-1.5" style={{ color: '#C9A84C' }}>
                               ${parseFloat(prop.precio || 0).toLocaleString('es-CO')}
                             </p>
                           </div>
-                          <div className="flex-shrink-0 self-start">
-                            <span className="text-[9px] font-bold uppercase tracking-[2px] px-3 py-1.5"
+                          <div className="flex-shrink-0 self-start flex flex-col gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/properties/${prop.id}/edit`);
+                              }}
+                              className="p-2 rounded-full hover:bg-[rgba(201,168,76,0.15)] transition-all"
+                              style={{ color: '#C9A84C' }}
+                              title="Editar propiedad">
+                              <Edit size={14} />
+                            </button>
+                            <button
+                              onClick={handleStatusChange}
+                              className="text-[9px] font-bold uppercase tracking-[2px] px-3 py-1.5 cursor-pointer transition-all hover:opacity-80"
                               style={{
                                 color: statusColors[prop.estado] || '#888',
                                 border: `1px solid ${statusColors[prop.estado] || '#888'}55`,
+                                background: `${statusColors[prop.estado] || '#888'}10`,
                               }}>
                               {statusLabel[prop.estado] || prop.estado}
-                            </span>
+                            </button>
                           </div>
                         </div>
                       );

@@ -398,6 +398,32 @@ export default function Navbar() {
                         </span>
                       </motion.button>
 
+                      {/* Panel de Admin (solo para admins) */}
+                      {(user?.is_staff || user?.rol === 'admin') && (
+                        <motion.button
+                          onClick={() => { 
+                            window.open('/admin/', '_blank');
+                            setShowProfileMenu(false); 
+                          }}
+                          whileHover={{ x: 2 }}
+                          onMouseEnter={e => e.currentTarget.style.background = dd.itemHover}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                          style={{
+                            width: '100%', display: 'flex', alignItems: 'center',
+                            gap: '14px', padding: '12px 14px', borderRadius: '14px',
+                            background: 'transparent', border: 'none', cursor: 'pointer',
+                            transition: 'background 0.18s', textAlign: 'left',
+                          }}
+                        >
+                          <span style={{ color: '#C9A84C', flexShrink: 0, display: 'flex' }}>
+                            <IconUser />
+                          </span>
+                          <span style={{ fontSize: '14px', fontWeight: 500, color: dd.textMain }}>
+                            Panel de Admin
+                          </span>
+                        </motion.button>
+                      )}
+
                       {/* Modo Oscuro — con el ThemeToggle original */}
                       <div style={{
                         width: '100%', display: 'flex', alignItems: 'center',

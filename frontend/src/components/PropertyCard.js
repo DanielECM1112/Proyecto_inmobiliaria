@@ -69,9 +69,13 @@ export default function PropertyCard({ prop }) {
             Ver propiedad
           </button>
         </div>
-        {/* Badge DISPONIBLE */}
-        <div className="absolute top-4 left-4 bg-white/90 text-[#0D0D0D] text-[9px] font-bold uppercase tracking-[2px] px-3 py-1 rounded-full">
-          DISPONIBLE
+        {/* Badge de estado */}
+        <div className={`absolute top-4 left-4 text-[9px] font-bold uppercase tracking-[2px] px-3 py-1 rounded-full ${
+          prop.estado === 'vendido' ? 'bg-red-500/90 text-white' : 
+          prop.estado === 'negociacion' ? 'bg-yellow-500/90 text-white' : 
+          'bg-green-500/90 text-white'
+        }`}>
+          {prop.estado === 'vendido' ? 'VENDIDO' : prop.estado === 'negociacion' ? 'EN NEGOCIACIÓN' : 'DISPONIBLE'}
         </div>
       </div>
 

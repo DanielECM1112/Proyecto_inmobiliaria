@@ -5,7 +5,7 @@ import api, { BACKEND_ORIGIN } from "../services/api";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageWrapper from "../components/PageWrapper";
-import { FaEnvelope, FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa";
+import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useTheme } from "../context/ThemeContext";
 
@@ -39,8 +39,6 @@ export default function Register() {
     }
     if (social === 'google') {
       setInfoMessage('No tienes cuenta registrada con Google. Por favor completa el registro.');
-    } else if (social === 'facebook') {
-      setInfoMessage('No tienes cuenta registrada con Facebook. Por favor completa el registro con este correo.');
     } else if (social) {
       setInfoMessage('No tienes cuenta registrada con este proveedor social. Completa el registro para continuar.');
     }
@@ -299,18 +297,6 @@ export default function Register() {
                   >
                     <FcGoogle size={20} />
                     Continuar con Google
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => window.location.href = `${BACKEND_ORIGIN}/accounts/facebook/login/?process=signup`}
-                    className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border font-semibold text-sm transition-all duration-300 ${
-                      isDarkMode
-                        ? 'border-white/15 bg-white/5 text-white hover:bg-white/10'
-                        : 'border-gray-200 bg-white text-slate-800 hover:bg-gray-50 shadow-sm'
-                    }`}
-                  >
-                    <FaFacebook size={20} className="text-[#1877F2]" />
-                    Continuar con Facebook
                   </button>
                 </div>
 

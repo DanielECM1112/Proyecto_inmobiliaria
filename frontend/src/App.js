@@ -13,6 +13,7 @@ import About from './pages/About';
 import Location from './pages/Location';
 import ScrollToTop from './components/ScrollToTop';
 import PublishProperty from './pages/PublishProperty';
+import EditProperty from './pages/EditProperty';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Cookies from './pages/Cookies';
@@ -79,7 +80,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/properties" element={<Properties />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
-            <Route path="/properties/:id/edit" element={<PublishProperty />} />
+            <Route path="/properties/:id/edit" element={<EditProperty />} />
             <Route path="/planes" element={<Plans />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/publish" element={<PublishProperty />} />

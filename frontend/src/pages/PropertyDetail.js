@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { BiBed, BiBath, BiArea } from 'react-icons/bi';
-import { FaWhatsapp, FaChevronLeft, FaChevronRight, FaEnvelope } from 'react-icons/fa';
+import { FaWhatsapp, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -232,8 +232,12 @@ export default function PropertyDetail() {
                       <span className="inline-flex rounded-full bg-gold-600 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-slate-950">
                         {renderType(property.tipo)}
                       </span>
-                      <span className="inline-flex rounded-full bg-slate-900/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-slate-700">
-                        {property.estado || 'Estado desconocido'}
+                      <span className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] ${
+                        property.estado === 'vendido' ? 'bg-red-500/90 text-white' :
+                        property.estado === 'negociacion' ? 'bg-yellow-500/90 text-white' :
+                        'bg-green-500/90 text-white'
+                      }`}>
+                        {property.estado === 'vendido' ? 'VENDIDO' : property.estado === 'negociacion' ? 'EN NEGOCIACIÓN' : 'DISPONIBLE'}
                       </span>
                     </div>
 
@@ -363,27 +367,17 @@ export default function PropertyDetail() {
                         }}
                       >
                         <p className="text-xs font-bold uppercase tracking-[2px] text-[#C9A84C] mb-1">
-                          ¿Eres el propietario?
+                          ¡Esta es tu propiedad!
                         </p>
                         <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-                          Si necesitas corregir o actualizar la información de esta propiedad, contacta al administrador — él gestiona los cambios.
+                          Puedes editar la información o las fotos de tu propiedad en cualquier momento.
                         </p>
-                        <div className="flex flex-col gap-2">
-                          <a
-                            href={`mailto:manuelestiven2006@gmail.com?subject=${encodeURIComponent(`Solicitud de cambio - Propiedad #${property.id}: ${property.titulo}`)}&body=${encodeURIComponent(`Hola admin,\n\nSoy ${usuarioLogueado.nombre} y quiero solicitar un cambio en mi propiedad "${property.titulo}" (ID: ${property.id}).\n\nDetalle del cambio:\n\nGracias.`)}`}
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-xs font-bold uppercase tracking-[1.5px] text-[#C9A84C] border border-[#C9A84C]/40 hover:bg-[#C9A84C]/10 transition-colors"
-                          >
-                            <FaEnvelope /> Escribir al admin
-                          </a>
-                          <a
-                            href={`https://wa.me/573223147352?text=${encodeURIComponent(`Hola admin, quiero solicitar un cambio en mi propiedad "${property.titulo}" (ID ${property.id})`)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-xs font-bold uppercase tracking-[1.5px] bg-green-600 text-white hover:bg-green-700 transition-colors"
-                          >
-                            <FaWhatsapp /> WhatsApp al admin
-                          </a>
-                        </div>
+                        <button
+                          onClick={() => navigate(`/properties/${property.id}/edit`)}
+                          className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-xs font-bold uppercase tracking-[1.5px] bg-[#C9A84C] text-white hover:bg-[#b38b1d] transition-colors w-full"
+                        >
+                          <FaEdit /> Editar propiedad
+                        </button>
                       </div>
                     )}
                   </div>

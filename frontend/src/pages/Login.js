@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react"; // 👈 Añadimos useEffect
+import { useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import api, { BACKEND_ORIGIN } from "../services/api";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageWrapper from "../components/PageWrapper";
-import { FaEnvelope, FaEye, FaEyeSlash, FaGoogle, FaFacebookF } from "react-icons/fa";
+import { FaEnvelope, FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Login() {
@@ -204,16 +204,6 @@ export default function Login() {
                     >
                       <FaGoogle className="text-red-500" />
                       <span className="text-sm font-semibold">Google</span>
-                    </button>
-                    
-                    {/* 👇 BOTÓN DE FACEBOOK ACTUALIZADO */}
-                    <button
-                      type="button"
-                      onClick={() => window.location.href = `${BACKEND_ORIGIN}/accounts/facebook/login/?process=login`}
-                      className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 border rounded-xl transition-colors duration-300 hover:border-[#C9A84C]"
-                    >
-                      <FaFacebookF className="text-blue-600" />
-                      <span className="text-sm font-semibold">Facebook</span>
                     </button>
                   </div>
                 </div>
