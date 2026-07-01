@@ -1,20 +1,56 @@
 [
   {
     "model": "plans.plan",
-    "pk": "00000000-0000-0000-0000-000000000001",
+    "pk": "ab4f656527ef42848e287e7e851982f9",
     "fields": {
-      "name": "Plan Gratuito",
-      "slug": "gratuito",
-      "description": "Publica tu propiedad gratis por 30 días",
+      "created_at": "2026-06-04T01:43:25.537918Z",
+      "updated_at": "2026-06-04T01:43:25.537918Z",
+      "name": "Básico",
+      "description": "Plan de inicio para publicar tu primera propiedad.",
       "duration_days": 30,
       "max_properties": 1,
       "max_photos": 5,
-      "price": "0.00",
-      "features": "[\"1 publicación activa\", \"Hasta 5 fotos\", \"Visible en la sección de propiedades\", \"Duración: 30 días\"]",
-      "is_featured": false,
+      "price": 0,
       "is_active": true,
-      "created_at": "2026-05-28T12:00:00Z",
-      "updated_at": "2026-05-28T12:00:00Z"
+      "slug": "basico",
+      "features": "[\"1 propiedad\", \"5 fotos por propiedad\", \"30 días de vigencia\"]",
+      "is_featured": false
+    }
+  },
+  {
+    "model": "plans.plan",
+    "pk": "88c023980daa4b25876253bc635e17a6",
+    "fields": {
+      "created_at": "2026-06-04T01:48:54.492864Z",
+      "updated_at": "2026-06-04T01:48:54.492864Z",
+      "name": "Estándar",
+      "description": "Plan ideal para agentes independientes.",
+      "duration_days": 30,
+      "max_properties": 3,
+      "max_photos": 10,
+      "price": 49000,
+      "is_active": true,
+      "slug": "estandar",
+      "features": "[\"3 propiedades\", \"10 fotos por propiedad\", \"30 días de vigencia\", \"Publicación destacada\"]",
+      "is_featured": false
+    }
+  },
+  {
+    "model": "plans.plan",
+    "pk": "365f72ceecc84f04a66850e3b72b89d4",
+    "fields": {
+      "created_at": "2026-06-09T15:24:51.317879Z",
+      "updated_at": "2026-06-09T15:24:51.317879Z",
+      "name": "Premium",
+      "description": "Para inmobiliarias y agentes con alto volumen.",
+      "duration_days": 30,
+      "max_properties": 10,
+      "max_photos": 20,
+      "price": 99000,
+      "is_active": true,
+      "slug": "premium",
+      "features": "[\"10 propiedades\", \"20 fotos por propiedad\", \"30 días de vigencia\", \"Publicación destacada\", \"Soporte prioritario\"]",
+      "is_featured": true
     }
   }
 ]
