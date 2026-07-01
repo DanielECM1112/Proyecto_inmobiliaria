@@ -144,7 +144,7 @@ export const adminService = {
   // ═══════════════════════════════════════
   getPagos: async () => {
     try {
-      const response = await api.get('/admin/pagos/');
+      const response = await api.get('/payments/admin/pagos/');
       return response.data.map(p => ({
         id:         p.id,
         referencia: `TX-${String(p.id).substring(0, 8)}`,
@@ -162,7 +162,7 @@ export const adminService = {
   },
 
   cambiarEstadoPago: async (id, nuevoEstado) => {
-    await api.patch(`/admin/pagos/${id}/`, { estado: nuevoEstado.toLowerCase() });
+    await api.patch(`/payments/admin/pagos/${id}/`, { estado: nuevoEstado.toLowerCase() });
   },
 
   // ═══════════════════════════════════════
@@ -170,7 +170,7 @@ export const adminService = {
   // ═══════════════════════════════════════
   getMetrics: async () => {
         try {
-            const response = await api.get('/admin/stats/');
+            const response = await api.get('/payments/admin/stats/');
             const data = response.data;
             return {
                 inmueblesActivos:     data.propiedades?.activos ?? 0,

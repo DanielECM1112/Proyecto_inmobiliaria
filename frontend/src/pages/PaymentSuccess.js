@@ -78,12 +78,31 @@ export default function PaymentSuccess() {
               {/* Title */}
               <div className="text-center mb-10">
                 <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight mb-4" style={{ color: txt }}>
-                  ¡Plan activado exitosamente!
+                  {plan ? '¡Plan activado exitosamente!' : '¡Pago recibido con éxito!'}
                 </h1>
                 <p className="text-lg" style={{ color: sub }}>
-                  Tu suscripción ha sido actualizada y ya puedes empezar a usar tus beneficios.
+                  {plan
+                    ? 'Tu suscripción ha sido actualizada y ya puedes empezar a usar tus beneficios.'
+                    : 'Tu pago fue registrado correctamente.'}
                 </p>
               </div>
+
+              {/* Aviso de activación pendiente */}
+              {!plan && !loading && (
+                <div
+                  className="mb-8 p-5 rounded-2xl flex items-start gap-4"
+                  style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.25)' }}
+                >
+                  <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⏳</span>
+                  <div>
+                    <p className="font-bold mb-1" style={{ color: '#C9A84C' }}>Activación en proceso</p>
+                    <p className="text-sm leading-relaxed" style={{ color: sub }}>
+                      En unos minutos el administrador revisará tu pago y te dará acceso a tu plan.
+                      Recibirás los beneficios completos una vez sea aprobado.
+                    </p>
+                  </div>
+                </div>
+              )}
               
               {/* Plan Info */}
               {plan && (

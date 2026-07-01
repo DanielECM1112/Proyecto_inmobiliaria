@@ -298,10 +298,10 @@ export default function Plans() {
                           onClick={() => handleSelectPlan(plan)}
                           disabled={isButtonDisabled}
                           className={`plan-cta-btn${plan.is_featured ? ' plan-cta-btn--featured' : ''}`}
-                          style={{ 
-                            opacity: isButtonDisabled ? 0.5 : 1, 
+                          style={{
+                            opacity: isButtonDisabled ? 0.5 : 1,
                             cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
-                            ...(isHigherPlan ? { 
+                            ...(isHigherPlan ? {
                               background: 'linear-gradient(90deg, #C9A84C, #D4A853)',
                               border: '2px solid #C9A84C',
                               color: '#0D0D0D',
@@ -310,6 +310,21 @@ export default function Plans() {
                           }}>
                           {buttonText}
                         </button>
+
+                        {/* Botón publicar — solo visible cuando el usuario ya tiene este plan */}
+                        {isSamePlan && (
+                          <button
+                            onClick={() => navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`)}
+                            className="mt-3 w-full py-3 rounded-xl text-sm font-bold uppercase tracking-[2px] transition-all duration-200 hover:opacity-90 hover:scale-[1.01]"
+                            style={{
+                              background: 'linear-gradient(90deg, #C9A84C, #f9d85b)',
+                              color: '#0D0D0D',
+                              boxShadow: '0 4px 20px rgba(201,168,76,0.25)'
+                            }}
+                          >
+                            Publicar Propiedad →
+                          </button>
+                        )}
                       </div>
                     </SpotlightCard>
                   </motion.div>

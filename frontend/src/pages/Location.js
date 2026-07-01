@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiOutlineSearch, HiOutlineHome, HiOutlineUsers, HiOutlineHeart, HiOutlineLocationMarker, HiOutlineArrowNarrowRight, HiOutlineX, HiOutlineCheck } from 'react-icons/hi';
+import { HiOutlineSearch, HiOutlineHome, HiOutlineUsers, HiOutlineLocationMarker, HiOutlineX, HiOutlineCheck } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
@@ -21,7 +21,6 @@ const FILTERS_INIT = {
 export default function Location() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  const [selectedProperty, setSelectedProperty] = useState(null);
   const [filters, setFilters] = useState(FILTERS_INIT);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,16 +43,6 @@ export default function Location() {
     () => ['todos', ...Array.from(new Set(properties.map(p => p.tipo).filter(Boolean))).sort()],
     [properties]
   );
-
-  const openInGoogleMaps = (lat, lng) => {
-    if (!lat || !lng) return;
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
-  };
-
-  const openInWaze = (lat, lng) => {
-    if (!lat || !lng) return;
-    window.open(`https://waze.com/ul?ll=${lat},${lng}&navigate=yes`, '_blank');
-  };
 
   const filteredProperties = properties.filter(prop => {
     if (filters.neighborhood !== 'todos' && prop.ubicacion !== filters.neighborhood) return false;
@@ -345,197 +334,6 @@ export default function Location() {
               {/* Mapa y Lista */}
               <div className="xl:col-span-2 space-y-8">
 
-                {/* Mapa Decorativo */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className={`relative rounded-3xl overflow-hidden transition-colors duration-500 ${
-                    isDarkMode ? 'bg-[#121829] border border-white/10' : 'bg-white border border-[rgba(10,14,31,0.08)]'
-                  }`}
-                  style={{ minHeight: '550px' }}
-                >
-                  <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                    <div>
-                      <h3 className={`text-2xl font-serif font-bold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
-                        Mapa de Ibagué
-                      </h3>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
-                        Haz clic en los marcadores para ver más detalles
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <button className="w-8 h-8 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 flex items-center justify-center transition-all">
-                        <span className="text-[#D4AF37] font-bold text-lg">+</span>
-                      </button>
-                      <button className="w-8 h-8 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 flex items-center justify-center transition-all">
-                        <span className="text-[#D4AF37] font-bold text-lg">−</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* SVG Mapa */}
-                  <div className="relative w-full" style={{ height: '450px' }}>
-                    <svg
-                      viewBox="0 0 100 100"
-                      className="w-full h-full"
-                      style={{
-                        background: isDarkMode
-                          ? 'linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%)'
-                          : 'linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 50%, #e5e7eb 100%)',
-                      }}
-                    >
-                      <defs>
-                        <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
-                          <path d="M 8 0 L 0 0 0 8" fill="none" stroke={isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'} strokeWidth="0.5" />
-                        </pattern>
-                        <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#D4AF37" />
-                          <stop offset="100%" stopColor="#E5C158" />
-                        </linearGradient>
-                        <linearGradient id="route-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#34D399" />
-                          <stop offset="100%" stopColor="#60A5FA" />
-                        </linearGradient>
-                        <filter id="glow">
-                          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                          <feMerge>
-                            <feMergeNode in="coloredBlur" />
-                            <feMergeNode in="SourceGraphic" />
-                          </feMerge>
-                        </filter>
-                      </defs>
-
-                      <rect width="100" height="100" fill="url(#grid)" />
-
-                      <path d="M 10 50 Q 30 45, 50 50 T 90 50" stroke="url(#route-gradient)" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.6" />
-                      <path d="M 50 10 Q 45 30, 50 50 T 50 90" stroke="url(#route-gradient)" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.6" />
-                      <path d="M 25 25 Q 40 35, 50 50 T 75 75" stroke="url(#route-gradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.4" strokeDasharray="3 2" />
-                      <path d="M 75 25 Q 60 35, 50 50 T 25 75" stroke="url(#route-gradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.4" strokeDasharray="3 2" />
-
-                      <ellipse cx="75" cy="25" rx="12" ry="10" fill={isDarkMode ? 'rgba(212,175,55,0.12)' : 'rgba(212,175,55,0.15)'} />
-                      <text x="75" y="25" textAnchor="middle" dominantBaseline="middle" fontSize="3.5" fontWeight="600" fill={isDarkMode ? '#D4D9E3' : '#374151'}>El Vergel</text>
-
-                      <ellipse cx="50" cy="30" rx="10" ry="8" fill={isDarkMode ? 'rgba(96,165,250,0.12)' : 'rgba(96,165,250,0.15)'} />
-                      <text x="50" y="30" textAnchor="middle" dominantBaseline="middle" fontSize="3.5" fontWeight="600" fill={isDarkMode ? '#D4D9E3' : '#374151'}>Centro</text>
-
-                      <ellipse cx="25" cy="40" rx="9" ry="7" fill={isDarkMode ? 'rgba(52,211,153,0.12)' : 'rgba(52,211,153,0.15)'} />
-                      <text x="25" y="40" textAnchor="middle" dominantBaseline="middle" fontSize="3.5" fontWeight="600" fill={isDarkMode ? '#D4D9E3' : '#374151'}>Belén</text>
-
-                      <ellipse cx="45" cy="55" rx="11" ry="9" fill={isDarkMode ? 'rgba(244,114,182,0.12)' : 'rgba(244,114,182,0.15)'} />
-                      <text x="45" y="55" textAnchor="middle" dominantBaseline="middle" fontSize="3.5" fontWeight="600" fill={isDarkMode ? '#D4D9E3' : '#374151'}>Picaleña</text>
-
-                      <ellipse cx="70" cy="70" rx="10" ry="8" fill={isDarkMode ? 'rgba(167,139,250,0.12)' : 'rgba(167,139,250,0.15)'} />
-                      <text x="70" y="70" textAnchor="middle" dominantBaseline="middle" fontSize="3.5" fontWeight="600" fill={isDarkMode ? '#D4D9E3' : '#374151'}>La Florida</text>
-                    </svg>
-
-                    {/* Marcadores: sólo para props que tengan mapPosition */}
-                    {filteredProperties.filter(p => p.mapPosition).map((prop, index) => (
-                      <motion.div
-                        key={prop.id}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: index * 0.1, type: 'spring', stiffness: 200 }}
-                        whileHover={{ scale: 1.3, zIndex: 10 }}
-                        onClick={() => setSelectedProperty(prop)}
-                        className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-full"
-                        style={{
-                          left: `${prop.mapPosition.x}%`,
-                          top: `${prop.mapPosition.y}%`,
-                          zIndex: selectedProperty?.id === prop.id ? 20 : 10,
-                        }}
-                      >
-                        <div className={`relative p-2 rounded-full shadow-xl transition-all duration-300 ${
-                          selectedProperty?.id === prop.id
-                            ? 'bg-[#D4AF37] shadow-[#D4AF37]/50'
-                            : 'bg-white/90 hover:bg-white border-2 border-[#D4AF37]'
-                        }`}>
-                          <HiOutlineHome className={`text-lg ${selectedProperty?.id === prop.id ? 'text-[#0A0E1F]' : 'text-[#D4AF37]'}`} />
-                        </div>
-                        <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] ${
-                          selectedProperty?.id === prop.id ? 'border-t-[#D4AF37]' : 'border-t-white'
-                        }`} />
-                      </motion.div>
-                    ))}
-
-                    {/* Tooltip: sólo cuando el prop seleccionado tiene mapPosition */}
-                    {selectedProperty && selectedProperty.mapPosition && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        className={`absolute z-30 p-5 rounded-2xl shadow-2xl max-w-xs ${
-                          isDarkMode ? 'bg-[#121829] border border-white/20' : 'bg-white border border-[rgba(10,14,31,0.1)]'
-                        }`}
-                        style={{
-                          left: `${selectedProperty.mapPosition.x}%`,
-                          top: `${selectedProperty.mapPosition.y - 18}%`,
-                          transform: 'translate(-50%, -100%)',
-                        }}
-                      >
-                        <div className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] ${
-                          isDarkMode ? 'border-t-white/20' : 'border-t-white'
-                        }`} />
-                        <div className="relative">
-                          <img
-                            src={getTooltipImg(selectedProperty)}
-                            alt={selectedProperty.titulo}
-                            className="w-full h-36 object-cover rounded-xl mb-4"
-                          />
-                          <button className="absolute top-3 right-3 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition-all">
-                            <HiOutlineHeart className="text-lg" />
-                          </button>
-                        </div>
-                        <h4 className={`font-bold text-lg mb-1 ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
-                          {selectedProperty.titulo}
-                        </h4>
-                        <div className="flex items-center gap-2 mb-3">
-                          <HiOutlineLocationMarker className="text-[#D4AF37]" />
-                          <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
-                            {selectedProperty.ubicacion}
-                          </span>
-                        </div>
-                        <p className="text-[#D4AF37] font-bold text-xl mb-4">
-                          {formatPrice(selectedProperty.precio)}
-                        </p>
-                        <div className={`grid grid-cols-3 gap-3 text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#5A6B7D]'}`}>
-                          <div className="flex items-center gap-1.5">
-                            <HiOutlineHome className="text-[#D4AF37]" />
-                            <span>{selectedProperty.habitaciones} hab</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <HiOutlineUsers className="text-[#D4AF37]" />
-                            <span>{selectedProperty.banos} baños</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <HiOutlineLocationMarker className="text-[#D4AF37]" />
-                            <span>{selectedProperty.area}m²</span>
-                          </div>
-                        </div>
-                        <div className="mt-4 grid grid-cols-3 gap-2">
-                          <button
-                            onClick={() => openInGoogleMaps(selectedProperty.lat, selectedProperty.lng)}
-                            className="py-2 rounded-xl text-xs font-semibold bg-[#4285F4] text-white hover:bg-[#3367D6] transition-all"
-                          >
-                            Google Maps
-                          </button>
-                          <button
-                            onClick={() => openInWaze(selectedProperty.lat, selectedProperty.lng)}
-                            className="py-2 rounded-xl text-xs font-semibold bg-[#31CEB4] text-white hover:bg-[#28B09A] transition-all"
-                          >
-                            Waze
-                          </button>
-                          <button
-                            onClick={() => navigate(`/properties/${selectedProperty.id}`)}
-                            className="py-2 rounded-xl text-xs font-semibold bg-[#D4AF37] text-[#0A0E1F] hover:bg-[#E5C158] transition-all flex items-center justify-center gap-1"
-                          >
-                            Ver <HiOutlineArrowNarrowRight className="text-xs" />
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
-                </motion.div>
-
                 {/* Lista de Propiedades */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
@@ -585,13 +383,19 @@ export default function Location() {
                                 e.stopPropagation();
                                 toggleCompare(prop);
                               }}
-                              className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                              disabled={!isSelected && compareSelected.length === 2}
+                              className={`absolute bottom-4 right-4 z-10 px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide shadow-lg transition-all duration-300 ${
                                 isSelected
-                                  ? 'bg-[#D4AF37] text-[#0A0E1F] scale-110'
-                                  : 'bg-white/90 text-[#D4AF37] hover:bg-white hover:scale-105 border border-[#D4AF37]/30'
+                                  ? 'bg-[#D4AF37] text-[#0A0E1F]'
+                                  : compareSelected.length === 2
+                                    ? 'bg-black/30 text-gray-400 cursor-not-allowed'
+                                    : 'bg-white/90 text-[#D4AF37] hover:bg-white border border-[#D4AF37]/40'
                               }`}
                             >
-                              {isSelected ? <HiOutlineCheck className="text-lg" /> : <HiOutlineCheck className="text-lg" />}
+                              {isSelected
+                                ? <><HiOutlineCheck className="text-xs mr-0.5" />Comparando</>
+                                : 'Comparar'
+                              }
                             </button>
                           </motion.div>
                         );
@@ -648,7 +452,7 @@ export default function Location() {
                 {/* Modal Body */}
                 <div className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {compareSelected.map((prop, idx) => (
+                    {compareSelected.map((prop) => (
                       <div
                         key={prop.id}
                         className={`rounded-2xl overflow-hidden border ${

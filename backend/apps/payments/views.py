@@ -70,6 +70,28 @@ class AdminPagoDetailView(generics.UpdateAPIView):
     serializer_class = PagoSerializer
     queryset = Pago.objects.all()
 
+    def patch(self, request, *args, **kwargs):
+        from django.utils import timezone
+        pago = self.get_object()
+        nuevo_estado = request.data.get('estado', '').lower()
+        estados_validos = ('aprobado', 'rechazado', 'pendiente', 'en_proceso', 'error')
+        if nuevo_estado not in estados_validos:
+            return Response({'error': 'Estado inválido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        pago.estado = nuevo_estado
+        pago.save(update_fields=['estado', 'updated_at'])
+
+        if nuevo_estado == 'aprobado':
+            usuario = pago.usuario
+            plan = pago.plan
+            usuario.plan_activo = plan
+            usuario.plan_activado_at = timezone.now()
+            duracion = int(getattr(plan, 'duration_days', 30))
+            usuario.plan_expira_at = timezone.now() + timezone.timedelta(days=duracion)
+            usuario.save()
+
+        return Response(PagoSerializer(pago).data, status=status.HTTP_200_OK)
+
 
 class MisPagosView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
