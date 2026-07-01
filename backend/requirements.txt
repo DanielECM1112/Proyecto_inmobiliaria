@@ -12,3 +12,10 @@ Pillow==11.1.0
 # Social auth
 django-allauth==0.53.0
 dj-rest-auth==2.2.5
+
+# Cloud storage (Cloudflare R2 / S3-compatible)
+boto3==1.35.76
+django-storages==1.14.4
+
+# Servidor de producción
+gunicorn==23.0.0

@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:15
+    container_name: luxhabitat_db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=luxhabitat_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d luxhabitat_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: luxhabitat_backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        REACT_APP_BACKEND_URL: https://luxhabitat.proyectoscampus.top
+    container_name: luxhabitat_frontend
+    ports:
+      - "3000:80"
+    restart: always
+
+volumes:
+  postgres_data:

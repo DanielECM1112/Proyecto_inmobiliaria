@@ -10,6 +10,7 @@ ENV/
 env.bak/
 venv.bak/
 .env
+.env.production
 db.sqlite3
 media/
 staticfiles/
