@@ -1,0 +1,3 @@
+# Forzar LF en scripts bash (evita CRLF en Windows que rompe Linux)
+*.sh text eol=lf
+*.bash text eol=lf

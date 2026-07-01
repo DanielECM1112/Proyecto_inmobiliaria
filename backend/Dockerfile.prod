@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     default-libmysqlclient-dev \
     pkg-config \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -18,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x entrypoint.prod.sh
+RUN dos2unix entrypoint.prod.sh && chmod +x entrypoint.prod.sh
 
 EXPOSE 8000
 
