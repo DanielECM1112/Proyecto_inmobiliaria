@@ -177,6 +177,76 @@ class WompiService:
             logger.error(f"Error al procesar webhook de Wompi: {str(e)}")
             raise
 
+    @staticmethod
+    def verificar_pago_en_wompi(referencia):
+        """
+        Consulta activamente Wompi buscando transacciones por referencia.
+        Procesa el resultado igual que el webhook (aprueba/rechaza el pago y actualiza el plan).
+        Útil para entornos donde Wompi no puede hacer POST al webhook (localhost/Docker).
+        Retorna el estado final del pago ('aprobado', 'rechazado', 'pendiente', 'no_encontrado').
+        """
+        from django.utils import timezone
+
+        try:
+            pago = Pago.objects.get(referencia_externa=referencia)
+        except Pago.DoesNotExist:
+            logger.error(f"verificar_pago_en_wompi: pago no encontrado para referencia {referencia}")
+            return 'no_encontrado'
+
+        # Si ya está aprobado no hacer nada
+        if pago.estado == 'aprobado':
+            return 'aprobado'
+
+        headers = WompiService.get_headers()
+        base_url = WompiService.get_base_url()
+
+        try:
+            resp = requests.get(
+                f'{base_url}/transactions?reference={referencia}',
+                headers=headers,
+                timeout=10
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            transactions = data.get('data', [])
+
+            if not transactions:
+                logger.info(f"Wompi: sin transacciones para referencia {referencia}")
+                return 'pendiente'
+
+            # Tomar la transacción más reciente
+            tx = transactions[0]
+            wompi_status = tx.get('status', '')
+            wompi_tx_id = tx.get('id', '')
+
+            with transaction.atomic():
+                pago.wompi_transaction_id = wompi_tx_id
+                pago.wompi_payment_status = wompi_status
+
+                if wompi_status == 'APPROVED':
+                    pago.estado = 'aprobado'
+                    usuario = pago.usuario
+                    plan = pago.plan
+                    usuario.plan_activo = plan
+                    usuario.plan_activado_at = timezone.now()
+                    duracion = int(getattr(plan, 'duration_days', 30))
+                    usuario.plan_expira_at = timezone.now() + timezone.timedelta(days=duracion)
+                    usuario.save()
+                    logger.info(f"Pago {referencia} APROBADO via verificación activa. Plan {plan.name} activado.")
+                elif wompi_status in ('DECLINED', 'ERROR', 'VOIDED'):
+                    pago.estado = 'rechazado'
+                    logger.info(f"Pago {referencia} RECHAZADO via verificación activa.")
+                else:
+                    pago.estado = 'pendiente'
+
+                pago.save()
+
+            return pago.estado
+
+        except Exception as e:
+            logger.error(f"Error al verificar pago en Wompi ({referencia}): {str(e)}")
+            return 'error'
+
 
 class PagoService:
     @staticmethod
@@ -205,17 +275,14 @@ class PagoService:
             if Pago.objects.filter(Propiedad=propiedad, estado__in=['pendiente', 'aprobado']).exists():
                 raise ValueError("Ya existe un pago pendiente o aprobado para esta propiedad.")
 
-        # Validar que el usuario no tenga un plan activo
+        # Validar que el usuario no tenga un plan activo vigente
         from django.utils import timezone
         ultimo_aprobado = Pago.objects.filter(usuario=usuario, estado='aprobado').order_by('-created_at').first()
         if ultimo_aprobado:
-            try:
-                duracion = int(getattr(ultimo_aprobado.plan, 'duration_days', 30))
-                fecha_expiracion = ultimo_aprobado.created_at + timezone.timedelta(days=duracion)
-                if fecha_expiracion > timezone.now():
-                    raise ValueError(f"Ya tienes un plan activo hasta {fecha_expiracion.strftime('%Y-%m-%d')}")
-            except Exception:
-                pass
+            duracion = int(getattr(ultimo_aprobado.plan, 'duration_days', 30))
+            fecha_expiracion = ultimo_aprobado.created_at + timezone.timedelta(days=duracion)
+            if fecha_expiracion > timezone.now():
+                raise ValueError(f"Ya tienes un plan activo hasta {fecha_expiracion.strftime('%Y-%m-%d')}")
 
         try:
             plan = Plan.objects.get(id=plan_id)
@@ -247,6 +314,37 @@ class PagoService:
             }
         except Pago.DoesNotExist:
             return None
+
+    @staticmethod
+    def sincronizar_plan_usuario(usuario):
+        """
+        Busca el pago aprobado más reciente del usuario y sincroniza su plan_activo.
+        Útil cuando el webhook de Wompi puede tardar en llegar.
+        Retorna True si el plan fue actualizado, False si ya estaba sincronizado.
+        """
+        from django.utils import timezone
+        ultimo_aprobado = Pago.objects.filter(
+            usuario=usuario,
+            estado='aprobado'
+        ).select_related('plan').order_by('-created_at').first()
+
+        if not ultimo_aprobado:
+            return False
+
+        plan = ultimo_aprobado.plan
+        duracion = int(getattr(plan, 'duration_days', 30))
+        fecha_expiracion = ultimo_aprobado.created_at + timezone.timedelta(days=duracion)
+
+        # Solo actualizar si el plan sigue vigente
+        if fecha_expiracion > timezone.now():
+            usuario.plan_activo = plan
+            usuario.plan_activado_at = ultimo_aprobado.created_at
+            usuario.plan_expira_at = fecha_expiracion
+            usuario.save(update_fields=['plan_activo', 'plan_activado_at', 'plan_expira_at'])
+            logger.info(f"Plan sincronizado para {usuario.email}: {plan.name} hasta {fecha_expiracion}")
+            return True
+
+        return False
 
     @staticmethod
     def obtener_mis_pagos(usuario):

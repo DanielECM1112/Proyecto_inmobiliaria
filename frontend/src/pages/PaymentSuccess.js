@@ -11,8 +11,6 @@ import api from '../services/api';
 export default function PaymentSuccess() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [loading, setLoading] = useState(true);
   const [plan, setPlan] = useState(null);
 
   // Colors
@@ -26,6 +24,14 @@ export default function PaymentSuccess() {
     // Fetch latest user data to check if plan is active
     const fetchUser = async () => {
       try {
+        // 1. Sincronizar el plan desde pagos aprobados (por si el webhook tardó)
+        try {
+          await api.post('/pagos/sincronizar-plan/');
+        } catch (syncErr) {
+          console.warn('Sincronización de plan falló:', syncErr);
+        }
+
+        // 2. Obtener perfil actualizado del usuario
         const res = await api.get('/perfil/');
         const user = res.data;
         localStorage.setItem('user', JSON.stringify(user));
@@ -36,8 +42,6 @@ export default function PaymentSuccess() {
         window.dispatchEvent(new CustomEvent('userUpdated', { detail: user }));
       } catch (err) {
         console.error('Error fetching user data:', err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -78,31 +82,12 @@ export default function PaymentSuccess() {
               {/* Title */}
               <div className="text-center mb-10">
                 <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight mb-4" style={{ color: txt }}>
-                  {plan ? '¡Plan activado exitosamente!' : '¡Pago recibido con éxito!'}
+                  ¡Plan activado exitosamente!
                 </h1>
                 <p className="text-lg" style={{ color: sub }}>
-                  {plan
-                    ? 'Tu suscripción ha sido actualizada y ya puedes empezar a usar tus beneficios.'
-                    : 'Tu pago fue registrado correctamente.'}
+                  Tu suscripción ha sido actualizada y ya puedes empezar a usar tus beneficios.
                 </p>
               </div>
-
-              {/* Aviso de activación pendiente */}
-              {!plan && !loading && (
-                <div
-                  className="mb-8 p-5 rounded-2xl flex items-start gap-4"
-                  style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.25)' }}
-                >
-                  <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⏳</span>
-                  <div>
-                    <p className="font-bold mb-1" style={{ color: '#C9A84C' }}>Activación en proceso</p>
-                    <p className="text-sm leading-relaxed" style={{ color: sub }}>
-                      En unos minutos el administrador revisará tu pago y te dará acceso a tu plan.
-                      Recibirás los beneficios completos una vez sea aprobado.
-                    </p>
-                  </div>
-                </div>
-              )}
               
               {/* Plan Info */}
               {plan && (

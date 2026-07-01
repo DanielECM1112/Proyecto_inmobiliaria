@@ -70,28 +70,6 @@ class AdminPagoDetailView(generics.UpdateAPIView):
     serializer_class = PagoSerializer
     queryset = Pago.objects.all()
 
-    def patch(self, request, *args, **kwargs):
-        from django.utils import timezone
-        pago = self.get_object()
-        nuevo_estado = request.data.get('estado', '').lower()
-        estados_validos = ('aprobado', 'rechazado', 'pendiente', 'en_proceso', 'error')
-        if nuevo_estado not in estados_validos:
-            return Response({'error': 'Estado inválido'}, status=status.HTTP_400_BAD_REQUEST)
-
-        pago.estado = nuevo_estado
-        pago.save(update_fields=['estado', 'updated_at'])
-
-        if nuevo_estado == 'aprobado':
-            usuario = pago.usuario
-            plan = pago.plan
-            usuario.plan_activo = plan
-            usuario.plan_activado_at = timezone.now()
-            duracion = int(getattr(plan, 'duration_days', 30))
-            usuario.plan_expira_at = timezone.now() + timezone.timedelta(days=duracion)
-            usuario.save()
-
-        return Response(PagoSerializer(pago).data, status=status.HTTP_200_OK)
-
 
 class MisPagosView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -139,3 +117,59 @@ class ProcesarPagoView(APIView):
             return Response(pago_data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": f"Error al procesar pago: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SincronizarPlanView(APIView):
+    """
+    POST /pagos/sincronizar-plan/
+    1. Verifica activamente en Wompi todos los pagos PENDIENTES del usuario.
+    2. Si alguno está APPROVED en Wompi, lo procesa y activa el plan.
+    3. Luego sincroniza el plan_activo desde los pagos aprobados en DB.
+    Soluciona el problema de que en localhost/Docker el webhook de Wompi no llega.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        usuario = request.user
+
+        # 1. Verificar activamente en Wompi todos los pagos pendientes
+        pagos_pendientes = Pago.objects.filter(
+            usuario=usuario,
+            estado='pendiente',
+            referencia_externa__isnull=False
+        ).order_by('-created_at')
+
+        verificaciones = []
+        for pago in pagos_pendientes:
+            estado_resultante = WompiService.verificar_pago_en_wompi(pago.referencia_externa)
+            verificaciones.append({
+                'referencia': pago.referencia_externa,
+                'estado': estado_resultante,
+                'plan': pago.plan.name
+            })
+
+        # 2. Sincronizar plan_activo desde pagos aprobados en DB
+        sincronizado = PagoService.sincronizar_plan_usuario(usuario)
+
+        # 3. Recargar el usuario desde la DB para tener datos frescos
+        usuario.refresh_from_db()
+
+        plan_activo = usuario.plan_activo
+        plan_data = None
+        if plan_activo:
+            plan_data = {
+                "id": str(plan_activo.id),
+                "name": plan_activo.name,
+                "max_properties": plan_activo.max_properties,
+                "max_photos": plan_activo.max_photos,
+                "price": str(plan_activo.price),
+            }
+
+        return Response({
+            "sincronizado": sincronizado,
+            "tiene_plan": plan_activo is not None,
+            "plan": plan_data,
+            "plan_expira": usuario.plan_expira_at.isoformat() if usuario.plan_expira_at else None,
+            "verificaciones_wompi": verificaciones,
+        }, status=status.HTTP_200_OK)
+

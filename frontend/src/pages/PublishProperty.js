@@ -6,13 +6,12 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PageWrapper from '../components/PageWrapper';
 import { useTheme } from '../context/ThemeContext';
-import { FaTrash, FaCloudUploadAlt, FaCheckCircle, FaExclamationTriangle, FaCrown, FaPlus, FaCreditCard } from 'react-icons/fa';
+import { FaTrash, FaCloudUploadAlt, FaCheckCircle, FaExclamationTriangle, FaCrown } from 'react-icons/fa';
 import { getUserPlanStatus } from '../admin/adminService';
 
 export default function PublishProperty() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { isDarkMode } = useTheme();
   
   const queryParams = new URLSearchParams(search);
   const [planNombre, setPlanNombre] = useState(queryParams.get('planNombre') || 'Plan Gratuito');
@@ -44,9 +43,65 @@ export default function PublishProperty() {
   const [success, setSuccess] = useState(false);
   const [generalError, setGeneralError] = useState('');
   const [isDragging, setIsDragging] = useState(false);
-  const [planStatus, setPlanStatus] = useState(null);
-  const [planLoading, setPlanLoading] = useState(true);
   const [showLimitMessage, setShowLimitMessage] = useState(false);
+  const [planStatus, setPlanStatus] = useState(null);
+  const [loadingPlan, setLoadingPlan] = useState(false);
+
+  // Función para cargar el estado del plan
+  const loadPlanStatus = async () => {
+    setLoadingPlan(true);
+    try {
+      // 1. Primero sincronizar el plan desde los pagos aprobados
+      //    (útil cuando el webhook de Wompi no llegó aún)
+      try {
+        const syncRes = await api.post('/pagos/sincronizar-plan/');
+        if (syncRes.data?.sincronizado) {
+          console.log('Plan sincronizado desde pago aprobado:', syncRes.data.plan?.name);
+        }
+      } catch (syncErr) {
+        // No bloquear si falla la sincronización
+        console.warn('No se pudo sincronizar el plan:', syncErr);
+      }
+
+      // 2. Ahora consultar el estado actualizado del plan
+      const status = await getUserPlanStatus();
+      setPlanStatus(status);
+      
+      // Actualizar el mensaje de límite
+      if (status.propiedades_disponibles <= 0 && !status.es_admin) {
+        setShowLimitMessage(true);
+      } else {
+        setShowLimitMessage(false);
+        
+        // Si el usuario no tiene parámetros de plan pero sí tiene plan activo
+        const queryParams = new URLSearchParams(window.location.search);
+        const currentPlanNombre = queryParams.get('planNombre');
+        const currentMaxFotos = queryParams.get('maxFotos');
+        if (!currentPlanNombre && status.plan_id) {
+          // Obtener los detalles del plan
+          try {
+            const planesResponse = await api.get('/admin/plans/');
+            const plan = planesResponse.data.find(p => p.id === status.plan_id);
+            if (plan) {
+              // Redirigir con los parámetros
+              navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`, { replace: true });
+            }
+          } catch (err) {
+            console.error('Error al obtener plan:', err);
+          }
+        } else if (currentPlanNombre) {
+          setPlanNombre(currentPlanNombre);
+          if (currentMaxFotos) {
+            setMaxFotos(parseInt(currentMaxFotos));
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error al cargar estado del plan:', error);
+    } finally {
+      setLoadingPlan(false);
+    }
+  };
 
   // Cargar datos básicos al inicio
   useEffect(() => {
@@ -59,41 +114,7 @@ export default function PublishProperty() {
       }
       
       // Cargar estado del plan
-      try {
-        const status = await getUserPlanStatus();
-        setPlanStatus(status);
-        // Mostrar mensaje si no puede publicar más
-        if (status.propiedades_disponibles <= 0 && !status.es_admin) {
-          setShowLimitMessage(true);
-        } else {
-          // Si el usuario no tiene parámetros de plan pero sí tiene plan activo
-          const queryParams = new URLSearchParams(window.location.search);
-          const currentPlanNombre = queryParams.get('planNombre');
-          const currentMaxFotos = queryParams.get('maxFotos');
-          if (!currentPlanNombre && status.plan_id) {
-            // Obtener los detalles del plan
-            try {
-              const planesResponse = await api.get('/admin/plans/');
-              const plan = planesResponse.data.find(p => p.id === status.plan_id);
-              if (plan) {
-                // Redirigir con los parámetros
-                navigate(`/publish?planId=${plan.id}&planNombre=${encodeURIComponent(plan.name)}&maxFotos=${plan.max_photos}`, { replace: true });
-              }
-            } catch (err) {
-              console.error('Error al obtener plan:', err);
-            }
-          } else if (currentPlanNombre) {
-            setPlanNombre(currentPlanNombre);
-            if (currentMaxFotos) {
-              setMaxFotos(parseInt(currentMaxFotos));
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error al cargar estado del plan:', error);
-      } finally {
-        setPlanLoading(false);
-      }
+      await loadPlanStatus();
     };
     
     loadData();
@@ -249,6 +270,16 @@ export default function PublishProperty() {
             <h1 className="text-3xl md:text-5xl font-serif font-bold" style={{ color: 'var(--text-primary)' }}>
               Publicar Propiedad
             </h1>
+            
+            {/* Estado del plan */}
+            {planStatus && (
+              <div className="mt-4 p-4 rounded-xl border border-[#C9A84C]/30 bg-[#C9A84C]/10 max-w-md mx-auto">
+                <p className="text-sm" style={{ color: "#C9A84C" }}>
+                  <strong>Propiedades disponibles:</strong> {planStatus.propiedades_disponibles} / {planStatus.max_propiedades}
+                </p>
+              </div>
+            )}
+            
             {planNombre === 'Premium' && (
               <p className="mt-2 text-[#C9A84C] text-sm font-semibold">
                 ¡Disfruta de todos los beneficios Premium! 🎉
@@ -279,18 +310,44 @@ export default function PublishProperty() {
             >
               <FaExclamationTriangle size={56} className="mx-auto mb-6" style={{ color: "#f87171" }} />
               <h2 className="text-3xl font-serif font-bold mb-4" style={{ color: "#f87171" }}>
-                ¡Has alcanzado el límite de propiedades!
+                ¡Verifica tu plan!
               </h2>
+              
+              {planStatus && (
+                <div className="mb-6 p-4 rounded-xl border border-[#C9A84C]/30 bg-[#C9A84C]/10">
+                  <p className="text-sm" style={{ color: "#C9A84C" }}>
+                    <strong>Plan actual:</strong> {planStatus.plan_activo}
+                  </p>
+                  <p className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+                    <strong>Propiedades publicadas:</strong> {planStatus.propiedades_activas} / {planStatus.max_propiedades}
+                  </p>
+                  <p className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+                    <strong>Disponibles para publicar:</strong> {planStatus.propiedades_disponibles}
+                  </p>
+                </div>
+              )}
+              
               <p className="text-lg mb-8" style={{ color: "rgba(255,255,255,0.8)" }}>
-                Ya has usado todas las propiedades disponibles de tu plan. Para seguir publicando, actualiza tu plan a uno con más capacidad.
+                Si acabas de comprar un plan, haz clic en refrescar para actualizar.
               </p>
-              <button
-                onClick={() => navigate("/planes")}
-                className="px-10 py-4 text-[12px] font-bold uppercase tracking-[3px] transition-all hover:opacity-90"
-                style={{ background: "#C9A84C", color: "#0D0D0D" }}
-              >
-                Ver Planes
-              </button>
+              
+              <div className="flex flex-wrap gap-4 justify-center">
+                <button
+                  onClick={loadPlanStatus}
+                  disabled={loadingPlan}
+                  className="px-10 py-4 text-[12px] font-bold uppercase tracking-[3px] transition-all hover:opacity-90 disabled:opacity-50"
+                  style={{ background: "transparent", color: "#C9A84C", border: "1px solid #C9A84C" }}
+                >
+                  {loadingPlan ? "Refrescando..." : "Refrescar"}
+                </button>
+                <button
+                  onClick={() => navigate("/planes")}
+                  className="px-10 py-4 text-[12px] font-bold uppercase tracking-[3px] transition-all hover:opacity-90"
+                  style={{ background: "#C9A84C", color: "#0D0D0D" }}
+                >
+                  Ver Planes
+                </button>
+              </div>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">

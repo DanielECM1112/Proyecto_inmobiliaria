@@ -37,6 +37,9 @@ class PropiedadCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         # Verificar el límite de propiedades del plan
         user = request.user
+        
+        # Refrescar los datos del usuario desde la BD para obtener plan_activo más actualizado
+        user.refresh_from_db()
         plan_activo = user.plan_activo
         
         # Si no tiene plan, usamos un plan por defecto con 1 propiedad máxima
@@ -49,6 +52,10 @@ class PropiedadCreateView(generics.CreateAPIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
             max_props = plan_activo.max_properties
+        
+        # Si es administrador, no hay límite
+        if user.is_staff or user.rol == 'admin':
+            max_props = 999
         
         # Contar las propiedades activas del usuario
         props_activas = Propiedad.objects.filter(
@@ -80,8 +87,22 @@ def get_user_plan_status(request):
     - Cuántas propiedades ha publicado
     - Cuántas puede publicar más
     - Fecha de expiración
+    
+    Nota: Intenta sincronizar el plan si hay pagos aprobados pendientes
     """
+    from payments.services import PagoService
+    from django.utils import timezone
+    
     user = request.user
+    
+    # Intentar sincronizar el plan desde pagos aprobados (útil si webhook no llegó)
+    try:
+        PagoService.sincronizar_plan_usuario(user)
+        user.refresh_from_db()
+    except Exception as e:
+        # No bloquear si la sincronización falla
+        pass
+    
     plan_activo = user.plan_activo
     
     # Datos básicos

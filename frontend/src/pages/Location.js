@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiOutlineSearch, HiOutlineHome, HiOutlineUsers, HiOutlineLocationMarker, HiOutlineX, HiOutlineCheck } from 'react-icons/hi';
+import { HiOutlineSearch, HiOutlineHome, HiOutlineUsers, HiOutlineHeart, HiOutlineLocationMarker, HiOutlineArrowNarrowRight, HiOutlineX, HiOutlineCheck } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
@@ -21,6 +21,7 @@ const FILTERS_INIT = {
 export default function Location() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
+  const [selectedProperty, setSelectedProperty] = useState(null);
   const [filters, setFilters] = useState(FILTERS_INIT);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,16 @@ export default function Location() {
     () => ['todos', ...Array.from(new Set(properties.map(p => p.tipo).filter(Boolean))).sort()],
     [properties]
   );
+
+  const openInGoogleMaps = (lat, lng) => {
+    if (!lat || !lng) return;
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+  };
+
+  const openInWaze = (lat, lng) => {
+    if (!lat || !lng) return;
+    window.open(`https://waze.com/ul?ll=${lat},${lng}&navigate=yes`, '_blank');
+  };
 
   const filteredProperties = properties.filter(prop => {
     if (filters.neighborhood !== 'todos' && prop.ubicacion !== filters.neighborhood) return false;
@@ -331,10 +342,9 @@ export default function Location() {
                 </motion.div>
               </div>
 
-              {/* Mapa y Lista */}
-              <div className="xl:col-span-2 space-y-8">
+              {/* Propiedades */}
+              <div className="xl:col-span-2">
 
-                {/* Lista de Propiedades */}
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <h3 className={`text-2xl font-serif font-bold ${isDarkMode ? 'text-white' : 'text-[#0A0E1F]'}`}>
@@ -383,19 +393,13 @@ export default function Location() {
                                 e.stopPropagation();
                                 toggleCompare(prop);
                               }}
-                              disabled={!isSelected && compareSelected.length === 2}
-                              className={`absolute bottom-4 right-4 z-10 px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide shadow-lg transition-all duration-300 ${
+                              className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
                                 isSelected
-                                  ? 'bg-[#D4AF37] text-[#0A0E1F]'
-                                  : compareSelected.length === 2
-                                    ? 'bg-black/30 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white/90 text-[#D4AF37] hover:bg-white border border-[#D4AF37]/40'
+                                  ? 'bg-[#D4AF37] text-[#0A0E1F] scale-110'
+                                  : 'bg-white/90 text-[#D4AF37] hover:bg-white hover:scale-105 border border-[#D4AF37]/30'
                               }`}
                             >
-                              {isSelected
-                                ? <><HiOutlineCheck className="text-xs mr-0.5" />Comparando</>
-                                : 'Comparar'
-                              }
+                              {isSelected ? <HiOutlineCheck className="text-lg" /> : <HiOutlineCheck className="text-lg" />}
                             </button>
                           </motion.div>
                         );
@@ -452,7 +456,7 @@ export default function Location() {
                 {/* Modal Body */}
                 <div className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {compareSelected.map((prop) => (
+                    {compareSelected.map((prop, idx) => (
                       <div
                         key={prop.id}
                         className={`rounded-2xl overflow-hidden border ${
