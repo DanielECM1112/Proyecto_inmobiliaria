@@ -1,6 +1,7 @@
 import json
 import requests
 from urllib.parse import quote
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -140,7 +141,8 @@ class SocialLoginView(APIView):
                         f.write(traceback.format_exc())
                     return Response({'error': f'Error interno al guardar usuario en base de datos: {str(db_err)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
-                register_url = f'http://localhost:3000/register?email={quote(email)}&social={quote(provider)}'
+                _frontend = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                register_url = f'{_frontend}/register?email={quote(email)}&social={quote(provider)}'
                 with open(log_path, 'a', encoding='utf-8') as f:
                     f.write(f"Usuario no existe, redirigiendo a: {register_url}\n")
                 return Response({
@@ -239,7 +241,8 @@ class PasswordResetConfirmView(APIView):
 
 def social_auth_complete(request):
     if not request.user.is_authenticated:
-        return redirect('http://localhost:3000/login')
+        _frontend = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+        return redirect(f'{_frontend}/login')
     
     refresh = RefreshToken.for_user(request.user)
     token = str(refresh.access_token)

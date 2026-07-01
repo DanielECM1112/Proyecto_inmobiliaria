@@ -294,6 +294,8 @@ SOCIALACCOUNT_ADAPTER = 'users.adapters.CustomSocialAccountAdapter'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+
 # --- WOMPI ---
 WOMPI_PUBLIC_KEY = config('WOMPI_PUBLIC_KEY', default='')
 WOMPI_PRIVATE_KEY = config('WOMPI_PRIVATE_KEY', default='')
