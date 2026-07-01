@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
-from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -177,20 +176,24 @@ SIMPLE_JWT = {
 }
 
 # --- CORS ---
-CORS_ALLOWED_ORIGINS = [
+_cors_base = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:5500",
     "http://127.0.0.1:5500",
     "https://flying-dislocate-skimming.ngrok-free.dev",
 ]
+_cors_extra = config('CORS_ALLOWED_ORIGINS', default='', cast=Csv())
+CORS_ALLOWED_ORIGINS = _cors_base + [o for o in _cors_extra if o]
 
 # --- CSRF ---
-CSRF_TRUSTED_ORIGINS = [
+_csrf_base = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://flying-dislocate-skimming.ngrok-free.dev",
 ]
+_csrf_extra = config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv())
+CSRF_TRUSTED_ORIGINS = _csrf_base + [o for o in _csrf_extra if o]
 
 CORS_ALLOW_CREDENTIALS = True
 
