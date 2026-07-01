@@ -19,3 +19,4 @@ django-storages==1.14.4
 
 # Servidor de producción
 gunicorn==23.0.0
+whitenoise==6.8.2
